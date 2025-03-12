@@ -1,4 +1,4 @@
-package com.rizqi.wideloc.ui.home
+package com.rizqi.wideloc.presentation.ui.home
 
 import android.os.Bundle
 import android.view.LayoutInflater

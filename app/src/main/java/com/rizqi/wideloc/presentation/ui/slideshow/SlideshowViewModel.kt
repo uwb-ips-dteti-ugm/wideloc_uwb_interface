@@ -1,4 +1,4 @@
-package com.rizqi.wideloc.ui.slideshow
+package com.rizqi.wideloc.presentation.ui.slideshow
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
