@@ -19,18 +19,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         />
 
-    <ImageButton
-        android:id="@+id/menuButtonFragment"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
-        android:background="@drawable/menu_drawer_background"
-        android:contentDescription="@string/navbar_menu"
-        android:src="@drawable/bars_3"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <LinearLayout
         android:id="@+id/statusIndicatorLayoutFragment"
         android:layout_width="wrap_content"
