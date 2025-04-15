@@ -9,5 +9,8 @@
     <color name="white">#FFFFFFFF</color>
 
 <!--    WideLoc Color-->
+    <color name="background_default">#FFFFFFFF</color>
     <color name="background_primary">#FF2C71F6</color>
+    <color name="background_tertiary">#FFD8D8DA</color>
+    <color name="background_success">#FF17B530</color>
 </resources>

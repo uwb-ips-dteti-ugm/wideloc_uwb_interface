@@ -4,19 +4,139 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".presentation.ui.home.HomeFragment">
 
-    <TextView
-        android:id="@+id/text_home"
+    <ImageView
+        android:id="@+id/mapViewFragment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/map_dummy"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <ImageButton
+        android:id="@+id/menuButtonFragment"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/menu_drawer_background"
+        android:contentDescription="@string/navbar_menu"
+        android:src="@drawable/bars_3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/statusIndicatorLayoutFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/rounded_white_background"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="8dp"
+        android:textColor="@android:color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:backgroundTint="@color/background_success"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="0dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="@string/connected"
+            android:textColor="@color/background_success" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:src="@drawable/chevron_down" />
+
+    </LinearLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/connectDeviceButtonHome"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="@color/background_tertiary"
+        app:cornerRadius="24dp"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:insetLeft="0dp"
+        android:insetRight="0dp"
+        app:layout_constraintBottom_toTopOf="@id/startRecordButtonHome"
+        app:layout_constraintEnd_toStartOf="@id/statisticButtonHome"
+        app:layout_constraintStart_toStartOf="parent"
+        app:strokeColor="@color/background_default"
+        app:strokeWidth="2dp"
+        android:text="@string/connect_device"
+        android:fontFamily="@font/roboto_semibold"
+        android:textSize="14sp"
+        android:textAllCaps="false"
+        android:textColor="@color/background_primary"
+        />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/statisticButtonHome"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="@color/background_tertiary"
+        app:cornerRadius="24dp"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:insetLeft="0dp"
+        android:insetRight="0dp"
+        app:icon="@drawable/chart"
+        app:iconGravity="textStart"
+        app:iconPadding="0dp"
+        app:iconSize="18dp"
+        app:iconTint="@color/background_primary"
+        app:layout_constraintBottom_toTopOf="@id/startRecordButtonHome"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:strokeColor="@color/background_default"
+        app:strokeWidth="2dp"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+        />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/startRecordButtonHome"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginVertical="32dp"
+        android:backgroundTint="@color/background_primary"
+        android:fontFamily="@font/roboto_semibold"
+        android:text="@string/start_recording"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        app:cornerRadius="64dp"
+        app:icon="@drawable/location_arrow_solid"
+        app:iconGravity="textEnd"
+        app:iconSize="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:insetLeft="0dp"
+        android:insetRight="0dp"
+        />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
