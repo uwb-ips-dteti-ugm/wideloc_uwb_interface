@@ -1,20 +1,46 @@
-<?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
+    <!-- Pages Section -->
+    <group android:id="@+id/group_pages" android:checkableBehavior="single"
+        android:title="@string/pages">
         <item
             android:id="@+id/nav_home"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="@string/menu_home" />
+            android:icon="@drawable/ic_home"
+            android:title="@string/home" />
         <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="@string/menu_gallery" />
+            android:id="@+id/nav_devices"
+            android:icon="@drawable/ic_device_phone_mobile"
+            android:title="@string/devices" />
         <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="@string/menu_slideshow" />
+            android:id="@+id/nav_statistics"
+            android:icon="@drawable/ic_chart"
+            android:title="@string/statistics" />
+        <item
+            android:id="@+id/nav_notifications"
+            android:icon="@drawable/ic_bell"
+            android:title="@string/notifications" />
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_cog_6_tooth"
+            android:title="@string/settings" />
     </group>
+
+    <!-- Help & Support Section -->
+    <group android:id="@+id/group_help" android:title="@string/help_and_support">
+        <item
+            android:id="@+id/nav_about"
+            android:icon="@drawable/ic_information_circle"
+            android:title="@string/about" />
+        <item
+            android:id="@+id/nav_faq"
+            android:icon="@drawable/ic_question_mark_circle"
+            android:title="@string/faq" />
+        <item
+            android:id="@+id/nav_contacts"
+            android:icon="@drawable/ic_phone"
+            android:title="@string/contacts" />
+    </group>
+
 </menu>

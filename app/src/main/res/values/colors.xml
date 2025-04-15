@@ -13,4 +13,5 @@
     <color name="background_primary">#FF2C71F6</color>
     <color name="background_tertiary">#FFD8D8DA</color>
     <color name="background_success">#FF17B530</color>
+    <color name="text_default">#FF202020</color>
 </resources>

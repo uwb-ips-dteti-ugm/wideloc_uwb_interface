@@ -25,9 +25,6 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        Toast.makeText(requireContext(), "View created OK", Toast.LENGTH_SHORT).show()
-        binding.startRecordButtonHome.text = "Testing"
     }
 
     override fun onDestroyView() {
