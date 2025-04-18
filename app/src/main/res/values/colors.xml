@@ -11,7 +11,12 @@
 <!--    WideLoc Color-->
     <color name="background_default">#FFFFFFFF</color>
     <color name="background_primary">#FF2C71F6</color>
+    <color name="background_secondary">#FFF8F9FB</color>
     <color name="background_tertiary">#FFD8D8DA</color>
     <color name="background_success">#FF17B530</color>
+    <color name="background_error">#FFF73B3B</color>
     <color name="text_default">#FF202020</color>
+    <color name="text_secondary">#FF89898A</color>
+    <color name="border_primary_secondary">#FFBBD1FC</color>
+    <color name="border_secondary">#FFD8D8DA</color>
 </resources>

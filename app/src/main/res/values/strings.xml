@@ -24,4 +24,8 @@
     <string name="about">About</string>
     <string name="faq">FAQ</string>
     <string name="contacts">Contacts</string>
+    <string name="add_device">Add Device</string>
+    <string name="connect_all"><u>Connect all</u></string>
+    <string name="need_to_reconfigure">Need to Reconfigure</string>
+    <string name="disconnect">Disconnect</string>
 </resources>

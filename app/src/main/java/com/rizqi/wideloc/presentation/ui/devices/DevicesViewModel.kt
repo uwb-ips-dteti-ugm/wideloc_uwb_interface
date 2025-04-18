@@ -1,10 +1,10 @@
-package com.rizqi.wideloc.presentation.ui.gallery
+package com.rizqi.wideloc.presentation.ui.devices
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class GalleryViewModel : ViewModel() {
+class DevicesViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
         value = "This is gallery Fragment"

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_home">
+    app:startDestination="@+id/nav_devices">
 
     <fragment
         android:id="@+id/nav_home"
@@ -12,14 +12,14 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/nav_gallery"
-        android:name="com.rizqi.wideloc.presentation.ui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
+        android:id="@+id/nav_devices"
+        android:name="com.rizqi.wideloc.presentation.ui.devices.DevicesFragment"
+        android:label="@string/devices"
+        tools:layout="@layout/fragment_devices" />
 
     <fragment
-        android:id="@+id/nav_slideshow"
+        android:id="@+id/nav_statistics"
         android:name="com.rizqi.wideloc.presentation.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
+        android:label="@string/statistics"
         tools:layout="@layout/fragment_slideshow" />
 </navigation>
