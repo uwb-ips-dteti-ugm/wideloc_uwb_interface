@@ -1,7 +1,9 @@
 package com.rizqi.wideloc.presentation.ui.device_detail
 
+import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -29,6 +31,10 @@ class DeviceDetailActivity : AppCompatActivity() {
         enableEdgeToEdge()
         binding = ActivityDeviceDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
 
         bottomSheetBehavior = BottomSheetBehavior.from(binding.deviceDetailBottomSheet.root)
 
