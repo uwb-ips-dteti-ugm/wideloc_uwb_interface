@@ -28,4 +28,14 @@
     <string name="connect_all"><u>Connect all</u></string>
     <string name="need_to_reconfigure">Need to Reconfigure</string>
     <string name="disconnect">Disconnect</string>
+    <string name="device_detail">Device Detail</string>
+    <string name="status">Status</string>
+    <string name="calibration_sync"><![CDATA[Callibration & Sync]]></string>
+    <string name="calibrate_sync"><![CDATA[Callibrate & Sync]]></string>
+    <string name="coordinate_cm">Coordinate(cm)</string>
+    <string name="coordinate_format">x:%1$d   y:%2$d   z:%3$d</string>
+    <string name="set_offset">Set Offset</string>
+    <string name="offset_cm">Offset(cm)</string>
+    <string name="change_role">Change Role</string>
+    <string name="role">Role</string>
 </resources>
