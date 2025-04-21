@@ -16,10 +16,13 @@
     <color name="background_success">#FF17B530</color>
     <color name="background_error">#FFF73B3B</color>
     <color name="text_primary">#FF2C71F6</color>
+    <color name="text_on_primary">#FFFFFFFF</color>
     <color name="text_default">#FF202020</color>
     <color name="text_secondary">#FF89898A</color>
     <color name="text_secondary_2">#FF747474</color>
+    <color name="text_error">#FFF73B3B</color>
     <color name="border_primary_secondary">#FFBBD1FC</color>
     <color name="border_secondary">#FFD8D8DA</color>
     <color name="border_default">#FFE9E9EB</color>
+    <color name="border_error">#FFF73B3B</color>
 </resources>

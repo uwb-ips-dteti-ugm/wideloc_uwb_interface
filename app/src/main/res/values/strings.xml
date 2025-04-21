@@ -38,4 +38,8 @@
     <string name="offset_cm">Offset(cm)</string>
     <string name="change_role">Change Role</string>
     <string name="role">Role</string>
+    <string name="battery">Battery</string>
+    <string name="percent">percent</string>
+    <string name="forget_device">Forget Device</string>
+    <string name="delete_device">Delete Device</string>
 </resources>

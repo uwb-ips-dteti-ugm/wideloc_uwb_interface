@@ -22,316 +22,391 @@
         app:cardElevation="0dp"
         />
 
-    <TextView
-        android:id="@+id/deviceNameTextViewDeviceDetailBottomSheet"
-        android:layout_width="0dp"
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/dragHandleCardViewDeviceDetailBottomSheet"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/editNameImageViewDeviceDetailBottomSheet"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="8dp"
-        tools:text="Client Tag 1"
-        android:fontFamily="@font/roboto_medium"
-        android:textSize="24sp"
-        android:textColor="@color/text_default"
-        />
-
-    <ImageView
-        android:id="@+id/editNameImageViewDeviceDetailBottomSheet"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        app:layout_constraintTop_toTopOf="@id/deviceNameTextViewDeviceDetailBottomSheet"
-        app:layout_constraintBottom_toBottomOf="@id/deviceNameTextViewDeviceDetailBottomSheet"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:src="@drawable/ic_pencil_square"
-        app:tint="@color/background_primary"
-        />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/deviceImagesRecyclerViewDeviceDetailBottomSheet"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:orientation="horizontal"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintTop_toBottomOf="@id/editNameImageViewDeviceDetailBottomSheet"
-        tools:itemCount="5"
-        tools:listitem="@layout/device_image_item"
-        />
-
-    <LinearLayout
-        android:id="@+id/deviceInfoLinearLayoutDeviceDetailBottomSheet"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@id/deviceImagesRecyclerViewDeviceDetailBottomSheet"
         android:layout_marginTop="32dp"
         >
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:paddingBottom="64dp"
             >
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/deviceNameTextViewDeviceDetailBottomSheet"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/editNameImageViewDeviceDetailBottomSheet"
                 android:layout_marginEnd="8dp"
+                android:text="Client Tag 1"
+                android:fontFamily="@font/roboto_medium"
+                android:textSize="24sp"
+                android:textColor="@color/text_default"
+                />
+
+            <ImageView
+                android:id="@+id/editNameImageViewDeviceDetailBottomSheet"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                app:layout_constraintTop_toTopOf="@id/deviceNameTextViewDeviceDetailBottomSheet"
+                app:layout_constraintBottom_toBottomOf="@id/deviceNameTextViewDeviceDetailBottomSheet"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:src="@drawable/ic_pencil_square"
+                app:tint="@color/background_primary"
+                />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/deviceImagesRecyclerViewDeviceDetailBottomSheet"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintTop_toBottomOf="@id/editNameImageViewDeviceDetailBottomSheet"
+                tools:itemCount="5"
+                tools:listitem="@layout/device_image_item"
+                />
+
+            <LinearLayout
+                android:id="@+id/deviceInfoLinearLayoutDeviceDetailBottomSheet"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintTop_toBottomOf="@id/deviceImagesRecyclerViewDeviceDetailBottomSheet"
+                android:layout_marginTop="32dp"
                 >
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/status"
-                    android:fontFamily="@font/roboto_medium"
-                    android:textSize="10sp"
-                    android:textColor="@color/text_secondary_2"
-                    tools:ignore="SmallSp"
-                    />
-
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    tools:text="Connected"
-                    android:fontFamily="@font/roboto_medium"
-                    android:textSize="14sp"
-                    android:textColor="@color/text_default"
-                    />
+                    android:orientation="horizontal"
+                    >
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginEnd="8dp"
+                        >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/status"
+                            android:fontFamily="@font/roboto_medium"
+                            android:textSize="10sp"
+                            android:textColor="@color/text_secondary_2"
+                            tools:ignore="SmallSp"
+                            />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Connected"
+                            android:fontFamily="@font/roboto_medium"
+                            android:textSize="14sp"
+                            android:textColor="@color/text_default"
+                            />
+
+                    </LinearLayout>
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:thumbTint="@color/switch_thumb_selector"
+                        app:thumbTintMode="src_atop"
+                        app:trackTint="@color/switch_track_selector"
+                        app:trackTintMode="src_atop"
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="16dp"
+                    >
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginEnd="8dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/calibration_sync"
+                            android:fontFamily="@font/roboto_medium"
+                            android:textSize="10sp"
+                            android:textColor="@color/text_secondary_2"
+                            tools:ignore="SmallSp"
+                            />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Success at Tue, 4 March 2024 07.00"
+                            android:fontFamily="@font/roboto_medium"
+                            android:textSize="14sp"
+                            android:textColor="@color/text_default"
+                            />
+
+                    </LinearLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/calibrateButtonDeviceDetailBottomSheet"
+                        android:layout_width="wrap_content"
+                        android:layout_height="32dp"
+                        android:backgroundTint="@color/background_secondary"
+                        app:cornerRadius="24dp"
+                        android:paddingVertical="0dp"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:insetLeft="0dp"
+                        android:insetRight="0dp"
+                        app:layout_constraintTop_toTopOf="@id/connectedTimeTextViewDeviceCard"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:strokeColor="@color/text_default"
+                        app:strokeWidth="1dp"
+                        android:text="@string/calibrate_sync"
+                        android:fontFamily="@font/roboto_regular"
+                        android:textSize="12sp"
+                        android:textAllCaps="false"
+                        android:textColor="@color/text_default"
+                        android:elevation="0dp"
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="16dp"
+                    >
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginEnd="8dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/coordinate_cm"
+                            android:fontFamily="@font/roboto_medium"
+                            android:textSize="10sp"
+                            android:textColor="@color/text_secondary_2"
+                            tools:ignore="SmallSp"
+                            />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="x:1   y:2   z:3"
+                            android:fontFamily="@font/roboto_medium"
+                            android:textSize="14sp"
+                            android:textColor="@color/text_default"
+                            />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="16dp"
+                    >
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginEnd="8dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/offset_cm"
+                            android:fontFamily="@font/roboto_medium"
+                            android:textSize="10sp"
+                            android:textColor="@color/text_secondary_2"
+                            tools:ignore="SmallSp"
+                            />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="x:+1   y:+0.5   z:+30"
+                            android:fontFamily="@font/roboto_medium"
+                            android:textSize="14sp"
+                            android:textColor="@color/text_default"
+                            />
+
+                    </LinearLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/setOffsetButtonDeviceDetailBottomSheet"
+                        android:layout_width="wrap_content"
+                        android:layout_height="32dp"
+                        android:backgroundTint="@color/background_secondary"
+                        app:cornerRadius="24dp"
+                        android:paddingVertical="0dp"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:insetLeft="0dp"
+                        android:insetRight="0dp"
+                        app:layout_constraintTop_toTopOf="@id/connectedTimeTextViewDeviceCard"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:strokeColor="@color/text_default"
+                        app:strokeWidth="1dp"
+                        android:text="@string/set_offset"
+                        android:fontFamily="@font/roboto_regular"
+                        android:textSize="12sp"
+                        android:textAllCaps="false"
+                        android:textColor="@color/text_default"
+                        android:elevation="0dp"
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="16dp"
+                    >
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginEnd="8dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/role"
+                            android:fontFamily="@font/roboto_medium"
+                            android:textSize="10sp"
+                            android:textColor="@color/text_secondary_2"
+                            tools:ignore="SmallSp"
+                            />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Client"
+                            android:fontFamily="@font/roboto_medium"
+                            android:textSize="14sp"
+                            android:textColor="@color/text_default"
+                            />
+
+                    </LinearLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/changeRoleButtonDeviceDetailBottomSheet"
+                        android:layout_width="wrap_content"
+                        android:layout_height="32dp"
+                        android:backgroundTint="@color/background_secondary"
+                        app:cornerRadius="24dp"
+                        android:paddingVertical="0dp"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:insetLeft="0dp"
+                        android:insetRight="0dp"
+                        app:layout_constraintTop_toTopOf="@id/connectedTimeTextViewDeviceCard"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:strokeColor="@color/text_default"
+                        app:strokeWidth="1dp"
+                        android:text="@string/change_role"
+                        android:fontFamily="@font/roboto_regular"
+                        android:textSize="12sp"
+                        android:textAllCaps="false"
+                        android:textColor="@color/text_default"
+                        android:elevation="0dp"
+                        />
+
+                </LinearLayout>
 
             </LinearLayout>
 
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:layout_width="wrap_content"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/deviceParameterRecylerViewDeviceDetailBottomSheet"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:thumbTint="@color/switch_thumb_selector"
-                app:thumbTintMode="src_atop"
-                app:trackTint="@color/switch_track_selector"
-                app:trackTintMode="src_atop"
-                />
+                app:layout_constraintTop_toBottomOf="@id/deviceInfoLinearLayoutDeviceDetailBottomSheet"
+                android:layout_marginTop="32dp"
+                tools:listitem="@layout/device_parameter_card"
+                tools:itemCount="9"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                >
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="16dp"
-            >
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:layout_marginEnd="8dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/calibration_sync"
-                    android:fontFamily="@font/roboto_medium"
-                    android:textSize="10sp"
-                    android:textColor="@color/text_secondary_2"
-                    tools:ignore="SmallSp"
-                    />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    tools:text="Success at Tue, 4 March 2024 07.00"
-                    android:fontFamily="@font/roboto_medium"
-                    android:textSize="14sp"
-                    android:textColor="@color/text_default"
-                    />
-
-            </LinearLayout>
+            </androidx.recyclerview.widget.RecyclerView>
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/calibrateButtonDeviceDetailBottomSheet"
-                android:layout_width="wrap_content"
-                android:layout_height="32dp"
-                android:backgroundTint="@color/background_secondary"
+                android:id="@+id/forgetDeviceButtonDeviceDetailBottomSheet"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/deviceParameterRecylerViewDeviceDetailBottomSheet"
+                android:backgroundTint="@color/background_default"
                 app:cornerRadius="24dp"
+                android:layout_marginTop="32dp"
                 android:paddingVertical="0dp"
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
                 android:insetLeft="0dp"
                 android:insetRight="0dp"
-                app:layout_constraintTop_toTopOf="@id/connectedTimeTextViewDeviceCard"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:strokeColor="@color/text_default"
-                app:strokeWidth="1dp"
-                android:text="@string/calibrate_sync"
-                android:fontFamily="@font/roboto_regular"
-                android:textSize="12sp"
+                app:strokeColor="@color/border_secondary"
+                app:strokeWidth="2dp"
+                android:text="@string/forget_device"
+                android:fontFamily="@font/roboto_semibold"
+                android:textSize="14sp"
                 android:textAllCaps="false"
-                android:textColor="@color/text_default"
+                android:textColor="@color/text_secondary"
+                android:elevation="0dp"
                 />
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="16dp"
-            >
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:layout_marginEnd="8dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/coordinate_cm"
-                    android:fontFamily="@font/roboto_medium"
-                    android:textSize="10sp"
-                    android:textColor="@color/text_secondary_2"
-                    tools:ignore="SmallSp"
-                    />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    tools:text="x:1   y:2   z:3"
-                    android:fontFamily="@font/roboto_medium"
-                    android:textSize="14sp"
-                    android:textColor="@color/text_default"
-                    />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="16dp"
-            >
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:layout_marginEnd="8dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/offset_cm"
-                    android:fontFamily="@font/roboto_medium"
-                    android:textSize="10sp"
-                    android:textColor="@color/text_secondary_2"
-                    tools:ignore="SmallSp"
-                    />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    tools:text="x:+1   y:+0.5   z:+30"
-                    android:fontFamily="@font/roboto_medium"
-                    android:textSize="14sp"
-                    android:textColor="@color/text_default"
-                    />
-
-            </LinearLayout>
-
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/setOffsetButtonDeviceDetailBottomSheet"
-                android:layout_width="wrap_content"
-                android:layout_height="32dp"
-                android:backgroundTint="@color/background_secondary"
+                android:id="@+id/deleteDeviceButtonDeviceDetailBottomSheet"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/forgetDeviceButtonDeviceDetailBottomSheet"
+                android:backgroundTint="@color/background_default"
                 app:cornerRadius="24dp"
+                android:layout_marginTop="16dp"
                 android:paddingVertical="0dp"
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
                 android:insetLeft="0dp"
                 android:insetRight="0dp"
-                app:layout_constraintTop_toTopOf="@id/connectedTimeTextViewDeviceCard"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:strokeColor="@color/text_default"
-                app:strokeWidth="1dp"
-                android:text="@string/set_offset"
-                android:fontFamily="@font/roboto_regular"
-                android:textSize="12sp"
+                app:strokeColor="@color/border_error"
+                app:strokeWidth="2dp"
+                android:text="@string/delete_device"
+                android:fontFamily="@font/roboto_semibold"
+                android:textSize="14sp"
                 android:textAllCaps="false"
-                android:textColor="@color/text_default"
+                android:textColor="@color/text_error"
+                android:elevation="0dp"
                 />
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="16dp"
-            >
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:layout_marginEnd="8dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/role"
-                    android:fontFamily="@font/roboto_medium"
-                    android:textSize="10sp"
-                    android:textColor="@color/text_secondary_2"
-                    tools:ignore="SmallSp"
-                    />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    tools:text="Client
-
-
-"
-                    android:fontFamily="@font/roboto_medium"
-                    android:textSize="14sp"
-                    android:textColor="@color/text_default"
-                    />
-
-            </LinearLayout>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/changeRoleButtonDeviceDetailBottomSheet"
-                android:layout_width="wrap_content"
-                android:layout_height="32dp"
-                android:backgroundTint="@color/background_secondary"
-                app:cornerRadius="24dp"
-                android:paddingVertical="0dp"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"
-                android:insetLeft="0dp"
-                android:insetRight="0dp"
-                app:layout_constraintTop_toTopOf="@id/connectedTimeTextViewDeviceCard"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:strokeColor="@color/text_default"
-                app:strokeWidth="1dp"
-                android:text="@string/change_role"
-                android:fontFamily="@font/roboto_regular"
-                android:textSize="12sp"
-                android:textAllCaps="false"
-                android:textColor="@color/text_default"
-                />
-
-        </LinearLayout>
-
-    </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
