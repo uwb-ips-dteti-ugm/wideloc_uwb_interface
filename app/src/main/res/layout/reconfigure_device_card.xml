@@ -95,6 +95,7 @@
         android:textAllCaps="false"
         android:textColor="@color/text_secondary"
         tools:ignore="SmallSp"
+        android:elevation="0dp"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
