@@ -42,4 +42,8 @@
     <string name="percent">percent</string>
     <string name="forget_device">Forget Device</string>
     <string name="delete_device">Delete Device</string>
+    <string name="wifi">Wi-Fi</string>
+    <string name="select_connection_protocol">Select Connection Protocol</string>
+    <string name="or">or</string>
+    <string name="bluetooth">Bluetooth</string>
 </resources>

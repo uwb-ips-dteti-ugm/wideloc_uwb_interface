@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/bottom_sheet_background"
+    android:paddingTop="16dp"
+    android:paddingHorizontal="16dp"
+    android:paddingBottom="32dp">
+
+    <include
+        android:id="@+id/dragHandleCardViewAddDeviceBottomSheet"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        layout="@layout/bottom_sheet_drag_handle"
+        />
+
+    <FrameLayout
+        android:id="@+id/frameAddDeviceBottomSheet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/dragHandleCardViewAddDeviceBottomSheet"
+        android:layout_marginTop="32dp"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
