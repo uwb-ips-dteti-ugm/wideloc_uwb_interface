@@ -59,6 +59,8 @@ dependencies {
     implementation(libs.okhttp.logging)
     implementation(libs.timber)
     implementation(libs.material3)
-//    implementation(libs.stepper.indicator)
+    implementation(libs.stepper.indicator) {
+        exclude(group = "com.android.support", module = "support-compat")
+    }
 
 }

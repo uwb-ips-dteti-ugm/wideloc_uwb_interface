@@ -1,0 +1,38 @@
+package com.rizqi.wideloc.presentation.ui.connect_via_wifi
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import com.rizqi.wideloc.databinding.FragmentInputUrlBinding
+import com.rizqi.wideloc.presentation.ui.devices.bottomsheets.add_device.AddDeviceBottomSheet
+import com.rizqi.wideloc.utils.ViewUtils.hideKeyboardAndClearFocus
+
+class InputURLFragment : Fragment() {
+
+    private var _binding: FragmentInputUrlBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = FragmentInputUrlBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.root.setOnClickListener {
+            hideKeyboardAndClearFocus(requireActivity().currentFocus ?: it)
+        }
+
+        binding.connectButtonInputUrlFragment.setOnClickListener {
+            (parentFragment as? ConnectViaWiFiFragment)?.goToNextPage()
+        }
+    }
+
+}

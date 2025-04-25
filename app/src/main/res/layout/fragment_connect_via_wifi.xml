@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/background_default"
+    android:orientation="vertical"
+    android:layout_gravity="center_horizontal">
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/contentViewPagerFragmentConnectViaWifi"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        />
+
+    <com.rakshakhegde.stepperindicator.StepperIndicator
+        android:id="@+id/stepsIndicatorFragmentConnectViaWifi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:stpi_stepCount="3"
+        app:stpi_circleColor="@color/border_secondary"
+        app:stpi_indicatorColor="@color/text_primary"
+        app:stpi_lineColor="@color/border_secondary"
+        app:stpi_lineDoneColor="@color/text_primary"
+        app:stpi_showLabels="true"
+        app:stpi_labelColor="@color/text_primary"
+        app:stpi_labels="@array/wifi_steps"
+        />
+
+    
+
+</LinearLayout>

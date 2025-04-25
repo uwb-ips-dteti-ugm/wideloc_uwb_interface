@@ -46,4 +46,19 @@
     <string name="select_connection_protocol">Select Connection Protocol</string>
     <string name="or">or</string>
     <string name="bluetooth">Bluetooth</string>
+    <string name="input_device_url">Input Device URL</string>
+    <string name="connect">Connect</string>
+    <string name="setup_device">Set Up Device</string>
+    <string name="save">Save</string>
+    <string name="name">Name</string>
+    <string name="x">X</string>
+    <string name="y">Y</string>
+    <string name="z">Z</string>
+    <string name="add_image">Add Image</string>
+    <string-array name="wifi_steps">
+        <item>Input URL</item>
+        <item>Set Up Device</item>
+        <item>Test Connection</item>
+    </string-array>
+
 </resources>

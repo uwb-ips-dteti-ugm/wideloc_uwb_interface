@@ -11,6 +11,7 @@
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <item name="colorAccent">@color/text_primary</item>
         <!-- Customize your theme here. -->
     </style>
 
@@ -20,6 +21,7 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
+        <item name="colorAccent">@color/text_primary</item>
     </style>
 
     <style name="Theme.WideLoc.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -29,6 +31,7 @@
     <style name="SplashScreenTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="android:windowBackground">@drawable/splash_image</item>
         <item name="android:statusBarColor">@color/background_primary</item>
+        <item name="colorAccent">@color/text_primary</item>
     </style>
 
 <!--    Button Styles-->
@@ -47,6 +50,7 @@
     <!-- styles.xml -->
     <style name="BottomSheetDialogTheme" parent="Theme.Material3.DayNight.BottomSheetDialog">
         <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_BottomSheet</item>
+        <item name="colorAccent">@color/text_primary</item>
     </style>
 
     <style name="ShapeAppearanceOverlay_BottomSheet" parent="">
@@ -55,6 +59,7 @@
         <item name="cornerSizeTopRight">16dp</item>
         <item name="cornerSizeBottomLeft">0dp</item>
         <item name="cornerSizeBottomRight">0dp</item>
+        <item name="colorAccent">@color/text_primary</item>
     </style>
 
 </resources>

@@ -17,6 +17,7 @@ class DevicesFragment : BaseFragment<FragmentDevicesBinding>(FragmentDevicesBind
 
         binding.devicesRecyclerViewFragmentDevices.adapter = DevicesAdapter()
         binding.reconfigureDevicesRecyclerViewFragmentDevices.adapter = ReconfigureDevicesAdapter()
+        addDeviceBottomSheet.show(parentFragmentManager, addDeviceBottomSheet.tag)
         binding.addDeviceButtonDevices.setOnClickListener {
             addDeviceBottomSheet.show(parentFragmentManager, addDeviceBottomSheet.tag)
         }
