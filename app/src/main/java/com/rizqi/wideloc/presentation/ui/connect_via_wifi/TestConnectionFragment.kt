@@ -5,13 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.rizqi.wideloc.databinding.FragmentSetUpDeviceBinding
+import com.rizqi.wideloc.databinding.FragmentTestConnectionBinding
 import com.rizqi.wideloc.presentation.ui.devices.bottomsheets.add_device.AddDeviceBottomSheet
 import com.rizqi.wideloc.utils.ViewUtils.hideKeyboardAndClearFocus
 
-class SetUpDeviceFragment : Fragment() {
+class TestConnectionFragment : Fragment() {
 
-    private var _binding: FragmentSetUpDeviceBinding? = null
+    private var _binding: FragmentTestConnectionBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -19,7 +19,7 @@ class SetUpDeviceFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentSetUpDeviceBinding.inflate(inflater, container, false)
+        _binding = FragmentTestConnectionBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -37,10 +37,6 @@ class SetUpDeviceFragment : Fragment() {
 
         binding.root.setOnClickListener {
             hideKeyboardAndClearFocus(requireActivity().currentFocus ?: it)
-        }
-
-        binding.saveButtonFragmentSetUpDevice.setOnClickListener {
-            (parentFragment as? ConnectViaWiFiFragment)?.goToNextPage()
         }
 
     }
