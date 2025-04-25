@@ -1,7 +1,6 @@
 package com.rizqi.wideloc.presentation.ui.connect_via_wifi
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,7 +27,12 @@ class SetUpDeviceFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         view.post {
-            (parentFragment?.parentFragment as? AddDeviceBottomSheet)?.recalculateHeight(binding.root)
+            (parentFragment?.parentFragment as? AddDeviceBottomSheet)?.recalculateHeight(
+                listOf(
+                    (parentFragment as? ConnectViaWiFiFragment)?.binding?.stepsIndicatorFragmentConnectViaWifi,
+                    binding.root,
+                ),
+            )
         }
 
         binding.root.setOnClickListener {

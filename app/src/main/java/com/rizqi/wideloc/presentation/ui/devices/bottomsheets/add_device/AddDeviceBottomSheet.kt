@@ -1,19 +1,18 @@
 package com.rizqi.wideloc.presentation.ui.devices.bottomsheets.add_device
 
-import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.marginBottom
 import androidx.core.view.marginTop
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.rizqi.wideloc.R
 import com.rizqi.wideloc.databinding.AddDeviceBottomSheetBinding
-import com.rizqi.wideloc.databinding.FragmentSelectProtocolBinding
 
 class AddDeviceBottomSheet : BottomSheetDialogFragment() {
 
@@ -46,25 +45,30 @@ class AddDeviceBottomSheet : BottomSheetDialogFragment() {
         _binding = null
     }
 
-    fun recalculateHeight(content: View?) {
+    fun recalculateHeight(contents: List<View?>) {
         val dialog = dialog as? BottomSheetDialog
         val bottomSheet = dialog?.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
         val bottomSheetLayout = bottomSheet as? ViewGroup ?: return
         bottomSheetLayout.invalidate()
 
         bottomSheetLayout.post {
-            val maxHeight = (resources.displayMetrics.heightPixels * 0.97).toInt()
+            val maxHeight = (resources.displayMetrics.heightPixels * 0.95).toInt()
 
             val rootLayout = binding.root
             val frame = binding.frameAddDeviceBottomSheet
             val dragHandle = binding.dragHandleCardViewAddDeviceBottomSheet.root
 
-            // 1. Measure content inside the FrameLayout (fragment content)
-            content?.measure(
-                View.MeasureSpec.makeMeasureSpec(frame.width, View.MeasureSpec.EXACTLY),
-                View.MeasureSpec.UNSPECIFIED
-            )
-            val contentHeight = content?.measuredHeight ?: 0
+            // 1. Measure contents inside the FrameLayout (fragment content)
+            var contentHeight = 0
+            contents.forEach { content ->
+                content?.measure(
+                    View.MeasureSpec.makeMeasureSpec(frame.width, View.MeasureSpec.EXACTLY),
+                    View.MeasureSpec.UNSPECIFIED
+                )
+                content?.let {
+                    contentHeight += it.measuredHeight + it.marginTop + it.marginBottom
+                }
+            }
             Log.d("FragmentDebug", "recalculateHeight: ${contentHeight}")
 
             // 2. Measure drag handle view

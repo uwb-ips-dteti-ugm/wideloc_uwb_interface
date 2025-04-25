@@ -26,7 +26,7 @@ class SelectProtocolFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         view.post {
-            (parentFragment as? AddDeviceBottomSheet)?.recalculateHeight(binding.root)
+            (parentFragment as? AddDeviceBottomSheet)?.recalculateHeight(listOf(binding.root))
         }
 
         binding.wifiButtonSelectProtocolFragment.setOnClickListener {

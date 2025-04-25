@@ -26,6 +26,15 @@ class InputURLFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        view.post {
+            (parentFragment?.parentFragment as? AddDeviceBottomSheet)?.recalculateHeight(
+                listOf(
+                    (parentFragment as? ConnectViaWiFiFragment)?.binding?.stepsIndicatorFragmentConnectViaWifi,
+                    binding.root,
+                ),
+            )
+        }
+
         binding.root.setOnClickListener {
             hideKeyboardAndClearFocus(requireActivity().currentFocus ?: it)
         }

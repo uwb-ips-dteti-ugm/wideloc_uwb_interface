@@ -12,7 +12,7 @@ import com.rizqi.wideloc.presentation.ui.connect_via_wifi.adapters.ConnectViaWif
 class ConnectViaWiFiFragment : Fragment() {
 
     private var _binding: FragmentConnectViaWifiBinding? = null
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
     private lateinit var pagerAdapter: ConnectViaWifiPagerAdapter
 
     override fun onCreateView(
