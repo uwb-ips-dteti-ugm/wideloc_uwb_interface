@@ -1,18 +1,18 @@
-package com.rizqi.wideloc.presentation.ui.connect_via_wifi
+package com.rizqi.wideloc.presentation.ui.connect_via_bluetooth
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.rizqi.wideloc.databinding.FragmentTestConnectionBinding
-import com.rizqi.wideloc.presentation.ui.connect_via_bluetooth.ConnectViaBluetoothFragment
+import com.rizqi.wideloc.databinding.FragmentPairingDeviceBinding
+import com.rizqi.wideloc.presentation.ui.connect_via_bluetooth.adapters.AvailableDevicesAdapter
 import com.rizqi.wideloc.presentation.ui.devices.bottomsheets.add_device.AddDeviceBottomSheet
 import com.rizqi.wideloc.utils.ViewUtils.hideKeyboardAndClearFocus
 
-class TestConnectionFragment : Fragment() {
+class PairingDeviceFragment : Fragment() {
 
-    private var _binding: FragmentTestConnectionBinding? = null
+    private var _binding: FragmentPairingDeviceBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -20,7 +20,7 @@ class TestConnectionFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentTestConnectionBinding.inflate(inflater, container, false)
+        _binding = FragmentPairingDeviceBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -30,20 +30,21 @@ class TestConnectionFragment : Fragment() {
         view.post {
             (parentFragment?.parentFragment as? AddDeviceBottomSheet)?.recalculateHeight(
                 listOf(
-                    when (parentFragment) {
-                        is ConnectViaWiFiFragment -> (parentFragment as ConnectViaWiFiFragment).binding.stepsIndicatorFragmentConnectViaWifi
-                        is ConnectViaBluetoothFragment -> (parentFragment as ConnectViaBluetoothFragment).binding.stepsIndicatorFragmentConnectViaBluetooth
-                        else -> null
-                    },
+                    (parentFragment as? ConnectViaBluetoothFragment)?.binding?.stepsIndicatorFragmentConnectViaBluetooth,
                     binding.root,
                 ),
             )
         }
 
+        binding.availableDevicesRecyclerViewFragmentPairingDevice.adapter = AvailableDevicesAdapter()
+
         binding.root.setOnClickListener {
             hideKeyboardAndClearFocus(requireActivity().currentFocus ?: it)
         }
 
+        binding.pairButtonFragmentPairingDevice.setOnClickListener {
+            (parentFragment as? ConnectViaBluetoothFragment)?.goToNextPage()
+        }
     }
 
 }

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.rizqi.wideloc.databinding.FragmentSetUpDeviceBinding
+import com.rizqi.wideloc.presentation.ui.connect_via_bluetooth.ConnectViaBluetoothFragment
 import com.rizqi.wideloc.presentation.ui.devices.bottomsheets.add_device.AddDeviceBottomSheet
 import com.rizqi.wideloc.utils.ViewUtils.hideKeyboardAndClearFocus
 
@@ -29,7 +30,11 @@ class SetUpDeviceFragment : Fragment() {
         view.post {
             (parentFragment?.parentFragment as? AddDeviceBottomSheet)?.recalculateHeight(
                 listOf(
-                    (parentFragment as? ConnectViaWiFiFragment)?.binding?.stepsIndicatorFragmentConnectViaWifi,
+                    when (parentFragment) {
+                        is ConnectViaWiFiFragment -> (parentFragment as ConnectViaWiFiFragment).binding.stepsIndicatorFragmentConnectViaWifi
+                        is ConnectViaBluetoothFragment -> (parentFragment as ConnectViaBluetoothFragment).binding.stepsIndicatorFragmentConnectViaBluetooth
+                        else -> null
+                    },
                     binding.root,
                 ),
             )
@@ -40,7 +45,10 @@ class SetUpDeviceFragment : Fragment() {
         }
 
         binding.saveButtonFragmentSetUpDevice.setOnClickListener {
-            (parentFragment as? ConnectViaWiFiFragment)?.goToNextPage()
+            when (parentFragment) {
+                is ConnectViaWiFiFragment -> (parentFragment as ConnectViaWiFiFragment).goToNextPage()
+                is ConnectViaBluetoothFragment -> (parentFragment as ConnectViaBluetoothFragment).goToNextPage()
+            }
         }
 
     }

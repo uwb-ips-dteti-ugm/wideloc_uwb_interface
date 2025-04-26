@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.rizqi.wideloc.databinding.FragmentSelectProtocolBinding
+import com.rizqi.wideloc.presentation.ui.connect_via_bluetooth.ConnectViaBluetoothFragment
 import com.rizqi.wideloc.presentation.ui.connect_via_wifi.ConnectViaWiFiFragment
 
 class SelectProtocolFragment : Fragment() {
@@ -33,6 +34,14 @@ class SelectProtocolFragment : Fragment() {
             val parent = requireParentFragment() as AddDeviceBottomSheet
             parent.childFragmentManager.beginTransaction()
                 .replace(parent.binding.frameAddDeviceBottomSheet.id, ConnectViaWiFiFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+
+        binding.bluetoothButtonSelectProtocolFragment.setOnClickListener {
+            val parent = requireParentFragment() as AddDeviceBottomSheet
+            parent.childFragmentManager.beginTransaction()
+                .replace(parent.binding.frameAddDeviceBottomSheet.id, ConnectViaBluetoothFragment())
                 .addToBackStack(null)
                 .commit()
         }

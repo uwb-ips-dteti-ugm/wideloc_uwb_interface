@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/device_card_background"
+    android:padding="12dp"
+    android:layout_marginBottom="8dp"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    >
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_marginEnd="8dp"
+        >
+
+        <TextView
+            android:id="@+id/nameTextViewAvailableDeviceToPairCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="2"
+            android:ellipsize="end"
+            tools:text="Client Tag 1"
+            android:fontFamily="@font/roboto_medium"
+            android:textSize="16sp"
+            android:textColor="@color/text_default"
+            />
+
+        <TextView
+            android:id="@+id/macAddressTextViewAvailableDeviceToPairCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            tools:text="Connected at Tue, 4 March 2025 07.00 "
+            android:fontFamily="@font/roboto_regular"
+            android:textSize="12sp"
+            android:textColor="@color/text_secondary"
+            />
+
+    </LinearLayout>
+
+    <RadioButton
+        android:id="@+id/selectRadioButtonAvailableDeviceToPairCard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="0dp"
+        android:minHeight="0dp"
+        android:minWidth="0dp"
+        android:checked="true"
+        android:text=""
+        android:buttonTint="@color/text_primary"
+        />
+
+</LinearLayout>
