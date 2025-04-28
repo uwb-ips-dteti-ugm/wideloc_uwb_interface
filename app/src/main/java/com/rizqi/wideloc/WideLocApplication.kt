@@ -2,6 +2,7 @@ package com.rizqi.wideloc
 
 import android.app.Application
 import android.os.Environment
+import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 import java.io.File
 import java.io.PrintWriter
@@ -10,6 +11,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+@HiltAndroidApp
 class WideLocApplication : Application() {
     override fun onCreate() {
         super.onCreate()

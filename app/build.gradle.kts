@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.hilt.android)
+    kotlin("kapt")
 }
 
 android {
@@ -53,14 +55,22 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.gson)
-    implementation(libs.okhttp)
-    implementation(libs.okhttp.logging)
     implementation(libs.timber)
     implementation(libs.material3)
     implementation(libs.stepper.indicator) {
         exclude(group = "com.android.support", module = "support-compat")
     }
-
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging)
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
+    implementation(libs.coroutines.core)
+    implementation(libs.coroutines.android)
+    implementation(libs.scarlet.core)
+    implementation(libs.scarlet.websocket.okhttp)
+    implementation(libs.scarlet.moshi.adapter)
+    implementation(libs.scarlet.stream.adapter.flow)
+    implementation(libs.scarlet.message.adapter.gson)
 }
