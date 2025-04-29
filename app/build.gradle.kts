@@ -73,4 +73,11 @@ dependencies {
     implementation(libs.scarlet.moshi.adapter)
     implementation(libs.scarlet.stream.adapter.flow)
     implementation(libs.scarlet.message.adapter.gson)
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    //noinspection KaptUsageInsteadOfKsp
+    kapt(libs.room.compiler)
+
+    testImplementation(libs.room.testing)
+
 }

@@ -24,6 +24,7 @@ hiltCompiler = "2.48"
 lifecycle = "2.7.0"
 coroutines = "1.8.0"
 scarlet = "0.1.12"
+room = "2.7.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -54,6 +55,10 @@ scarlet-websocket-okhttp = { module = "com.tinder.scarlet:websocket-okhttp", ver
 scarlet-moshi-adapter = { module = "com.tinder.scarlet:message-adapter-moshi", version.ref = "scarlet" }
 scarlet-stream-adapter-flow = { module = "com.tinder.scarlet:stream-adapter-flow", version.ref = "scarlet" }
 scarlet-message-adapter-gson = { module = "com.tinder.scarlet:message-adapter-gson", version.ref = "scarlet" }
+room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
+room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+room-testing = { module = "androidx.room:room-testing", version.ref = "room" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
