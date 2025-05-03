@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.hilt.android)
-    kotlin("kapt")
+    alias(libs.plugins.kotlin.kapt)
 }
 
 android {
@@ -56,7 +56,6 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.timber)
-    implementation(libs.material3)
     implementation(libs.stepper.indicator) {
         exclude(group = "com.android.support", module = "support-compat")
     }
@@ -71,12 +70,13 @@ dependencies {
     implementation(libs.scarlet.core)
     implementation(libs.scarlet.websocket.okhttp)
     implementation(libs.scarlet.moshi.adapter)
-    implementation(libs.scarlet.stream.adapter.flow)
+    implementation(libs.scarlet.stream.adapter.coroutines)
     implementation(libs.scarlet.message.adapter.gson)
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     //noinspection KaptUsageInsteadOfKsp
     kapt(libs.room.compiler)
+//    implementation(libs.kotlinx.metadata.jvm)
 
     testImplementation(libs.room.testing)
 

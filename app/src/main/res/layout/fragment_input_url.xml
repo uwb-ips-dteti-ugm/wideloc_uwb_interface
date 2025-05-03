@@ -33,7 +33,7 @@
         app:boxCornerRadiusBottomStart="8dp"
         app:boxCornerRadiusBottomEnd="8dp"
         app:hintEnabled="false"
-        app:cursorColor="@color/text_primary"
+        app:errorTextColor="@color/text_error"
         >
 
         <com.google.android.material.textfield.TextInputEditText

@@ -3,8 +3,9 @@ package com.rizqi.wideloc.data.local
 import com.rizqi.wideloc.data.local.dao.DeviceDao
 import com.rizqi.wideloc.data.local.entity.DeviceEntity
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class DeviceDataSourceImpl(
+class DeviceDataSourceImpl @Inject constructor(
     private val deviceDao: DeviceDao
 ) : DeviceDataSource {
 

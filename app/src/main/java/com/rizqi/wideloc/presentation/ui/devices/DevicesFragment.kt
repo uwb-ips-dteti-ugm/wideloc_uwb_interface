@@ -7,7 +7,9 @@ import com.rizqi.wideloc.presentation.ui.BaseFragment
 import com.rizqi.wideloc.presentation.ui.devices.adapters.DevicesAdapter
 import com.rizqi.wideloc.presentation.ui.devices.adapters.ReconfigureDevicesAdapter
 import com.rizqi.wideloc.presentation.ui.devices.bottomsheets.add_device.AddDeviceBottomSheet
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class DevicesFragment : BaseFragment<FragmentDevicesBinding>(FragmentDevicesBinding::inflate) {
 
     private val addDeviceBottomSheet = AddDeviceBottomSheet()
