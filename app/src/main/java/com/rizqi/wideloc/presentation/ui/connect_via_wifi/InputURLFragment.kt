@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -52,9 +53,21 @@ class InputURLFragment : Fragment() {
             hideKeyboardAndClearFocus(requireActivity().currentFocus ?: it)
         }
         binding.connectButtonInputUrlFragment.setOnClickListener {
-            val url = binding.deviceUrlInputEditTextInputUrlFragment.text.toString()
-            addDeviceViewModel.setUrl(url)
+            saveAndValidateUrl()
         }
+        binding.deviceUrlInputEditTextInputUrlFragment.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_GO){
+                saveAndValidateUrl()
+                true
+            } else {
+                false
+            }
+        }
+    }
+
+    private fun saveAndValidateUrl(){
+        val url = binding.deviceUrlInputEditTextInputUrlFragment.text.toString()
+        addDeviceViewModel.setUrl(url)
     }
 
     private fun recalculateContentHeight(){

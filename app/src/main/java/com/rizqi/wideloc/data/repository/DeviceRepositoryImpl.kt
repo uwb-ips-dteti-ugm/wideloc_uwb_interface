@@ -1,32 +1,41 @@
 package com.rizqi.wideloc.data.repository
 
 import com.rizqi.wideloc.data.local.DeviceDataSource
-import com.rizqi.wideloc.data.local.entity.DeviceEntity
+import com.rizqi.wideloc.domain.model.DeviceData
 import com.rizqi.wideloc.domain.DeviceRepository
+import com.rizqi.wideloc.utils.DomainDataMapper.asDeviceData
+import com.rizqi.wideloc.utils.DomainDataMapper.asDeviceEntity
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class DeviceRepositoryImpl @Inject constructor(
     private val localDataSource: DeviceDataSource
 ) : DeviceRepository {
 
-    override fun getAllDevices(): Flow<List<DeviceEntity>> =
-        localDataSource.getAllDevices()
+    override fun getAllDevices(): Flow<List<DeviceData>> =
+        localDataSource.getAllDevices().map { entityList ->
+            entityList.map { entity ->
+                entity.asDeviceData()
+            }
+        }
 
-    override suspend fun getDeviceById(id: String): DeviceEntity? =
-        localDataSource.getDeviceById(id)
+    override suspend fun getDeviceById(id: String): DeviceData? =
+        localDataSource.getDeviceById(id)?.asDeviceData()
 
-    override suspend fun insertDevice(device: DeviceEntity) =
-        localDataSource.insertDevice(device)
+    override suspend fun insertDevice(device: DeviceData) =
+        localDataSource.insertDevice(device.asDeviceEntity())
 
-    override suspend fun insertDevices(devices: List<DeviceEntity>) =
-        localDataSource.insertDevices(devices)
+    override suspend fun insertDevices(devices: List<DeviceData>) =
+        localDataSource.insertDevices(devices.map {
+            it.asDeviceEntity()
+        })
 
-    override suspend fun updateDevice(device: DeviceEntity) =
-        localDataSource.updateDevice(device)
+    override suspend fun updateDevice(device: DeviceData) =
+        localDataSource.updateDevice(device.asDeviceEntity())
 
-    override suspend fun deleteDevice(device: DeviceEntity) =
-        localDataSource.deleteDevice(device)
+    override suspend fun deleteDevice(device: DeviceData) =
+        localDataSource.deleteDevice(device.asDeviceEntity())
 
     override suspend fun deleteDeviceById(id: String) =
         localDataSource.deleteDeviceById(id)

@@ -1,21 +1,21 @@
 package com.rizqi.wideloc.domain
 
-import com.rizqi.wideloc.data.local.entity.DeviceEntity
+import com.rizqi.wideloc.domain.model.DeviceData
 import kotlinx.coroutines.flow.Flow
 
 interface DeviceRepository {
 
-    fun getAllDevices(): Flow<List<DeviceEntity>>
+    fun getAllDevices(): Flow<List<DeviceData>>
 
-    suspend fun getDeviceById(id: String): DeviceEntity?
+    suspend fun getDeviceById(id: String): DeviceData?
 
-    suspend fun insertDevice(device: DeviceEntity)
+    suspend fun insertDevice(device: DeviceData)
 
-    suspend fun insertDevices(devices: List<DeviceEntity>)
+    suspend fun insertDevices(devices: List<DeviceData>)
 
-    suspend fun updateDevice(device: DeviceEntity)
+    suspend fun updateDevice(device: DeviceData)
 
-    suspend fun deleteDevice(device: DeviceEntity)
+    suspend fun deleteDevice(device: DeviceData)
 
     suspend fun deleteDeviceById(id: String)
 

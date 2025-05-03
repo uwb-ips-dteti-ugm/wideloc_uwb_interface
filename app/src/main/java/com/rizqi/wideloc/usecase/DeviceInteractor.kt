@@ -1,7 +1,7 @@
 package com.rizqi.wideloc.usecase
 
 import com.rizqi.wideloc.data.Result
-import com.rizqi.wideloc.data.local.entity.DeviceEntity
+import com.rizqi.wideloc.domain.model.DeviceData
 import com.rizqi.wideloc.domain.DeviceRepository
 import kotlinx.coroutines.flow.Flow
 import java.net.URI
@@ -11,22 +11,22 @@ class DeviceInteractor @Inject constructor(
     private val repository: DeviceRepository
 ) : DeviceUseCase {
 
-    override fun getAllDevices(): Flow<List<DeviceEntity>> =
+    override fun getAllDevices(): Flow<List<DeviceData>> =
         repository.getAllDevices()
 
-    override suspend fun getDeviceById(id: String): DeviceEntity? =
+    override suspend fun getDeviceById(id: String): DeviceData? =
         repository.getDeviceById(id)
 
-    override suspend fun insertDevice(device: DeviceEntity) =
+    override suspend fun insertDevice(device: DeviceData) =
         repository.insertDevice(device)
 
-    override suspend fun insertDevices(devices: List<DeviceEntity>) =
+    override suspend fun insertDevices(devices: List<DeviceData>) =
         repository.insertDevices(devices)
 
-    override suspend fun updateDevice(device: DeviceEntity) =
+    override suspend fun updateDevice(device: DeviceData) =
         repository.updateDevice(device)
 
-    override suspend fun deleteDevice(device: DeviceEntity) =
+    override suspend fun deleteDevice(device: DeviceData) =
         repository.deleteDevice(device)
 
     override suspend fun deleteDeviceById(id: String) =
