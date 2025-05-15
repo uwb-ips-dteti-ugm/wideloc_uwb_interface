@@ -78,5 +78,7 @@
     <string name="pair">Pair</string>
     <string name="available_devices">Available Devices</string>
     <string name="select_your_device">Select your device</string>
+    <string name="next">Next</string>
+    <string name="the_bluetooth_is_on">The bluetooth is on</string>
 
 </resources>
