@@ -2,7 +2,6 @@ package com.rizqi.wideloc.data.local.entity
 
 import androidx.room.*
 import java.time.LocalDateTime
-import java.util.Date
 
 @Entity(tableName = "devices")
 data class DeviceEntity(
@@ -12,7 +11,8 @@ data class DeviceEntity(
     @ColumnInfo(name = "image_url")
     val imageUrl: String,
 
-    val role: String,
+    @ColumnInfo(name = "role")
+    val role: DeviceRole,
 
     @Embedded(prefix = "offset_")
     val offset: DeviceOffsetEntity,
@@ -25,6 +25,9 @@ data class DeviceEntity(
 
     @Embedded(prefix = "bluetooth_")
     val bluetoothProtocolEntity: BluetoothProtocolEntity? = null,
+
+    @ColumnInfo(name = "uwb_config_entity")
+    val uwbConfigEntity : UWBConfigEntity? = null,
 
     @ColumnInfo(name = "is_available")
     val isAvailable: Boolean = false,

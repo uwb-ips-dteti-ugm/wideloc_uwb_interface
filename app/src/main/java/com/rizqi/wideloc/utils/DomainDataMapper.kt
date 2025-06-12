@@ -6,6 +6,7 @@ import com.rizqi.wideloc.data.local.entity.DeviceEntity
 import com.rizqi.wideloc.data.local.entity.DeviceOffsetEntity
 import com.rizqi.wideloc.data.local.entity.DeviceProtocol
 import com.rizqi.wideloc.data.local.entity.DeviceProtocol.*
+import com.rizqi.wideloc.data.local.entity.UWBConfigEntity
 import com.rizqi.wideloc.data.local.entity.WiFiProtocolEntity
 import com.rizqi.wideloc.data.websocket.request.CalibrationRequest
 import com.rizqi.wideloc.data.websocket.response.TrackingResponse
@@ -15,7 +16,9 @@ import com.rizqi.wideloc.domain.model.DeviceData
 import com.rizqi.wideloc.domain.model.DeviceOffsetData
 import com.rizqi.wideloc.domain.model.ProtocolData
 import com.rizqi.wideloc.domain.model.TrackingData
+import com.rizqi.wideloc.domain.model.UWBConfigData
 import com.rizqi.wideloc.domain.model.WifiProtocolData
+import com.rizqi.wideloc.utils.DomainDataMapper.asProtocolData
 
 object DomainDataMapper {
     fun mapTrackingResponseTextToTrackingData(
@@ -53,6 +56,7 @@ object DomainDataMapper {
             isAvailable = this.isAvailable,
             lastConnectedAt = this.lastConnectedAt,
             createdAt = this.createdAt,
+            uwbConfigData = this.uwbConfigEntity?.asUWBConfigData(),
         )
     }
 
@@ -61,7 +65,15 @@ object DomainDataMapper {
     }
 
     fun WiFiProtocolEntity?.asProtocolData(): ProtocolData =
-        WifiProtocolData(socketUrl = this?.socketUrl ?: "")
+        WifiProtocolData(
+            port = this?.port ?: 80,
+            mdns = this?.mdns ?: "esp32-uwb",
+            autoConnect = this?.autoConnect ?:true,
+            deviceAccessPointSSID = this?.deviceAccessPointSSID ?: "esp32-uwb",
+            deviceAccessPointPPassword = this?.deviceAccessPointPPassword ?: "12345678",
+            networkSSID = this?.networkSSID ?: "",
+            networkPassword = this?.networkPassword ?: "",
+        )
 
     fun BluetoothProtocolEntity?.asProtocolData(): ProtocolData = BluetoothProtocolData(
         hostId = this?.hostId ?: "",
@@ -85,6 +97,7 @@ object DomainDataMapper {
             isAvailable = this.isAvailable,
             lastConnectedAt = this.lastConnectedAt,
             createdAt = this.createdAt,
+            uwbConfigEntity = this.uwbConfigData?.asUWBConfigEntity(),
         )
     }
 
@@ -95,7 +108,15 @@ object DomainDataMapper {
     )
 
     fun ProtocolData.asWifiProtocolEntity(): WiFiProtocolEntity? {
-        if (this is WifiProtocolData) return WiFiProtocolEntity(socketUrl = this.socketUrl)
+        if (this is WifiProtocolData) return WiFiProtocolEntity(
+            port = this.port,
+            mdns = this.mdns,
+            autoConnect = this.autoConnect,
+            deviceAccessPointSSID = this.deviceAccessPointSSID,
+            deviceAccessPointPPassword = this.deviceAccessPointPPassword,
+            networkSSID = this.networkSSID,
+            networkPassword = this.networkPassword,
+        )
         return null
     }
 
@@ -106,4 +127,22 @@ object DomainDataMapper {
         )
         return null
     }
+    
+    fun UWBConfigEntity.asUWBConfigData() = UWBConfigData(
+        autoStart = this.autoStart,
+        isServer = this.isServer,
+        maxClient = this.maxClient,
+        mode = this.mode,
+        networkAddress = this.networkAddress,
+        deviceAddress = this.deviceAddress,
+    )
+
+    fun UWBConfigData.asUWBConfigEntity() = UWBConfigEntity(
+        autoStart = this.autoStart,
+        isServer = this.isServer,
+        maxClient = this.maxClient,
+        mode = this.mode,
+        networkAddress = this.networkAddress,
+        deviceAddress = this.deviceAddress,
+    )
 }

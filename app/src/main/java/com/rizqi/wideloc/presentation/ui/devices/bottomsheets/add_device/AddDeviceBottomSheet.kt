@@ -15,6 +15,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.rizqi.wideloc.R
 import com.rizqi.wideloc.databinding.AddDeviceBottomSheetBinding
+import com.rizqi.wideloc.presentation.ui.connect_via_wifi.ConnectViaWiFiFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -39,7 +40,7 @@ class AddDeviceBottomSheet : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         childFragmentManager.beginTransaction()
-            .replace(binding.frameAddDeviceBottomSheet.id, SelectProtocolFragment())
+            .replace(binding.frameAddDeviceBottomSheet.id, ConnectViaWiFiFragment())
             .commit()
 
     }

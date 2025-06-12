@@ -1,8 +1,11 @@
 package com.rizqi.wideloc.utils
 
+import android.bluetooth.BluetoothClass.Device
 import android.os.Build
 import androidx.room.TypeConverter
 import com.rizqi.wideloc.data.local.entity.DeviceProtocol
+import com.rizqi.wideloc.data.local.entity.DeviceRole
+import com.rizqi.wideloc.data.local.entity.UWBMode
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -19,6 +22,23 @@ class Converters {
 
     @TypeConverter
     fun toDeviceProtocol(value: String): DeviceProtocol = DeviceProtocol.valueOf(value)
+
+    @TypeConverter
+    fun fromDeviceRole(value: DeviceRole): String = value.name
+
+    @TypeConverter
+    fun toDeviceRole(value: String): DeviceRole = DeviceRole.valueOf(value)
+
+    @TypeConverter
+    fun fromUWBMode(value: UWBMode): Int = value.mode
+
+    @TypeConverter
+    fun toUWBMode(value: Int): UWBMode = when(value){
+        0 -> UWBMode.None
+        1 -> UWBMode.TDOA
+        2 -> UWBMode.TWR
+        else -> UWBMode.TWR
+    }
 
     @TypeConverter
     fun fromLocalDateTime(value: LocalDateTime?): String? {

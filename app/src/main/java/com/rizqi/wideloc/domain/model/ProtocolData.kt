@@ -3,7 +3,13 @@ package com.rizqi.wideloc.domain.model
 open class ProtocolData
 
 data class WifiProtocolData(
-    val socketUrl: String,
+    val port: Int,
+    val mdns: String,
+    val autoConnect: Boolean,
+    val deviceAccessPointSSID: String,
+    val deviceAccessPointPPassword: String,
+    val networkSSID: String,
+    val networkPassword: String,
 ) : ProtocolData()
 
 data class BluetoothProtocolData(
