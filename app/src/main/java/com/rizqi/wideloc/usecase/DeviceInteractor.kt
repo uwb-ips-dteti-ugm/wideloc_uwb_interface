@@ -4,6 +4,8 @@ import com.rizqi.wideloc.data.Result
 import com.rizqi.wideloc.domain.model.DeviceData
 import com.rizqi.wideloc.domain.DeviceRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
 import java.net.URI
 import javax.inject.Inject
 
@@ -13,6 +15,16 @@ class DeviceInteractor @Inject constructor(
 
     override fun getAllDevices(): Flow<List<DeviceData>> =
         repository.getAllDevices()
+
+    override fun getAvailableDevices(): Flow<List<DeviceData>> =
+        repository.getAllDevices().map { devices ->
+            devices.filter { it.isAvailable }
+        }
+
+    override fun getReconfigureDevices(): Flow<List<DeviceData>> =
+        repository.getAllDevices().map { devices ->
+            devices.filter { !it.isAvailable }
+        }
 
     override suspend fun getDeviceById(id: String): DeviceData? =
         repository.getDeviceById(id)

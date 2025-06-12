@@ -14,6 +14,8 @@ import com.rizqi.wideloc.domain.model.DeviceOffsetData
 import com.rizqi.wideloc.domain.model.ProtocolData
 import com.rizqi.wideloc.domain.model.WifiProtocolData
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
+import java.util.Date
 import java.util.UUID
 
 @HiltViewModel
@@ -94,7 +96,10 @@ class AddDeviceViewModel @Inject constructor(
             imageUrl = model.imagePath ?: "",
             role = model.role,
             offset = DeviceOffsetData(x = model.offsetX, y = model.offsetY, z = model.offsetZ),
-            protocol = protocol
+            protocol = protocol,
+            isAvailable = false,
+            lastConnectedAt = null,
+            createdAt = LocalDateTime.now()
         )
         viewModelScope.launch {
             try {

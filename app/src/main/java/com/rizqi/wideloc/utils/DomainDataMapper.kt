@@ -49,7 +49,10 @@ object DomainDataMapper {
             protocol = when (this.protocol) {
                 WiFi -> this.wiFiProtocolEntity.asProtocolData()
                 Bluetooth -> this.bluetoothProtocolEntity.asProtocolData()
-            }
+            },
+            isAvailable = this.isAvailable,
+            lastConnectedAt = this.lastConnectedAt,
+            createdAt = this.createdAt,
         )
     }
 
@@ -78,7 +81,10 @@ object DomainDataMapper {
                 else -> WiFi
             },
             wiFiProtocolEntity = this.protocol.asWifiProtocolEntity(),
-            bluetoothProtocolEntity = this.protocol.asBluetoothProtocolEntity()
+            bluetoothProtocolEntity = this.protocol.asBluetoothProtocolEntity(),
+            isAvailable = this.isAvailable,
+            lastConnectedAt = this.lastConnectedAt,
+            createdAt = this.createdAt,
         )
     }
 

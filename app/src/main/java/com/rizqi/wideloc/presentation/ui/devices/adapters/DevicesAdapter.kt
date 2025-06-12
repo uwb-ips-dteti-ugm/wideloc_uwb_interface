@@ -1,24 +1,18 @@
 package com.rizqi.wideloc.presentation.ui.devices.adapters
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.rizqi.wideloc.R
 import com.rizqi.wideloc.databinding.DeviceCardBinding
-
-data class DeviceItem(
-    val imageResId: Int,
-    val name: String,
-    val connectedTime: String
-)
+import com.rizqi.wideloc.domain.model.DeviceData
+import java.io.File
 
 class DevicesAdapter : RecyclerView.Adapter<DevicesAdapter.DeviceViewHolder>() {
 
-    private val dummyDevices = listOf(
-        DeviceItem(R.drawable.map_dummy, "Client Tag 1", "Connected at Tue, 4 March 2025 07.00"),
-        DeviceItem(R.drawable.map_dummy, "Client Tag 2", "Connected at Wed, 5 March 2025 08.30"),
-        DeviceItem(R.drawable.map_dummy, "Client Tag 3", "Connected at Thu, 6 March 2025 09.15")
-    )
+    private val devices = mutableListOf<DeviceData>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DeviceViewHolder {
         val binding = DeviceCardBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -26,16 +20,25 @@ class DevicesAdapter : RecyclerView.Adapter<DevicesAdapter.DeviceViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: DeviceViewHolder, position: Int) {
-        holder.bind(dummyDevices[position])
+        holder.bind(devices[position])
     }
 
-    override fun getItemCount(): Int = dummyDevices.size
+    override fun getItemCount(): Int = devices.size
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun submitList(newDevices: List<DeviceData>){
+        devices.clear()
+        devices.addAll(newDevices)
+        notifyDataSetChanged()
+    }
 
     inner class DeviceViewHolder(private val binding: DeviceCardBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(device: DeviceItem) {
-            binding.deviceImageViewDeviceCard.setImageResource(device.imageResId)
+        fun bind(device: DeviceData) {
+            Glide.with(binding.deviceImageViewDeviceCard.context)
+                .load(File(device.imageUrl))
+                .into(binding.deviceImageViewDeviceCard)
             binding.deviceNameTextViewDeviceCard.text = device.name
             binding.connectedTimeTextViewDeviceCard.text = device.connectedTime
         }

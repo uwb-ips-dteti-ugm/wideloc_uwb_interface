@@ -1,13 +1,25 @@
 package com.rizqi.wideloc.presentation.ui.devices
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.rizqi.wideloc.domain.model.DeviceData
+import com.rizqi.wideloc.usecase.DeviceUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
+import javax.inject.Inject
 
-class DevicesViewModel : ViewModel() {
+@HiltViewModel
+class DevicesViewModel @Inject constructor(
+    private val deviceUseCase: DeviceUseCase,
+) : ViewModel() {
+    val availableDevices: StateFlow<List<DeviceData>> =
+        deviceUseCase.getAvailableDevices()
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is gallery Fragment"
-    }
-    val text: LiveData<String> = _text
+    val reconfigureDevices: StateFlow<List<DeviceData>> =
+        deviceUseCase.getReconfigureDevices()
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+
 }

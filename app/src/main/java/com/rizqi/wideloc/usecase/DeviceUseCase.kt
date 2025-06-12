@@ -8,6 +8,10 @@ interface DeviceUseCase {
 
     fun getAllDevices(): Flow<List<DeviceData>>
 
+    fun getAvailableDevices(): Flow<List<DeviceData>>
+
+    fun getReconfigureDevices(): Flow<List<DeviceData>>
+
     suspend fun getDeviceById(id: String): DeviceData?
 
     suspend fun insertDevice(device: DeviceData)
