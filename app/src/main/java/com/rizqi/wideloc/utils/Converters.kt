@@ -5,15 +5,14 @@ import androidx.room.TypeConverter
 import com.rizqi.wideloc.data.local.entity.DeviceProtocol
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.Date
+import java.util.Locale
+import org.threeten.bp.format.DateTimeFormatter as ThreeTenFormatter
+import org.threeten.bp.LocalDateTime as ThreeTenLocalDateTime
 
 class Converters {
 
-    private val formatter = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        DateTimeFormatter.ISO_LOCAL_DATE_TIME
-    } else {
-        TODO("VERSION.SDK_INT < O")
-    }
+    private val javaFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
+    private val threeTenFormatter = ThreeTenFormatter.ISO_LOCAL_DATE_TIME
 
     @TypeConverter
     fun fromDeviceProtocol(value: DeviceProtocol): String = value.name
@@ -24,9 +23,16 @@ class Converters {
     @TypeConverter
     fun fromLocalDateTime(value: LocalDateTime?): String? {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            value?.format(formatter)
+            value?.format(javaFormatter)
         } else {
-            TODO("VERSION.SDK_INT < O")
+            value?.let {
+                // You’ll need to convert to ThreeTen's LocalDateTime for < API 26
+                val threeTen = ThreeTenLocalDateTime.of(
+                    it.year, it.monthValue, it.dayOfMonth,
+                    it.hour, it.minute, it.second, it.nano
+                )
+                threeTen.format(threeTenFormatter)
+            }
         }
     }
 
@@ -34,9 +40,14 @@ class Converters {
     fun toLocalDateTime(value: String?): LocalDateTime? {
         return value?.let {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                LocalDateTime.parse(it, formatter)
+                LocalDateTime.parse(it, javaFormatter)
             } else {
-                TODO("VERSION.SDK_INT < O")
+                val threeTen = ThreeTenLocalDateTime.parse(it, threeTenFormatter)
+                // Convert ThreeTen to java.time.LocalDateTime for compatibility
+                LocalDateTime.of(
+                    threeTen.year, threeTen.monthValue, threeTen.dayOfMonth,
+                    threeTen.hour, threeTen.minute, threeTen.second, threeTen.nano
+                )
             }
         }
     }

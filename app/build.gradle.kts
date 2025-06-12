@@ -82,6 +82,7 @@ dependencies {
     //noinspection KaptUsageInsteadOfKsp
     kapt(libs.glide.compiler)
     coreLibraryDesugaring(libs.desugarJdkLibs)
+    implementation(libs.threetenabp)
 
     testImplementation(libs.room.testing)
 

@@ -2,6 +2,7 @@ package com.rizqi.wideloc
 
 import android.app.Application
 import android.os.Environment
+import com.jakewharton.threetenabp.AndroidThreeTen
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 import java.io.File
@@ -19,6 +20,7 @@ class WideLocApplication : Application() {
         if(BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
         }
+        AndroidThreeTen.init(this)
 
         setupCrashLogger()
     }
