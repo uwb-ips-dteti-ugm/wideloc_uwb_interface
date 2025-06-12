@@ -8,6 +8,7 @@ import com.bumptech.glide.Glide
 import com.rizqi.wideloc.R
 import com.rizqi.wideloc.databinding.ReconfigureDeviceCardBinding
 import com.rizqi.wideloc.domain.model.DeviceData
+import com.rizqi.wideloc.utils.formatToString
 import java.io.File
 
 class ReconfigureDevicesAdapter : RecyclerView.Adapter<ReconfigureDevicesAdapter.DeviceViewHolder>() {
@@ -40,7 +41,7 @@ class ReconfigureDevicesAdapter : RecyclerView.Adapter<ReconfigureDevicesAdapter
                 .load(File(device.imageUrl))
                 .into(binding.deviceImageViewDeviceCard)
             binding.deviceNameTextViewDeviceCard.text = device.name
-            binding.connectedTimeTextViewDeviceCard.text = device.connectedTime
+            binding.connectedTimeTextViewDeviceCard.text = device.lastConnectedAt.formatToString()
         }
     }
 }

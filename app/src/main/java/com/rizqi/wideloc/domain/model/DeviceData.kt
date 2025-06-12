@@ -1,7 +1,6 @@
 package com.rizqi.wideloc.domain.model
 
 import java.time.LocalDateTime
-import java.util.Date
 
 data class DeviceData(
     val id: String,
