@@ -4,27 +4,55 @@
     android:id="@+id/layout_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/background_default">
+    android:background="@color/background_default"
+    android:orientation="vertical">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:text="@string/select_available_networks"
         android:fontFamily="@font/roboto_medium"
-        android:textSize="18sp"
+        android:text="@string/select_available_networks"
         android:textColor="@color/text_default"
-        />
+        android:textSize="18sp" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="@string/make_sure_to_select_the_uwb_access_point_commonly_starts_by_esp32_uwb"
         android:fontFamily="@font/roboto_regular"
-        android:textSize="14sp"
+        android:text="@string/make_sure_to_select_the_uwb_access_point_commonly_starts_by_esp32_uwb"
         android:textColor="@color/text_secondary"
+        android:textSize="14sp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/refreshButtonConnectDeviceWifiFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:backgroundTint="@color/background_default"
+        app:cornerRadius="24dp"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:insetLeft="0dp"
+        android:insetRight="0dp"
+        app:icon="@drawable/ic_rotate_right_solid"
+        app:iconGravity="textStart"
+        app:iconPadding="8dp"
+        app:iconSize="14dp"
+        app:iconTint="@color/background_primary"
+        app:layout_constraintBottom_toTopOf="@id/startRecordButtonHome"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:strokeColor="@color/border_secondary"
+        app:strokeWidth="2dp"
+        android:text="@string/refresh_scan"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+        android:fontFamily="@font/roboto_regular"
+        android:textAllCaps="false"
+        android:textSize="14sp"
+        android:textColor="@color/text_primary"
+        android:layout_marginTop="16dp"
+        android:layout_gravity="end"
+        app:rippleColor="@color/background_primary_2"
         />
 
 
@@ -32,16 +60,14 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginTop="16dp"
-        android:fillViewport="true"
-        >
+        android:layout_marginTop="8dp"
+        android:fillViewport="true">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/availableWifiRecyclerViewConnectDeviceWifiFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clipToPadding="false"
-            />
+            android:clipToPadding="false" />
 
     </ScrollView>
 
@@ -49,68 +75,63 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="@string/selected_wifi"
         android:fontFamily="@font/roboto_regular"
-        android:textSize="16sp"
+        android:text="@string/selected_wifi"
         android:textColor="@color/text_default"
-        />
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/selectedWifiTextViewConnectDeviceWifiFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="-"
         android:fontFamily="@font/roboto_semibold"
-        android:textSize="16sp"
+        android:text="-"
         android:textColor="@color/text_default"
-        />
+        android:textSize="16sp" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/wifiPasswordInputLayoutConnectDeviceWifiFragment"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
         android:hint="@string/wifi_password"
-        app:hintTextColor="@color/text_primary"
+        android:visibility="gone"
+        app:boxCornerRadiusBottomEnd="8dp"
+        app:boxCornerRadiusBottomStart="8dp"
+        app:boxCornerRadiusTopEnd="8dp"
+        app:boxCornerRadiusTopStart="8dp"
         app:boxStrokeColor="@color/text_primary"
         app:boxStrokeWidth="2dp"
         app:boxStrokeWidthFocused="3dp"
-        app:boxCornerRadiusTopStart="8dp"
-        app:boxCornerRadiusTopEnd="8dp"
-        app:boxCornerRadiusBottomStart="8dp"
-        app:boxCornerRadiusBottomEnd="8dp"
         app:cursorColor="@color/text_primary"
-        android:layout_marginTop="4dp"
-        >
+        app:hintTextColor="@color/text_primary">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/wifiPasswordInputEditTextConnectDeviceWifiFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"
             android:imeOptions="actionGo"
-            />
+            android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/connectButtonConnectDeviceWifiFragment"
         android:layout_width="match_parent"
         android:layout_height="56dp"
+        android:layout_marginTop="16dp"
         android:backgroundTint="@color/background_primary"
         android:fontFamily="@font/roboto_semibold"
         android:insetLeft="0dp"
         android:insetTop="0dp"
         android:insetRight="0dp"
         android:insetBottom="0dp"
-        android:layout_marginTop="16dp"
         android:text="@string/connect"
         android:textAlignment="center"
         android:textAllCaps="false"
         android:textSize="16sp"
         app:cornerRadius="64dp"
         app:iconGravity="textEnd"
-        app:iconSize="16dp"
-        />
+        app:iconSize="16dp" />
 </LinearLayout>

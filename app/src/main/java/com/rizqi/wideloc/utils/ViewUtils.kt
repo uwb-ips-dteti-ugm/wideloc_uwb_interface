@@ -11,4 +11,10 @@ object ViewUtils {
         imm.hideSoftInputFromWindow(view.windowToken, 0)
         view.clearFocus()
     }
+
+    fun isLocationEnabled(context: Context): Boolean {
+        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as android.location.LocationManager
+        return locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER)
+                || locationManager.isProviderEnabled(android.location.LocationManager.NETWORK_PROVIDER)
+    }
 }

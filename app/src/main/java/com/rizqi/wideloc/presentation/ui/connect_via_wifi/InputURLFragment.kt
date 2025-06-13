@@ -36,18 +36,18 @@ class InputURLFragment : Fragment() {
 
         recalculateContentHeight()
 
-        addDeviceViewModel.urlValidationResult.observe(viewLifecycleOwner){ result ->
-            when(result) {
-                is Result.Success -> {
-                    (parentFragment as? ConnectViaWiFiFragment)?.goToNextPage()
-                }
-                is Result.Error -> {
-                    binding.deviceUrlInputLayoutInputUrlFragment.error = result.errorMessage
-                }
-                else -> {}
-            }
-            recalculateContentHeight()
-        }
+//        addDeviceViewModel.urlValidationResult.observe(viewLifecycleOwner){ result ->
+//            when(result) {
+//                is Result.Success -> {
+//                    (parentFragment as? ConnectViaWiFiFragment)?.goToNextPage()
+//                }
+//                is Result.Error -> {
+//                    binding.deviceUrlInputLayoutInputUrlFragment.error = result.errorMessage
+//                }
+//                else -> {}
+//            }
+//            recalculateContentHeight()
+//        }
 
         binding.root.setOnClickListener {
             hideKeyboardAndClearFocus(requireActivity().currentFocus ?: it)
@@ -67,7 +67,7 @@ class InputURLFragment : Fragment() {
 
     private fun saveAndValidateUrl(){
         val url = binding.deviceUrlInputEditTextInputUrlFragment.text.toString()
-        addDeviceViewModel.setUrl(url)
+//        addDeviceViewModel.setUrl(url)
     }
 
     private fun recalculateContentHeight(){

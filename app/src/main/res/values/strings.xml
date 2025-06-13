@@ -84,5 +84,6 @@
     <string name="make_sure_to_select_the_uwb_access_point_commonly_starts_by_esp32_uwb">Make sure to select the UWB access point (commonly starts by esp32-uwb...)</string>
     <string name="selected_wifi">Selected Wifi:</string>
     <string name="wifi_password">Wifi Password</string>
+    <string name="refresh_scan">Refresh Scan</string>
 
 </resources>

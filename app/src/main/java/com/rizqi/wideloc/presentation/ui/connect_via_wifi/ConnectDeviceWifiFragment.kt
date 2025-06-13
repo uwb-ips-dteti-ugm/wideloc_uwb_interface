@@ -1,7 +1,6 @@
 package com.rizqi.wideloc.presentation.ui.connect_via_wifi
 
 import android.Manifest
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -10,33 +9,35 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
-import android.net.Uri
 import android.net.wifi.ScanResult
 import android.net.wifi.WifiManager
 import android.net.wifi.WifiNetworkSpecifier
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
+import androidx.core.net.toUri
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.rizqi.wideloc.databinding.FragmentConnectDeviceWifiBinding
 import com.rizqi.wideloc.presentation.ui.BaseFragment
 import com.rizqi.wideloc.presentation.ui.connect_via_wifi.adapters.AvailableWifiAdapter
 import com.rizqi.wideloc.presentation.ui.connect_via_wifi.adapters.WifiInformation
 import com.rizqi.wideloc.presentation.ui.devices.bottomsheets.add_device.AddDeviceBottomSheet
+import com.rizqi.wideloc.presentation.ui.devices.bottomsheets.add_device.AddDeviceViewModel
 import com.rizqi.wideloc.receiver.WifiScanReceiver
 import com.rizqi.wideloc.utils.ViewUtils.hideKeyboardAndClearFocus
-import kotlin.math.log
-import androidx.core.net.toUri
+import com.rizqi.wideloc.utils.ViewUtils.isLocationEnabled
 
 class ConnectDeviceWifiFragment :
     BaseFragment<FragmentConnectDeviceWifiBinding>(FragmentConnectDeviceWifiBinding::inflate) {
+
+    private val addDeviceViewModel: AddDeviceViewModel by activityViewModels()
 
     private lateinit var wifiManager: WifiManager
     private lateinit var wifiScanReceiver: WifiScanReceiver
@@ -67,7 +68,6 @@ class ConnectDeviceWifiFragment :
             wifiScanReceiver,
             IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)
         )
-        startWifiScan()
         availableWifiAdapter = AvailableWifiAdapter { wifiInfo ->
             selectedWifiInformation = wifiInfo
             binding.selectedWifiTextViewConnectDeviceWifiFragment.text = wifiInfo.ssid
@@ -81,20 +81,18 @@ class ConnectDeviceWifiFragment :
             adapter = availableWifiAdapter
         }
         binding.connectButtonConnectDeviceWifiFragment.setOnClickListener {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                connectWifi()
-            }
+            connectWifi()
         }
         binding.wifiPasswordInputEditTextConnectDeviceWifiFragment.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_GO){
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    connectWifi()
-                }
+                connectWifi()
+                hideKeyboardAndClearFocus(requireActivity().currentFocus ?: binding.root)
                 true
             } else {
                 false
             }
         }
+        binding.refreshButtonConnectDeviceWifiFragment.setOnClickListener { startWifiScan() }
 
         requestWifiPermission()
     }
@@ -131,10 +129,22 @@ class ConnectDeviceWifiFragment :
             permissions.add(Manifest.permission.NEARBY_WIFI_DEVICES)
         }
 
-        permissionLauncher.launch(permissions.toTypedArray())
+        if (permissions.isNotEmpty()){
+            permissionLauncher.launch(permissions.toTypedArray())
+        } else {
+            startWifiScan()
+        }
     }
 
     private fun startWifiScan() {
+
+        if (!isLocationEnabled(requireContext())){
+            Toast.makeText(requireContext(), "Please! Enable location services", Toast.LENGTH_SHORT).show()
+            val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+            startActivity(intent)
+            return
+        }
+
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -150,7 +160,6 @@ class ConnectDeviceWifiFragment :
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     private fun connectWifi() {
         val wifiInfo = selectedWifiInformation
         if (wifiInfo == null) {
@@ -158,6 +167,26 @@ class ConnectDeviceWifiFragment :
             return
         }
         val password = binding.wifiPasswordInputEditTextConnectDeviceWifiFragment.text.toString()
+        if (password.isBlank()) {
+            Toast.makeText(requireContext(), "Please enter the Wi-Fi password", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            // For Android 10+
+            connectWifiPostAndroidQ(wifiInfo, password)
+        } else {
+            // For Android 9 and below
+            connectWifiPreAndroidQ(wifiInfo, password)
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private fun connectWifiPostAndroidQ(wifiInformation: WifiInformation?, password: String) {
+        if (wifiInformation == null) {
+            Toast.makeText(requireContext(), "Select a Wifi first", Toast.LENGTH_SHORT).show()
+            return
+        }
         if (password.isBlank()) {
             Toast.makeText(requireContext(), "Please! Enter the wifi password", Toast.LENGTH_SHORT)
                 .show()
@@ -170,7 +199,7 @@ class ConnectDeviceWifiFragment :
         }
 
         val specifier = WifiNetworkSpecifier.Builder()
-            .setSsid(wifiInfo.ssid)
+            .setSsid(wifiInformation.ssid)
             .setWpa2Passphrase(password)
             .build()
 
@@ -190,13 +219,15 @@ class ConnectDeviceWifiFragment :
                 if (result) {
                     Toast.makeText(
                         requireContext(),
-                        "Connected to ${wifiInfo.ssid}",
+                        "Connected to ${wifiInformation.ssid}",
                         Toast.LENGTH_SHORT
                     ).show()
+                    addDeviceViewModel.setWifiInformation(wifiInformation)
+                    (parentFragment as? ConnectViaWiFiFragment)?.goToNextPage()
                 } else {
                     Toast.makeText(
                         requireContext(),
-                        "Failed to connect to ${wifiInfo.ssid}",
+                        "Failed to connect to ${wifiInformation.ssid}",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -211,6 +242,30 @@ class ConnectDeviceWifiFragment :
         connectivityManager.requestNetwork(request, networkCallback)
 
     }
+
+    @Suppress("DEPRECATION")
+    private fun connectWifiPreAndroidQ(wifiInformation: WifiInformation?, password: String) {
+        val wifiConfig = android.net.wifi.WifiConfiguration().apply {
+            SSID = "\"${wifiInformation?.ssid}\""
+            preSharedKey = "\"$password\""
+            allowedKeyManagement.set(android.net.wifi.WifiConfiguration.KeyMgmt.WPA_PSK)
+        }
+
+        val wifiManager = requireContext().applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+
+        val netId = wifiManager.addNetwork(wifiConfig)
+        if (netId != -1) {
+            wifiManager.disconnect()
+            wifiManager.enableNetwork(netId, true)
+            wifiManager.reconnect()
+            Toast.makeText(requireContext(), "Connecting to ${wifiInformation?.ssid}...", Toast.LENGTH_SHORT).show()
+            addDeviceViewModel.setWifiInformation(wifiInformation)
+            (parentFragment as? ConnectViaWiFiFragment)?.goToNextPage()
+        } else {
+            Toast.makeText(requireContext(), "Failed to add network configuration for ${wifiInformation?.ssid}", Toast.LENGTH_SHORT).show()
+        }
+    }
+
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun requestWriteSettingsPermission() {

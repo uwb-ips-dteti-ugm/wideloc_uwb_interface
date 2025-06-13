@@ -11,6 +11,7 @@
 <!--    WideLoc Color-->
     <color name="background_default">#FFFFFFFF</color>
     <color name="background_primary">#FF2C71F6</color>
+    <color name="background_primary_2">#4E83E7</color>
     <color name="background_secondary">#FFF8F9FB</color>
     <color name="background_tertiary">#FFD8D8DA</color>
     <color name="background_success">#FF17B530</color>

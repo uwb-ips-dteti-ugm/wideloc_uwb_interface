@@ -13,6 +13,7 @@ import com.rizqi.wideloc.domain.model.DeviceData
 import com.rizqi.wideloc.domain.model.DeviceOffsetData
 import com.rizqi.wideloc.domain.model.ProtocolData
 import com.rizqi.wideloc.domain.model.WifiProtocolData
+import com.rizqi.wideloc.presentation.ui.connect_via_wifi.adapters.WifiInformation
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.util.Date
@@ -23,14 +24,11 @@ class AddDeviceViewModel @Inject constructor(
     private val deviceUseCase: DeviceUseCase
 ) : ViewModel() {
 
-    private val _url = MutableLiveData<String?>()
-    val url: LiveData<String?> get() = _url
+    private val _wifiInformation = MutableLiveData<WifiInformation?>()
+    val wifiInformation: LiveData<WifiInformation?> get() = _wifiInformation
 
     private val _deviceSetupModel = MutableLiveData<DeviceSetupModel>(DeviceSetupModel())
     val deviceSetupModel: LiveData<DeviceSetupModel> get() = _deviceSetupModel
-
-    private val _urlValidationResult = MutableLiveData<Result<Boolean>?>()
-    val urlValidationResult: LiveData<Result<Boolean>?> get() = _urlValidationResult
 
     private val _nameValidationResult = MutableLiveData<Result<Boolean>?>()
     val nameValidationResult: LiveData<Result<Boolean>?> get() = _nameValidationResult
@@ -41,13 +39,8 @@ class AddDeviceViewModel @Inject constructor(
     private val _hostAddress = MutableLiveData<String?>()
     val hostAddress: LiveData<String?> get() = _hostAddress
 
-    fun setUrl(newUrl: String) {
-        deviceUseCase.validateSocketUrl(newUrl).also {
-            if (it is Result.Success) {
-                _url.value = newUrl
-            }
-            _urlValidationResult.value = it
-        }
+    fun setWifiInformation(wifiInformation: WifiInformation?) {
+        _wifiInformation.value = wifiInformation
     }
 
     fun setDeviceSetup(
@@ -112,9 +105,8 @@ class AddDeviceViewModel @Inject constructor(
 //    }
 
     fun resetAll() {
-        _url.value = ""
+        _wifiInformation.value = null
         _deviceSetupModel.value = DeviceSetupModel()
-        _urlValidationResult.value = null
         _nameValidationResult.value = null
     }
 
