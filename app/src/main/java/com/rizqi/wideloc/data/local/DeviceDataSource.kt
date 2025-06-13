@@ -1,6 +1,7 @@
 package com.rizqi.wideloc.data.local
 
 import com.rizqi.wideloc.data.local.entity.DeviceEntity
+import com.rizqi.wideloc.data.local.entity.DeviceRole
 import kotlinx.coroutines.flow.Flow
 
 interface DeviceDataSource {
@@ -20,4 +21,8 @@ interface DeviceDataSource {
     suspend fun deleteDeviceById(id: String)
 
     suspend fun deleteAllDevices()
+
+    suspend fun getByRole(role: DeviceRole): List<DeviceEntity>
+
+    suspend fun getFirstByRole(role: DeviceRole): DeviceEntity?
 }

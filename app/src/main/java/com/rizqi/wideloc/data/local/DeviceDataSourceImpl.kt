@@ -2,6 +2,7 @@ package com.rizqi.wideloc.data.local
 
 import com.rizqi.wideloc.data.local.dao.DeviceDao
 import com.rizqi.wideloc.data.local.entity.DeviceEntity
+import com.rizqi.wideloc.data.local.entity.DeviceRole
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -36,4 +37,8 @@ class DeviceDataSourceImpl @Inject constructor(
     override suspend fun deleteAllDevices() {
         deviceDao.deleteAll()
     }
+
+    override suspend fun getByRole(role: DeviceRole): List<DeviceEntity> = deviceDao.getByRole(role)
+
+    override suspend fun getFirstByRole(role: DeviceRole): DeviceEntity? = deviceDao.getFirstByRole(role)
 }

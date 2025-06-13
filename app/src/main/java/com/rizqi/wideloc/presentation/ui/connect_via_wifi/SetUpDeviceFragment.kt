@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import com.rizqi.wideloc.R
 import com.rizqi.wideloc.data.Result
 import com.rizqi.wideloc.data.local.entity.DeviceRole
 import com.rizqi.wideloc.databinding.FragmentSetUpDeviceBinding
@@ -84,7 +85,15 @@ class SetUpDeviceFragment : BaseFragment<FragmentSetUpDeviceBinding>(FragmentSet
             setAdapter(roleAdapter)
             setText(selectedRole.name, false)
             setOnItemClickListener { _, _, position, _ ->
-                selectedRole = DeviceRole.entries.toList()[position]
+                val role = DeviceRole.entries.toList()[position]
+                selectedRole = role
+                if (addDeviceViewModel.isAnyServerExist.value == false && role.name != DeviceRole.Server.name) {
+                    Toast.makeText(
+                        requireContext(),
+                        context.getString(R.string.you_don_t_have_any_server_device_yet_select_role_server_first),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
             }
             setOnClickListener {
                 binding.roleAutoCompleteSetUpDeviceFragment.showDropDown()

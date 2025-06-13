@@ -1,6 +1,7 @@
 package com.rizqi.wideloc.usecase
 
 import com.rizqi.wideloc.data.Result
+import com.rizqi.wideloc.data.local.entity.DeviceRole
 import com.rizqi.wideloc.domain.model.DeviceData
 import kotlinx.coroutines.flow.Flow
 
@@ -27,4 +28,10 @@ interface DeviceUseCase {
     suspend fun deleteAllDevices()
 
     fun validateSocketUrl(url: String): Result<Boolean>
+
+    suspend fun getByRole(role: DeviceRole): List<DeviceData>
+
+    suspend fun getFirstByRole(role: DeviceRole): DeviceData?
+
+    suspend fun isAnyServerSaved(): Boolean
 }

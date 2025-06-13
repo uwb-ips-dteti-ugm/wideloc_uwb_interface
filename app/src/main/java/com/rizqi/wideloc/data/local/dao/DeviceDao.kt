@@ -2,6 +2,7 @@ package com.rizqi.wideloc.data.local.dao
 
 import androidx.room.*
 import com.rizqi.wideloc.data.local.entity.DeviceEntity
+import com.rizqi.wideloc.data.local.entity.DeviceRole
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -30,4 +31,10 @@ interface DeviceDao {
 
     @Query("DELETE FROM devices")
     suspend fun deleteAll()
+
+    @Query("SELECT * FROM devices WHERE role = :role")
+    suspend fun getByRole(role: DeviceRole): List<DeviceEntity>
+
+    @Query("SELECT * FROM devices WHERE role = :role LIMIT 1")
+    suspend fun getFirstByRole(role: DeviceRole): DeviceEntity?
 }

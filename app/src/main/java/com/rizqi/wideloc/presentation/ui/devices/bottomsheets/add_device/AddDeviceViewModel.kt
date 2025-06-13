@@ -32,6 +32,9 @@ class AddDeviceViewModel @Inject constructor(
     private val _id = MutableLiveData<String>()
     val id: LiveData<String> get() = _id
 
+    private val _isAnyServerExist = MutableLiveData<Boolean>()
+    val isAnyServerExist: LiveData<Boolean> get() = _isAnyServerExist
+
     private val _wifiInformation = MutableLiveData<WifiInformation?>()
     val wifiInformation: LiveData<WifiInformation?> get() = _wifiInformation
 
@@ -49,6 +52,9 @@ class AddDeviceViewModel @Inject constructor(
 
     init {
         _id.value = generateIDUseCase.invoke()
+        viewModelScope.launch {
+            _isAnyServerExist.value = deviceUseCase.isAnyServerSaved()
+        }
     }
 
     fun setWifiInformation(wifiInformation: WifiInformation?) {

@@ -1,6 +1,7 @@
 package com.rizqi.wideloc.usecase
 
 import com.rizqi.wideloc.data.Result
+import com.rizqi.wideloc.data.local.entity.DeviceRole
 import com.rizqi.wideloc.domain.model.DeviceData
 import com.rizqi.wideloc.domain.DeviceRepository
 import kotlinx.coroutines.flow.Flow
@@ -72,6 +73,14 @@ class DeviceInteractor @Inject constructor(
         } catch (e: Exception) {
             Result.Error("Invalid WebSocket URL: ${e.message}")
         }
+    }
+
+    override suspend fun getByRole(role: DeviceRole): List<DeviceData> = repository.getByRole(role)
+
+    override suspend fun getFirstByRole(role: DeviceRole): DeviceData? = repository.getFirstByRole(role)
+
+    override suspend fun isAnyServerSaved(): Boolean {
+        return getByRole(DeviceRole.Server).isNotEmpty()
     }
 }
 

@@ -1,6 +1,7 @@
 package com.rizqi.wideloc.data.repository
 
 import com.rizqi.wideloc.data.local.DeviceDataSource
+import com.rizqi.wideloc.data.local.entity.DeviceRole
 import com.rizqi.wideloc.domain.model.DeviceData
 import com.rizqi.wideloc.domain.DeviceRepository
 import com.rizqi.wideloc.utils.DomainDataMapper.asDeviceData
@@ -42,5 +43,9 @@ class DeviceRepositoryImpl @Inject constructor(
 
     override suspend fun deleteAllDevices() =
         localDataSource.deleteAllDevices()
-    
+
+    override suspend fun getByRole(role: DeviceRole): List<DeviceData>  = localDataSource.getByRole(role).map { it.asDeviceData() }
+
+    override suspend fun getFirstByRole(role: DeviceRole): DeviceData? = localDataSource.getFirstByRole(role)?.asDeviceData()
+
 }
