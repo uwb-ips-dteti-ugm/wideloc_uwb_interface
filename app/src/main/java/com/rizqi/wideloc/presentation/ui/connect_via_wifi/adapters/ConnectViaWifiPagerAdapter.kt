@@ -10,9 +10,9 @@ import com.rizqi.wideloc.presentation.ui.connect_via_wifi.TestConnectionFragment
 class ConnectViaWifiPagerAdapter(fragment: Fragment): FragmentStateAdapter(fragment) {
 
     private val pages = listOf(
+        SetUpDeviceFragment(),
         ConnectDeviceWifiFragment(),
 //        InputURLFragment(),
-//        SetUpDeviceFragment(),
 //        TestConnectionFragment(),
     )
 

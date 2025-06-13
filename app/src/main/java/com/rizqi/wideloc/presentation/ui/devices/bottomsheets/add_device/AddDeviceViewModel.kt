@@ -8,6 +8,7 @@ import com.rizqi.wideloc.usecase.DeviceUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import com.rizqi.wideloc.data.Result
+import com.rizqi.wideloc.data.local.entity.DeviceRole
 import com.rizqi.wideloc.domain.model.BluetoothProtocolData
 import com.rizqi.wideloc.domain.model.DeviceData
 import com.rizqi.wideloc.domain.model.DeviceOffsetData
@@ -48,7 +49,7 @@ class AddDeviceViewModel @Inject constructor(
         offsetX: String? = null,
         offsetY: String? = null,
         offsetZ: String? = null,
-        role: String? = null,
+        role: DeviceRole? = null,
         imagePath: String? = null,
     ) {
         val deviceSetupModelBefore = _deviceSetupModel.value
@@ -69,7 +70,10 @@ class AddDeviceViewModel @Inject constructor(
             _nameValidationResult.value = Result.Success(true)
         }
 
-//        _deviceSetupModel.value?.let { saveDeviceToDatabase(it) }
+        _deviceSetupModel.value?.let {
+//            saveDeviceToDatabase(it)
+            _saveDeviceResult.value = Result.Success(true)
+        }
 
     }
 
@@ -115,7 +119,7 @@ class AddDeviceViewModel @Inject constructor(
         val offsetX: Double = 0.0,
         val offsetY: Double = 0.0,
         val offsetZ: Double = 0.0,
-        val role: String = "",
+        val role: DeviceRole = DeviceRole.Server,
         val imagePath: String? = null,
     )
 

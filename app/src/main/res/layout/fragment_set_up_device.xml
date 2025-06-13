@@ -181,12 +181,22 @@
                 app:cursorColor="@color/text_primary"
                 >
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/roleInputEditTextSetUpDeviceFragment"
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/roleAutoCompleteSetUpDeviceFragment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text"
+                    android:inputType="none"
                     android:imeOptions="actionGo"
+                    android:minHeight="56dp"
+                    android:paddingVertical="12dp"
+                    android:fontFamily="@font/roboto_regular"
+                    android:textSize="16sp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:clickable="true"
+                    android:dropDownHeight="wrap_content"
                     />
             </com.google.android.material.textfield.TextInputLayout>
 

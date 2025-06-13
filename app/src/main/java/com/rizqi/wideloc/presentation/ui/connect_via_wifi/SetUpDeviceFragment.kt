@@ -6,22 +6,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.rizqi.wideloc.data.Result
+import com.rizqi.wideloc.data.local.entity.DeviceRole
 import com.rizqi.wideloc.databinding.FragmentSetUpDeviceBinding
+import com.rizqi.wideloc.presentation.ui.BaseFragment
 import com.rizqi.wideloc.presentation.ui.connect_via_bluetooth.ConnectViaBluetoothFragment
 import com.rizqi.wideloc.presentation.ui.devices.bottomsheets.add_device.AddDeviceBottomSheet
 import com.rizqi.wideloc.presentation.ui.devices.bottomsheets.add_device.AddDeviceViewModel
 import com.rizqi.wideloc.utils.StorageUtils
 import com.rizqi.wideloc.utils.ViewUtils.hideKeyboardAndClearFocus
 
-class SetUpDeviceFragment : Fragment() {
-
-    private var _binding: FragmentSetUpDeviceBinding? = null
-    private val binding get() = _binding!!
+class SetUpDeviceFragment : BaseFragment<FragmentSetUpDeviceBinding>(FragmentSetUpDeviceBinding::inflate) {
 
     private val addDeviceViewModel: AddDeviceViewModel by activityViewModels()
 
@@ -35,14 +35,8 @@ class SetUpDeviceFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentSetUpDeviceBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+    private var selectedRole = DeviceRole.Server
+    private lateinit var roleAdapter : ArrayAdapter<String>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -83,12 +77,18 @@ class SetUpDeviceFragment : Fragment() {
             saveDeviceSetup()
         }
 
-        binding.roleInputEditTextSetUpDeviceFragment.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_GO){
-                saveDeviceSetup()
-                true
-            } else {
-                false
+        roleAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line,
+            DeviceRole.entries.toTypedArray().map { it.name }
+        )
+        binding.roleAutoCompleteSetUpDeviceFragment.apply {
+            setAdapter(roleAdapter)
+            setText(selectedRole.name, false)
+            setOnItemClickListener { _, _, position, _ ->
+                selectedRole = DeviceRole.entries.toList()[position]
+            }
+            setOnClickListener {
+                binding.roleAutoCompleteSetUpDeviceFragment.showDropDown()
+                recalculateContentHeight()
             }
         }
 
@@ -114,7 +114,6 @@ class SetUpDeviceFragment : Fragment() {
         val offsetX = binding.xOffsetInputEditTextSetUpDeviceFragment.text.toString()
         val offsetY = binding.yOffsetInputEditTextSetUpDeviceFragment.text.toString()
         val offsetZ = binding.zOffsetInputEditTextSetUpDeviceFragment.text.toString()
-        val role = binding.roleInputEditTextSetUpDeviceFragment.text.toString()
         val imageFile = StorageUtils.copyUriToInternalStorage(requireContext(), selectedImageUri, "${name}_${System.currentTimeMillis()}.jpg")
         val imagePath = imageFile?.absolutePath
         addDeviceViewModel.setDeviceSetup(
@@ -122,7 +121,7 @@ class SetUpDeviceFragment : Fragment() {
             offsetX = offsetX,
             offsetY = offsetY,
             offsetZ = offsetZ,
-            role = role,
+            role = selectedRole,
             imagePath = imagePath,
         )
     }
