@@ -15,6 +15,8 @@ import com.rizqi.wideloc.domain.model.DeviceOffsetData
 import com.rizqi.wideloc.domain.model.ProtocolData
 import com.rizqi.wideloc.domain.model.WifiProtocolData
 import com.rizqi.wideloc.presentation.ui.connect_via_wifi.adapters.WifiInformation
+import com.rizqi.wideloc.usecase.GenerateIDInteractor
+import com.rizqi.wideloc.usecase.GenerateIDUseCase
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.util.Date
@@ -22,8 +24,13 @@ import java.util.UUID
 
 @HiltViewModel
 class AddDeviceViewModel @Inject constructor(
-    private val deviceUseCase: DeviceUseCase
+    private val deviceUseCase: DeviceUseCase,
 ) : ViewModel() {
+
+    private val generateIDUseCase : GenerateIDUseCase = GenerateIDInteractor()
+
+    private val _id = MutableLiveData<String>()
+    val id: LiveData<String> get() = _id
 
     private val _wifiInformation = MutableLiveData<WifiInformation?>()
     val wifiInformation: LiveData<WifiInformation?> get() = _wifiInformation
@@ -39,6 +46,10 @@ class AddDeviceViewModel @Inject constructor(
 
     private val _hostAddress = MutableLiveData<String?>()
     val hostAddress: LiveData<String?> get() = _hostAddress
+
+    init {
+        _id.value = generateIDUseCase.invoke()
+    }
 
     fun setWifiInformation(wifiInformation: WifiInformation?) {
         _wifiInformation.value = wifiInformation

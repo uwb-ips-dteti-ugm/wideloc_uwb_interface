@@ -58,7 +58,7 @@
     <string-array name="wifi_steps">
         <item>Connect Device Wifi</item>
         <item>Set Up Device</item>
-        <item>Test Connection</item>
+        <item>Configure Network</item>
     </string-array>
     <string-array name="bluetooth_steps">
         <item>Turn On Bluetooth</item>
@@ -85,5 +85,15 @@
     <string name="selected_wifi">Selected Wifi:</string>
     <string name="wifi_password">Wifi Password</string>
     <string name="refresh_scan">Refresh Scan</string>
+    <string name="configure_network">Configure Network</string>
+    <string name="dns_domain_name_system">DNS(Domain Name System)</string>
+    <string name="configure">Configure</string>
+    <string name="port">Port</string>
+    <string name="device_s_access_point_ssid">Device\'s Access Point SSID</string>
+    <string name="set_ssid_same_as_dns">Set the SSID the same as the DNS</string>
+    <string name="device_s_access_point_password">Device\'s Access Point Password</string>
+    <string name="sta_ssid">Station SSID (Surrounding Network)</string>
+    <string name="sta_password">Station Password (Surrounding Network)</string>
+    <string name="set_the_device_to_auto_connect_to_the_network">Set the device to <b>auto connect</b> to the network</string>
 
 </resources>

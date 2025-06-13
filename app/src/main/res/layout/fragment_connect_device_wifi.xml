@@ -106,14 +106,17 @@
         app:boxStrokeWidth="2dp"
         app:boxStrokeWidthFocused="3dp"
         app:cursorColor="@color/text_primary"
-        app:hintTextColor="@color/text_primary">
+        app:hintTextColor="@color/text_primary"
+        app:endIconMode="password_toggle"
+        >
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/wifiPasswordInputEditTextConnectDeviceWifiFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:imeOptions="actionGo"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.button.MaterialButton

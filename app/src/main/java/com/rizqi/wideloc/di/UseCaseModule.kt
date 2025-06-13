@@ -2,6 +2,8 @@ package com.rizqi.wideloc.di
 
 import com.rizqi.wideloc.usecase.DeviceInteractor
 import com.rizqi.wideloc.usecase.DeviceUseCase
+import com.rizqi.wideloc.usecase.GenerateIDInteractor
+import com.rizqi.wideloc.usecase.GenerateIDUseCase
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
