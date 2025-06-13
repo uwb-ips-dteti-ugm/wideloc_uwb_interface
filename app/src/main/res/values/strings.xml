@@ -56,7 +56,7 @@
     <string name="z">Z</string>
     <string name="add_image">Add Image</string>
     <string-array name="wifi_steps">
-        <item>Input URL</item>
+        <item>Connect Device Wifi</item>
         <item>Set Up Device</item>
         <item>Test Connection</item>
     </string-array>
@@ -80,5 +80,9 @@
     <string name="select_your_device">Select your device</string>
     <string name="next">Next</string>
     <string name="the_bluetooth_is_on">The bluetooth is on</string>
+    <string name="select_available_networks">Select Available Networks</string>
+    <string name="make_sure_to_select_the_uwb_access_point_commonly_starts_by_esp32_uwb">Make sure to select the UWB access point (commonly starts by esp32-uwb...)</string>
+    <string name="selected_wifi">Selected Wifi:</string>
+    <string name="wifi_password">Wifi Password</string>
 
 </resources>

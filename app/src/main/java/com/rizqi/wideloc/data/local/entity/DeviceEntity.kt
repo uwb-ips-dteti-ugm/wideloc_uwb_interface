@@ -20,13 +20,13 @@ data class DeviceEntity(
     @ColumnInfo(name = "protocol")
     val protocol: DeviceProtocol,
 
-    @Embedded(prefix = "wifi_")
+    @Embedded(prefix = "wifi_protocol_")
     val wiFiProtocolEntity: WiFiProtocolEntity? = null,
 
     @Embedded(prefix = "bluetooth_")
     val bluetoothProtocolEntity: BluetoothProtocolEntity? = null,
 
-    @ColumnInfo(name = "uwb_config_entity")
+    @Embedded(prefix = "uwb_config_")
     val uwbConfigEntity : UWBConfigEntity? = null,
 
     @ColumnInfo(name = "is_available")

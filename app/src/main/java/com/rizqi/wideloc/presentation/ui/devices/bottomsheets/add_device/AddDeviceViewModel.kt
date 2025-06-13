@@ -76,40 +76,40 @@ class AddDeviceViewModel @Inject constructor(
             _nameValidationResult.value = Result.Success(true)
         }
 
-        _deviceSetupModel.value?.let { saveDeviceToDatabase(it) }
+//        _deviceSetupModel.value?.let { saveDeviceToDatabase(it) }
 
     }
 
-    private fun saveDeviceToDatabase(model: DeviceSetupModel) {
-        var protocol = ProtocolData()
-        if (!url.value.isNullOrBlank()){
-            protocol = WifiProtocolData(socketUrl = url.value!!)
-        } else if (!hostAddress.value.isNullOrBlank()){
-            protocol = BluetoothProtocolData(
-                hostId = "",
-                hostAddress = hostAddress.value!!
-            )
-        }
-        val deviceData = DeviceData(
-            id = UUID.randomUUID().toString(),
-            name = model.name,
-            imageUrl = model.imagePath ?: "",
-            role = model.role,
-            offset = DeviceOffsetData(x = model.offsetX, y = model.offsetY, z = model.offsetZ),
-            protocol = protocol,
-            isAvailable = false,
-            lastConnectedAt = null,
-            createdAt = LocalDateTime.now()
-        )
-        viewModelScope.launch {
-            try {
-                deviceUseCase.insertDevice(deviceData)
-                _saveDeviceResult.value = Result.Success(true)
-            } catch (e: Exception){
-                _saveDeviceResult.value = Result.Error(e.message ?: "Failed to save")
-            }
-        }
-    }
+//    private fun saveDeviceToDatabase(model: DeviceSetupModel) {
+//        var protocol = ProtocolData()
+//        if (!url.value.isNullOrBlank()){
+//            protocol = WifiProtocolData()
+//        } else if (!hostAddress.value.isNullOrBlank()){
+//            protocol = BluetoothProtocolData(
+//                hostId = "",
+//                hostAddress = hostAddress.value!!
+//            )
+//        }
+//        val deviceData = DeviceData(
+//            id = UUID.randomUUID().toString(),
+//            name = model.name,
+//            imageUrl = model.imagePath ?: "",
+//            role = model.role,
+//            offset = DeviceOffsetData(x = model.offsetX, y = model.offsetY, z = model.offsetZ),
+//            protocol = protocol,
+//            isAvailable = false,
+//            lastConnectedAt = null,
+//            createdAt = LocalDateTime.now()
+//        )
+//        viewModelScope.launch {
+//            try {
+//                deviceUseCase.insertDevice(deviceData)
+//                _saveDeviceResult.value = Result.Success(true)
+//            } catch (e: Exception){
+//                _saveDeviceResult.value = Result.Error(e.message ?: "Failed to save")
+//            }
+//        }
+//    }
 
     fun resetAll() {
         _url.value = ""

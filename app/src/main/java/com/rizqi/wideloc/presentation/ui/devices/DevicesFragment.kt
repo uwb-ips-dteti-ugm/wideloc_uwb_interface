@@ -37,6 +37,8 @@ class DevicesFragment : BaseFragment<FragmentDevicesBinding>(FragmentDevicesBind
             addDeviceBottomSheet.show(parentFragmentManager, addDeviceBottomSheet.tag)
         }
 
+        addDeviceBottomSheet.show(parentFragmentManager, addDeviceBottomSheet.tag)
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.availableDevices.collect { devices ->

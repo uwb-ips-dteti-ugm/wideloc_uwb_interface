@@ -17,6 +17,7 @@
     <color name="background_error">#FFF73B3B</color>
     <color name="text_primary">#FF2C71F6</color>
     <color name="text_on_primary">#FFFFFFFF</color>
+    <color name="text_on_primary_secondary">#CCD9F6</color>
     <color name="text_default">#FF202020</color>
     <color name="text_secondary">#FF89898A</color>
     <color name="text_secondary_2">#FF747474</color>
