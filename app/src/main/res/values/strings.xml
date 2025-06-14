@@ -100,5 +100,12 @@
     <string name="network_is_different_from_the_one_selected">network is different from the one selected %1$s</string>
     <string name="you_have_not_selected_a_uwb_network_before">You have not selected a UWB network before</string>
     <string name="none">None</string>
+    <string name="please_fill_the_dns">Please! Fill the DNS</string>
+    <string name="please_fill_the_port">Please! Fill the port</string>
+    <string name="please_fill_the_access_point_ssid">Please! Fill the access point SSID</string>
+    <string name="please_fill_the_access_point_password">Please! Fill the access point password</string>
+    <string name="password_must_be_at_least_8_characters">Password must be at least 8 characters</string>
+    <string name="please_fill_the_station_ssid">Please! Fill the station SSID</string>
+    <string name="please_fill_the_station_password">Please! Fill the station password</string>
 
 </resources>

@@ -42,7 +42,7 @@ class AddDeviceViewModel @Inject constructor(
     val isAnyServerExist: LiveData<Boolean> get() = _isAnyServerExist
 
     private val _wifiInformation = MutableLiveData<WifiInformation?>()
-    val wifiInformation: LiveData<WifiInformation?> get() = _wifiInformation
+    private val wifiInformation: LiveData<WifiInformation?> get() = _wifiInformation
 
     private val _connectedWifiInfo = MutableLiveData<WifiInfo?>()
     val connectedWifiInfo: LiveData<WifiInfo?> get() = _connectedWifiInfo
@@ -61,6 +61,12 @@ class AddDeviceViewModel @Inject constructor(
 
     private val _hostAddress = MutableLiveData<String?>()
     val hostAddress: LiveData<String?> get() = _hostAddress
+
+    private val _networkConfig = MutableLiveData<NetworkConfig>(NetworkConfig())
+    val networkConfig: LiveData<NetworkConfig> get() = _networkConfig
+
+    private val _networkConfigError = MutableLiveData<NetworkConfigError?>(NetworkConfigError())
+    val networkConfigError: LiveData<NetworkConfigError?> get() = _networkConfigError
 
     init {
         _id.value = generateIDUseCase.invoke()
@@ -139,8 +145,12 @@ class AddDeviceViewModel @Inject constructor(
 
     fun resetAll() {
         _wifiInformation.value = null
+        _connectedWifiInfo.value = null
+        _connectedWifiInfoError.value = null
         _deviceSetupModel.value = DeviceSetupModel()
         _nameValidationResult.value = null
+        _networkConfig.value = NetworkConfig()
+        _networkConfigError.value = null
     }
 
     fun setConnectedWifi(wifiInfo: WifiInfo?) {
@@ -157,6 +167,89 @@ class AddDeviceViewModel @Inject constructor(
         }
     }
 
+    fun setDNS(dns: String){
+        _networkConfig.value = networkConfig.value?.copy(dns = dns)
+    }
+
+    fun setPort(port: String){
+        _networkConfig.value = networkConfig.value?.copy(port = port.toIntOrNull() ?: 80)
+    }
+
+    fun setAPSSID(ssid: String){
+        _networkConfig.value = networkConfig.value?.copy(apSSID = ssid)
+    }
+
+    fun setIsApSSIDSameAsDNS(isSame: Boolean){
+        _networkConfig.value = networkConfig.value?.copy(isApSSIDSameAsDNS = isSame)
+        if (isSame) {
+            setAPSSID(networkConfig.value?.dns ?: "")
+        }
+    }
+
+    fun setAPPassword(password: String){
+        _networkConfig.value = networkConfig.value?.copy(apPassword = password)
+    }
+
+    fun setStaSSID(ssid: String){
+        _networkConfig.value = networkConfig.value?.copy(staSSID = ssid)
+    }
+
+    fun setStaPassword(password: String){
+        _networkConfig.value = networkConfig.value?.copy(staPassword = password)
+    }
+
+    fun setAutoConnect(isAutoConnect: Boolean){
+        _networkConfig.value = networkConfig.value?.copy(isAutoConnect = isAutoConnect)
+    }
+    
+    fun configureNetwork(){
+        val isConfigValid = validateNetworkConfig()
+        if (!isConfigValid) return
+
+        val validConfig = (networkConfig.value ?: NetworkConfig()).copy(
+            dns = "${getNamePrefix()}${networkConfig.value?.dns ?: ""}",
+            apSSID = "${getNamePrefix()}${networkConfig.value?.apSSID ?: ""}",
+        )
+    }
+
+    private fun validateNetworkConfig(): Boolean {
+        val dnsError = if(networkConfig.value?.dns.isNullOrBlank()) context.getString(R.string.please_fill_the_dns) else null
+        val portError = if(networkConfig.value?.port == null) context.getString(R.string.please_fill_the_port) else null
+        val apSSIDError = if(networkConfig.value?.apSSID.isNullOrBlank()) context.getString(R.string.please_fill_the_access_point_ssid) else null
+        val apPasswordError = if(networkConfig.value?.apSSID.isNullOrBlank()) {
+            context.getString(R.string.please_fill_the_access_point_password)
+        } else if ((networkConfig.value?.apSSID?.length ?: 0) < 8) {
+            context.getString(R.string.password_must_be_at_least_8_characters)
+        } else {
+            null
+        }
+        val staSSIDError = if(networkConfig.value?.apSSID.isNullOrBlank()) context.getString(R.string.please_fill_the_station_ssid) else null
+        val staPasswordError = if(networkConfig.value?.apSSID.isNullOrBlank()) {
+            context.getString(R.string.please_fill_the_station_password)
+        } else if ((networkConfig.value?.apSSID?.length ?: 0) < 8) {
+            context.getString(R.string.password_must_be_at_least_8_characters)
+        } else {
+            null
+        }
+        val newNetworkConfigError = NetworkConfigError(
+            dns = dnsError,
+            port = portError,
+            apSSID = apSSIDError,
+            apPassword = apPasswordError,
+            staSSID = staSSIDError,
+            staPassword = staPasswordError,
+        )
+        _networkConfigError.value = newNetworkConfigError
+        return dnsError != null && portError != null && apSSIDError != null && apPasswordError != null && staSSIDError != null && staPasswordError != null
+    }
+
+    fun getNamePrefix(): String {
+        val role = deviceSetupModel.value?.role?.name ?: "role_unknown"
+        val name = deviceSetupModel.value?.name ?: "name_unknown"
+        val id = id.value ?: "id_unknown"
+        return "$id-$role-$name"
+    }
+
     data class DeviceSetupModel(
         val name: String = "",
         val offsetX: Double = 0.0,
@@ -164,6 +257,26 @@ class AddDeviceViewModel @Inject constructor(
         val offsetZ: Double = 0.0,
         val role: DeviceRole = DeviceRole.Server,
         val imagePath: String? = null,
+    )
+
+    data class NetworkConfig(
+        val dns: String = "",
+        val port: Int = 80,
+        val apSSID: String = "",
+        val isApSSIDSameAsDNS: Boolean = true,
+        val apPassword: String = "",
+        val staSSID: String = "",
+        val staPassword: String = "",
+        val isAutoConnect: Boolean = true,
+    )
+
+    data class NetworkConfigError(
+        val dns: String? = null,
+        val port: String? = null,
+        val apSSID: String? = null,
+        val apPassword: String? = null,
+        val staSSID: String? = null,
+        val staPassword: String? = null,
     )
 
 }

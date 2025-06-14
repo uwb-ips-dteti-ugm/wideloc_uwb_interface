@@ -105,6 +105,7 @@ class AddDeviceBottomSheet : BottomSheetDialogFragment() {
             val rootLayout = binding.root
             val frame = binding.frameAddDeviceBottomSheet
             val dragHandle = binding.dragHandleCardViewAddDeviceBottomSheet.root
+            val wifiInfo = binding.wifiInfoLayoutAddDeviceBottomSheet
 
             // 1. Measure contents inside the FrameLayout (fragment content)
             var contentHeight = 0
@@ -130,12 +131,24 @@ class AddDeviceBottomSheet : BottomSheetDialogFragment() {
                 dragHandle.measuredHeight
             }
 
-            // 3. Calculate padding
+            // 3. Measure wifiInfo view
+            val wifiInfoHeight = if (wifiInfo.height > 0) {
+                wifiInfo.height
+            } else {
+                // Fallback measure if not yet laid out
+                wifiInfo.measure(
+                    View.MeasureSpec.makeMeasureSpec(rootLayout.width, View.MeasureSpec.EXACTLY),
+                    View.MeasureSpec.UNSPECIFIED
+                )
+                wifiInfo.measuredHeight
+            }
+
+            // 4. Calculate padding
             val paddingTop = rootLayout.paddingTop
             val paddingBottom = rootLayout.paddingBottom
 
-            // 4. Total height
-            val totalHeight = contentHeight + dragHandleHeight + paddingTop + paddingBottom + frame.marginTop
+            // 5. Total height
+            val totalHeight = contentHeight + dragHandleHeight + paddingTop + paddingBottom + frame.marginTop + wifiInfoHeight
 
             bottomSheetLayout.layoutParams.height = minOf(totalHeight, maxHeight)
             bottomSheetLayout.requestLayout()
