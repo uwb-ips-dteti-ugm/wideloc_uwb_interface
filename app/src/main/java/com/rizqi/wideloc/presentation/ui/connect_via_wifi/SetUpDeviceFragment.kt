@@ -42,6 +42,7 @@ class SetUpDeviceFragment : BaseFragment<FragmentSetUpDeviceBinding>(FragmentSet
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        (parentFragment?.parentFragment as? AddDeviceBottomSheet)?.toggleWifiInfoVisibility(true)
         recalculateContentHeight()
         addDeviceViewModel.nameValidationResult.observe(viewLifecycleOwner){result ->
             when(result) {
@@ -119,6 +120,15 @@ class SetUpDeviceFragment : BaseFragment<FragmentSetUpDeviceBinding>(FragmentSet
     }
 
     private fun saveDeviceSetup(){
+        if (addDeviceViewModel.isAnyServerExist.value == false && selectedRole.name != DeviceRole.Server.name) {
+            Toast.makeText(
+                requireContext(),
+                requireContext().getString(R.string.you_don_t_have_any_server_device_yet_select_role_server_first),
+                Toast.LENGTH_LONG
+            ).show()
+            return
+        }
+
         val name = binding.deviceNameInputEditTextSetUpDeviceFragment.text.toString()
         val offsetX = binding.xOffsetInputEditTextSetUpDeviceFragment.text.toString()
         val offsetY = binding.yOffsetInputEditTextSetUpDeviceFragment.text.toString()

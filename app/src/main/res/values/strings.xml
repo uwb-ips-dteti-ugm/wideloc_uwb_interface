@@ -96,5 +96,9 @@
     <string name="sta_password">Station Password (Surrounding Network)</string>
     <string name="set_the_device_to_auto_connect_to_the_network">Set the device to <b>auto connect</b> to the network</string>
     <string name="you_don_t_have_any_server_device_yet_select_role_server_first">You don\'t have any server device yet. Select role server first</string>
+    <string name="network_connected_to">Network connected to %1$s</string>
+    <string name="network_is_different_from_the_one_selected">network is different from the one selected %1$s</string>
+    <string name="you_have_not_selected_a_uwb_network_before">You have not selected a UWB network before</string>
+    <string name="none">None</string>
 
 </resources>

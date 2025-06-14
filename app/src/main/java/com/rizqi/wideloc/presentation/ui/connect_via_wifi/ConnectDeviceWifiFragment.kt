@@ -57,6 +57,7 @@ class ConnectDeviceWifiFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        (parentFragment?.parentFragment as? AddDeviceBottomSheet)?.toggleWifiInfoVisibility(false)
         recalculateContentHeight()
 
         wifiManager =

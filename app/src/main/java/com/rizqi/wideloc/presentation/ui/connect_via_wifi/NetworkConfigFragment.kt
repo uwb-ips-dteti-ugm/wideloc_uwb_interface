@@ -20,6 +20,7 @@ class NetworkConfigFragment : BaseFragment<FragmentNetworkConfigBinding>(Fragmen
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        (parentFragment?.parentFragment as? AddDeviceBottomSheet)?.toggleWifiInfoVisibility(true)
         recalculateContentHeight()
 
         binding.dnsInputLayoutNetworkConfigFragment.prefixText = getPrefix()
