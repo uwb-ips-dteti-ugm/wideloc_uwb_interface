@@ -2,8 +2,10 @@ package com.rizqi.wideloc.di
 
 import com.rizqi.wideloc.data.repository.DeviceRepositoryImpl
 import com.rizqi.wideloc.data.repository.TrackingRepositoryImpl
-import com.rizqi.wideloc.domain.DeviceRepository
+import com.rizqi.wideloc.data.repository.UWBDeviceRepositoryImpl
+import com.rizqi.wideloc.domain.repository.DeviceRepository
 import com.rizqi.wideloc.domain.repository.TrackingRepository
+import com.rizqi.wideloc.domain.repository.UWBDeviceRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -19,4 +21,7 @@ abstract class RepositoryModule {
 
     @Binds
     abstract fun bindDeviceRepository(repositoryImpl: DeviceRepositoryImpl): DeviceRepository
+
+    @Binds
+    abstract fun bindUWBDeviceRepository(repositoryImpl: UWBDeviceRepositoryImpl): UWBDeviceRepository
 }

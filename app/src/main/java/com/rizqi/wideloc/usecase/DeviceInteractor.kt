@@ -3,9 +3,8 @@ package com.rizqi.wideloc.usecase
 import com.rizqi.wideloc.data.Result
 import com.rizqi.wideloc.data.local.entity.DeviceRole
 import com.rizqi.wideloc.domain.model.DeviceData
-import com.rizqi.wideloc.domain.DeviceRepository
+import com.rizqi.wideloc.domain.repository.DeviceRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import java.net.URI
 import javax.inject.Inject

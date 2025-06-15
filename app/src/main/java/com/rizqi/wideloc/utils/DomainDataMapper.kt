@@ -8,6 +8,8 @@ import com.rizqi.wideloc.data.local.entity.DeviceProtocol
 import com.rizqi.wideloc.data.local.entity.DeviceProtocol.*
 import com.rizqi.wideloc.data.local.entity.UWBConfigEntity
 import com.rizqi.wideloc.data.local.entity.WiFiProtocolEntity
+import com.rizqi.wideloc.data.network.dto.WifiConfigDto
+import com.rizqi.wideloc.data.network.dto.WifiConnectDto
 import com.rizqi.wideloc.data.websocket.request.CalibrationRequest
 import com.rizqi.wideloc.data.websocket.response.TrackingResponse
 import com.rizqi.wideloc.domain.model.BluetoothProtocolData
@@ -17,6 +19,8 @@ import com.rizqi.wideloc.domain.model.DeviceOffsetData
 import com.rizqi.wideloc.domain.model.ProtocolData
 import com.rizqi.wideloc.domain.model.TrackingData
 import com.rizqi.wideloc.domain.model.UWBConfigData
+import com.rizqi.wideloc.domain.model.WifiConfigData
+import com.rizqi.wideloc.domain.model.WifiConnectData
 import com.rizqi.wideloc.domain.model.WifiProtocolData
 import com.rizqi.wideloc.utils.DomainDataMapper.asProtocolData
 
@@ -144,5 +148,18 @@ object DomainDataMapper {
         mode = this.mode,
         networkAddress = this.networkAddress,
         deviceAddress = this.deviceAddress,
+    )
+
+    fun WifiConfigData.toDto() = WifiConfigDto(
+        port = this.port,
+        mdns = this.mdns,
+    )
+
+    fun WifiConnectData.toDto() = WifiConnectDto(
+        autoConnect = this.autoConnect,
+        apSSID = this.apSSID,
+        apPassword = this.apPassword,
+        staSSID = this.staSSID,
+        staPassword = this.staPassword,
     )
 }

@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.activityViewModels
 import com.rizqi.wideloc.R
+import com.rizqi.wideloc.data.Result
 import com.rizqi.wideloc.databinding.FragmentNetworkConfigBinding
 import com.rizqi.wideloc.presentation.ui.BaseFragment
 import com.rizqi.wideloc.presentation.ui.connect_via_bluetooth.ConnectViaBluetoothFragment
@@ -33,6 +34,14 @@ class NetworkConfigFragment : BaseFragment<FragmentNetworkConfigBinding>(Fragmen
                 if (currentText != newText) {
                     binding.apSSIDInputEditTextNetworkConfigFragment.setText(newText)
                 }
+            }
+        }
+        addDeviceViewModel.configNetworkResult.observe(viewLifecycleOwner) { result ->
+            when(result){
+                is Result.Error -> toggleButtonAndProgressIndicator(false)
+                is Result.Loading<*> -> toggleButtonAndProgressIndicator(true)
+                is Result.Success<*> -> toggleButtonAndProgressIndicator(false)
+                null -> toggleButtonAndProgressIndicator(false)
             }
         }
         addDeviceViewModel.networkConfigError.observe(viewLifecycleOwner){ error ->
@@ -93,6 +102,11 @@ class NetworkConfigFragment : BaseFragment<FragmentNetworkConfigBinding>(Fragmen
                 ),
             )
         }
+    }
+
+    private fun toggleButtonAndProgressIndicator(isLoading: Boolean){
+        binding.configureButtonNetworkConfigFragment.visibility = if (isLoading) View.GONE else View.VISIBLE
+        binding.progressIndicatorNetworkConfigFragment.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
 }

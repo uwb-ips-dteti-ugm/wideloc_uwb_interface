@@ -3,7 +3,7 @@ package com.rizqi.wideloc.data.repository
 import com.rizqi.wideloc.data.local.DeviceDataSource
 import com.rizqi.wideloc.data.local.entity.DeviceRole
 import com.rizqi.wideloc.domain.model.DeviceData
-import com.rizqi.wideloc.domain.DeviceRepository
+import com.rizqi.wideloc.domain.repository.DeviceRepository
 import com.rizqi.wideloc.utils.DomainDataMapper.asDeviceData
 import com.rizqi.wideloc.utils.DomainDataMapper.asDeviceEntity
 import kotlinx.coroutines.flow.Flow

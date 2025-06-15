@@ -12,25 +12,27 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import com.rizqi.wideloc.data.Result
 import com.rizqi.wideloc.data.local.entity.DeviceRole
-import com.rizqi.wideloc.domain.model.BluetoothProtocolData
 import com.rizqi.wideloc.domain.model.DeviceData
 import com.rizqi.wideloc.domain.model.DeviceOffsetData
-import com.rizqi.wideloc.domain.model.ProtocolData
+import com.rizqi.wideloc.domain.model.WifiConfigData
+import com.rizqi.wideloc.domain.model.WifiConnectData
 import com.rizqi.wideloc.domain.model.WifiProtocolData
 import com.rizqi.wideloc.presentation.ui.connect_via_wifi.adapters.WifiInformation
+import com.rizqi.wideloc.usecase.ConfigWifiUseCase
+import com.rizqi.wideloc.usecase.ConnectWifiUseCase
 import com.rizqi.wideloc.usecase.GenerateIDInteractor
 import com.rizqi.wideloc.usecase.GenerateIDUseCase
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
-import java.util.Date
-import java.util.UUID
 
 @HiltViewModel
 class AddDeviceViewModel @Inject constructor(
-    private val deviceUseCase: DeviceUseCase,
     @ApplicationContext
     private val context: Context,
+    private val deviceUseCase: DeviceUseCase,
+    private val configWifiUseCase: ConfigWifiUseCase,
+    private val connectWifiUseCase: ConnectWifiUseCase,
 ) : ViewModel() {
 
     private val generateIDUseCase: GenerateIDUseCase = GenerateIDInteractor()
@@ -67,6 +69,9 @@ class AddDeviceViewModel @Inject constructor(
 
     private val _networkConfigError = MutableLiveData<NetworkConfigError?>(NetworkConfigError())
     val networkConfigError: LiveData<NetworkConfigError?> get() = _networkConfigError
+
+    private val _configNetworkResult = MutableLiveData<Result<Boolean>?>()
+    val configNetworkResult: LiveData<Result<Boolean>?> get() = _configNetworkResult
 
     init {
         _id.value = generateIDUseCase.invoke()
@@ -106,42 +111,43 @@ class AddDeviceViewModel @Inject constructor(
         }
 
         _deviceSetupModel.value?.let {
-//            saveDeviceToDatabase(it)
             _saveDeviceResult.value = Result.Success(true)
         }
 
     }
 
-//    private fun saveDeviceToDatabase(model: DeviceSetupModel) {
-//        var protocol = ProtocolData()
-//        if (!url.value.isNullOrBlank()){
-//            protocol = WifiProtocolData()
-//        } else if (!hostAddress.value.isNullOrBlank()){
-//            protocol = BluetoothProtocolData(
-//                hostId = "",
-//                hostAddress = hostAddress.value!!
-//            )
-//        }
-//        val deviceData = DeviceData(
-//            id = UUID.randomUUID().toString(),
-//            name = model.name,
-//            imageUrl = model.imagePath ?: "",
-//            role = model.role,
-//            offset = DeviceOffsetData(x = model.offsetX, y = model.offsetY, z = model.offsetZ),
-//            protocol = protocol,
-//            isAvailable = false,
-//            lastConnectedAt = null,
-//            createdAt = LocalDateTime.now()
-//        )
-//        viewModelScope.launch {
-//            try {
-//                deviceUseCase.insertDevice(deviceData)
-//                _saveDeviceResult.value = Result.Success(true)
-//            } catch (e: Exception){
-//                _saveDeviceResult.value = Result.Error(e.message ?: "Failed to save")
-//            }
-//        }
-//    }
+    private fun saveDeviceToDatabase(model: DeviceSetupModel, networkConfig: NetworkConfig) {
+        val protocol = WifiProtocolData(
+            port = networkConfig.port,
+            mdns = networkConfig.dns,
+            autoConnect = networkConfig.isAutoConnect,
+            deviceAccessPointSSID = networkConfig.apSSID,
+            deviceAccessPointPPassword = networkConfig.apPassword,
+            networkSSID = networkConfig.staSSID,
+            networkPassword = networkConfig.staPassword
+        )
+        val deviceData = DeviceData(
+            id = id.value ?: generateIDUseCase.invoke(),
+            name = model.name,
+            imageUrl = model.imagePath ?: "",
+            role = model.role,
+            offset = DeviceOffsetData(x = model.offsetX, y = model.offsetY, z = model.offsetZ),
+            protocol = protocol,
+            isAvailable = false,
+            lastConnectedAt = null,
+            createdAt = LocalDateTime.now(),
+            uwbConfigData = null
+        )
+        viewModelScope.launch {
+            try {
+                _saveDeviceResult.value = Result.Loading()
+                deviceUseCase.insertDevice(deviceData)
+                _saveDeviceResult.value = Result.Success(true)
+            } catch (e: Exception){
+                _saveDeviceResult.value = Result.Error(e.message ?: "Failed to save")
+            }
+        }
+    }
 
     fun resetAll() {
         _wifiInformation.value = null
@@ -210,6 +216,40 @@ class AddDeviceViewModel @Inject constructor(
             dns = "${getNamePrefix()}${networkConfig.value?.dns ?: ""}",
             apSSID = "${getNamePrefix()}${networkConfig.value?.apSSID ?: ""}",
         )
+
+        val wifiConfigData = WifiConfigData(
+            port = validConfig.port,
+            mdns = validConfig.dns
+        )
+        val wifiConnectData = WifiConnectData(
+            autoConnect = validConfig.isAutoConnect,
+            apSSID = validConfig.apSSID,
+            apPassword = validConfig.apPassword,
+            staSSID = validConfig.staSSID,
+            staPassword = validConfig.staPassword
+        )
+
+        viewModelScope.launch {
+            try {
+                _configNetworkResult.value = Result.Loading()
+                val configResult = configWifiUseCase.invoke(wifiConfigData)
+                if (configResult){
+                    val connectResult = connectWifiUseCase.invoke(wifiConnectData)
+                    if (connectResult) {
+                        _configNetworkResult.value = Result.Success(true)
+                        deviceSetupModel.value?.let {
+                            saveDeviceToDatabase(it , validConfig)
+                        }
+                    } else {
+                        _configNetworkResult.value = Result.Error("Something wrong! Failed to configure uwb network")
+                    }
+                } else {
+                    _configNetworkResult.value = Result.Error("Something wrong! Failed to configure uwb network")
+                }
+            } catch (e: Exception){
+                _configNetworkResult.value = Result.Error(e.message ?: "Failed to configure uwb network")
+            }
+        }
     }
 
     private fun validateNetworkConfig(): Boolean {

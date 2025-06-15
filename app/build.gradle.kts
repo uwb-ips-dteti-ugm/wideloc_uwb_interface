@@ -83,6 +83,8 @@ dependencies {
     kapt(libs.glide.compiler)
     coreLibraryDesugaring(libs.desugarJdkLibs)
     implementation(libs.threetenabp)
+    debugImplementation(libs.chucker.debug)
+    releaseImplementation(libs.chucker.release)
 
     testImplementation(libs.room.testing)
 

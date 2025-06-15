@@ -1,4 +1,4 @@
-package com.rizqi.wideloc.domain
+package com.rizqi.wideloc.domain.repository
 
 import com.rizqi.wideloc.data.local.entity.DeviceRole
 import com.rizqi.wideloc.domain.model.DeviceData
