@@ -2,6 +2,7 @@ package com.rizqi.wideloc.presentation.ui.devices.bottomsheets.add_device
 
 import android.content.Context
 import android.net.wifi.WifiInfo
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -44,7 +45,7 @@ class AddDeviceViewModel @Inject constructor(
     val isAnyServerExist: LiveData<Boolean> get() = _isAnyServerExist
 
     private val _wifiInformation = MutableLiveData<WifiInformation?>()
-    private val wifiInformation: LiveData<WifiInformation?> get() = _wifiInformation
+    val wifiInformation: LiveData<WifiInformation?> get() = _wifiInformation
 
     private val _connectedWifiInfo = MutableLiveData<WifiInfo?>()
     val connectedWifiInfo: LiveData<WifiInfo?> get() = _connectedWifiInfo
@@ -81,7 +82,7 @@ class AddDeviceViewModel @Inject constructor(
     }
 
     fun setWifiInformation(wifiInformation: WifiInformation?) {
-        _wifiInformation.value = wifiInformation
+        _wifiInformation.postValue(wifiInformation)
     }
 
     fun setDeviceSetup(
@@ -163,7 +164,7 @@ class AddDeviceViewModel @Inject constructor(
         _connectedWifiInfo.value = wifiInfo
         _connectedWifiInfoError.value = if (wifiInformation.value == null) {
             context.getString(R.string.you_have_not_selected_a_uwb_network_before)
-        } else if (wifiInfo?.ssid != wifiInformation.value?.ssid) {
+        } else if (wifiInfo?.ssid?.replace("\"", "") != wifiInformation.value?.ssid) {
             context.getString(
                 R.string.network_is_different_from_the_one_selected,
                 wifiInformation.value?.ssid
@@ -213,8 +214,8 @@ class AddDeviceViewModel @Inject constructor(
         if (!isConfigValid) return
 
         val validConfig = (networkConfig.value ?: NetworkConfig()).copy(
-            dns = "${getNamePrefix()}${networkConfig.value?.dns ?: ""}",
-            apSSID = "${getNamePrefix()}${networkConfig.value?.apSSID ?: ""}",
+            dns = "${getNamePrefix()}${networkConfig.value?.dns}",
+            apSSID = "${getNamePrefix()}${networkConfig.value?.apSSID}",
         )
 
         val wifiConfigData = WifiConfigData(
@@ -256,17 +257,17 @@ class AddDeviceViewModel @Inject constructor(
         val dnsError = if(networkConfig.value?.dns.isNullOrBlank()) context.getString(R.string.please_fill_the_dns) else null
         val portError = if(networkConfig.value?.port == null) context.getString(R.string.please_fill_the_port) else null
         val apSSIDError = if(networkConfig.value?.apSSID.isNullOrBlank()) context.getString(R.string.please_fill_the_access_point_ssid) else null
-        val apPasswordError = if(networkConfig.value?.apSSID.isNullOrBlank()) {
+        val apPasswordError = if(networkConfig.value?.apPassword.isNullOrBlank()) {
             context.getString(R.string.please_fill_the_access_point_password)
-        } else if ((networkConfig.value?.apSSID?.length ?: 0) < 8) {
+        } else if ((networkConfig.value?.apPassword?.length ?: 0) < 8) {
             context.getString(R.string.password_must_be_at_least_8_characters)
         } else {
             null
         }
-        val staSSIDError = if(networkConfig.value?.apSSID.isNullOrBlank()) context.getString(R.string.please_fill_the_station_ssid) else null
-        val staPasswordError = if(networkConfig.value?.apSSID.isNullOrBlank()) {
+        val staSSIDError = if(networkConfig.value?.staSSID.isNullOrBlank()) context.getString(R.string.please_fill_the_station_ssid) else null
+        val staPasswordError = if(networkConfig.value?.staPassword.isNullOrBlank()) {
             context.getString(R.string.please_fill_the_station_password)
-        } else if ((networkConfig.value?.apSSID?.length ?: 0) < 8) {
+        } else if ((networkConfig.value?.staPassword?.length ?: 0) < 8) {
             context.getString(R.string.password_must_be_at_least_8_characters)
         } else {
             null
@@ -280,14 +281,14 @@ class AddDeviceViewModel @Inject constructor(
             staPassword = staPasswordError,
         )
         _networkConfigError.value = newNetworkConfigError
-        return dnsError != null && portError != null && apSSIDError != null && apPasswordError != null && staSSIDError != null && staPasswordError != null
+        return dnsError == null && portError == null && apSSIDError == null && apPasswordError == null && staSSIDError == null && staPasswordError == null
     }
 
     fun getNamePrefix(): String {
         val role = deviceSetupModel.value?.role?.name ?: "role_unknown"
         val name = deviceSetupModel.value?.name ?: "name_unknown"
         val id = id.value ?: "id_unknown"
-        return "$id-$role-$name"
+        return "$id-$role-$name-"
     }
 
     data class DeviceSetupModel(

@@ -15,6 +15,7 @@ import android.net.wifi.WifiNetworkSpecifier
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
@@ -23,6 +24,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.net.toUri
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.rizqi.wideloc.databinding.FragmentConnectDeviceWifiBinding
 import com.rizqi.wideloc.presentation.ui.BaseFragment
@@ -33,6 +35,9 @@ import com.rizqi.wideloc.presentation.ui.devices.bottomsheets.add_device.AddDevi
 import com.rizqi.wideloc.receiver.WifiScanReceiver
 import com.rizqi.wideloc.utils.ViewUtils.hideKeyboardAndClearFocus
 import com.rizqi.wideloc.utils.ViewUtils.isLocationEnabled
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import java.net.InetAddress
 
 class ConnectDeviceWifiFragment :
     BaseFragment<FragmentConnectDeviceWifiBinding>(FragmentConnectDeviceWifiBinding::inflate) {
@@ -59,6 +64,7 @@ class ConnectDeviceWifiFragment :
 
         (parentFragment?.parentFragment as? AddDeviceBottomSheet)?.toggleWifiInfoVisibility(false)
         recalculateContentHeight()
+
 
         wifiManager =
             requireContext().applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
@@ -94,8 +100,15 @@ class ConnectDeviceWifiFragment :
             }
         }
         binding.refreshButtonConnectDeviceWifiFragment.setOnClickListener { startWifiScan() }
+        binding.skipButtonConnectDeviceWifiFragment.setOnClickListener {
+            (parentFragment as? ConnectViaWiFiFragment)?.goToNextPage()
+        }
 
         requestWifiPermission()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
     }
 
     private fun onWifiScanResult(scanResults: List<ScanResult>) {
@@ -172,6 +185,7 @@ class ConnectDeviceWifiFragment :
             Toast.makeText(requireContext(), "Please enter the Wi-Fi password", Toast.LENGTH_SHORT).show()
             return
         }
+        addDeviceViewModel.setWifiInformation(wifiInfo.copy(password = password))
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             // For Android 10+
@@ -184,13 +198,8 @@ class ConnectDeviceWifiFragment :
 
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun connectWifiPostAndroidQ(wifiInformation: WifiInformation?, password: String) {
-        if (wifiInformation == null) {
-            Toast.makeText(requireContext(), "Select a Wifi first", Toast.LENGTH_SHORT).show()
-            return
-        }
-        if (password.isBlank()) {
-            Toast.makeText(requireContext(), "Please! Enter the wifi password", Toast.LENGTH_SHORT)
-                .show()
+        if (wifiInformation == null || password.isBlank()) {
+            Toast.makeText(requireContext(), "Please select a Wifi and enter password", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -206,42 +215,53 @@ class ConnectDeviceWifiFragment :
 
         val request = NetworkRequest.Builder()
             .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+            .removeCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+            .removeCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
             .setNetworkSpecifier(specifier)
             .build()
 
         val connectivityManager =
             requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
+        var isCallbackCalled = false
+
         val networkCallback = object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
-                super.onAvailable(network)
-                if (!Settings.System.canWrite(requireContext())) return
-                val result = connectivityManager.bindProcessToNetwork(network)
-                if (result) {
-                    Toast.makeText(
-                        requireContext(),
-                        "Connected to ${wifiInformation.ssid}",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                isCallbackCalled = true
+//                connectivityManager.bindProcessToNetwork(network)
+                requireActivity().runOnUiThread {
+                    Toast.makeText(requireContext(), "Connected to ${wifiInformation.ssid}", Toast.LENGTH_SHORT).show()
                     addDeviceViewModel.setWifiInformation(wifiInformation)
                     (parentFragment as? ConnectViaWiFiFragment)?.goToNextPage()
-                } else {
-                    Toast.makeText(
-                        requireContext(),
-                        "Failed to connect to ${wifiInformation.ssid}",
-                        Toast.LENGTH_SHORT
-                    ).show()
                 }
+                try {
+                    connectivityManager.unregisterNetworkCallback(this)
+                } catch (_: Exception) {}
             }
 
             override fun onUnavailable() {
-                super.onUnavailable()
-                Toast.makeText(requireContext(), "Failed to connect", Toast.LENGTH_SHORT).show()
+                if (!isCallbackCalled) {
+                    isCallbackCalled = true
+                    requireActivity().runOnUiThread {
+                        Toast.makeText(requireContext(), "Failed to connect: network unavailable", Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
         }
 
         connectivityManager.requestNetwork(request, networkCallback)
 
+        // ✅ Launch timeout fallback
+        viewLifecycleOwner.lifecycleScope.launch {
+            delay(30_000) // 30 seconds timeout
+            if (!isCallbackCalled) {
+                isCallbackCalled = true
+                try {
+                    connectivityManager.unregisterNetworkCallback(networkCallback)
+                } catch (_: Exception) {}
+                Toast.makeText(requireContext(), "Connection timeout. Try again.", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     @Suppress("DEPRECATION")
@@ -266,7 +286,6 @@ class ConnectDeviceWifiFragment :
             Toast.makeText(requireContext(), "Failed to add network configuration for ${wifiInformation?.ssid}", Toast.LENGTH_SHORT).show()
         }
     }
-
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun requestWriteSettingsPermission() {

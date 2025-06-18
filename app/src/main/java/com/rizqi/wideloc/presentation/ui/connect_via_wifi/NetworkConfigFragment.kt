@@ -1,28 +1,32 @@
 package com.rizqi.wideloc.presentation.ui.connect_via_wifi
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.os.Build
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
+import android.util.Log
 import android.view.View
-import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.activityViewModels
-import com.rizqi.wideloc.R
 import com.rizqi.wideloc.data.Result
 import com.rizqi.wideloc.databinding.FragmentNetworkConfigBinding
 import com.rizqi.wideloc.presentation.ui.BaseFragment
-import com.rizqi.wideloc.presentation.ui.connect_via_bluetooth.ConnectViaBluetoothFragment
 import com.rizqi.wideloc.presentation.ui.devices.bottomsheets.add_device.AddDeviceBottomSheet
 import com.rizqi.wideloc.presentation.ui.devices.bottomsheets.add_device.AddDeviceViewModel
 import com.rizqi.wideloc.utils.ViewUtils.hideKeyboardAndClearFocus
+import java.net.HttpURLConnection
+import java.net.URL
 
 class NetworkConfigFragment : BaseFragment<FragmentNetworkConfigBinding>(FragmentNetworkConfigBinding::inflate) {
 
     private val addDeviceViewModel: AddDeviceViewModel by activityViewModels()
 
+    private lateinit var connectivityManager: ConnectivityManager
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        connectivityManager = requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
         (parentFragment?.parentFragment as? AddDeviceBottomSheet)?.toggleWifiInfoVisibility(true)
         recalculateContentHeight()
@@ -53,8 +57,6 @@ class NetworkConfigFragment : BaseFragment<FragmentNetworkConfigBinding>(Fragmen
             binding.staPasswordInputLayoutConnectDeviceWifiFragment.error = error?.staPassword
         }
 
-        binding.dnsInputLayoutNetworkConfigFragment.prefixText = addDeviceViewModel.getNamePrefix()
-        binding.apSSIDInputLayoutNetworkConfigFragment.prefixText = addDeviceViewModel.getNamePrefix()
         binding.root.setOnClickListener {
             hideKeyboardAndClearFocus(requireActivity().currentFocus ?: it)
         }
@@ -91,6 +93,15 @@ class NetworkConfigFragment : BaseFragment<FragmentNetworkConfigBinding>(Fragmen
         binding.configureButtonNetworkConfigFragment.setOnClickListener {
             addDeviceViewModel.configureNetwork()
         }
+        binding.dnsInputLayoutNetworkConfigFragment.prefixText = addDeviceViewModel.getNamePrefix()
+        binding.apSSIDInputLayoutNetworkConfigFragment.prefixText = addDeviceViewModel.getNamePrefix()
+    }
+
+    override fun onDestroyView() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            connectivityManager.bindProcessToNetwork(null)
+        }
+        super.onDestroyView()
     }
 
     private fun recalculateContentHeight() {
