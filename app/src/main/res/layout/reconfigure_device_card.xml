@@ -59,11 +59,107 @@
         app:layout_constraintTop_toTopOf="parent"
         />
 
+    <LinearLayout
+        android:id="@+id/staSSIDLayoutDeviceCard"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/deviceNameTextViewDeviceCard"
+        app:layout_constraintStart_toStartOf="@id/deviceNameTextViewDeviceCard"
+        app:layout_constraintEnd_toStartOf="@id/connectionButtonDeviceCard"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        >
+
+        <ImageView
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:src="@drawable/ic_wifi_solid"
+            app:tint="@color/text_secondary"
+            android:layout_marginEnd="8dp"
+            />
+
+        <TextView
+            android:id="@+id/staSSIDTextViewDeviceCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="Pakeqi's Hotspot"
+            android:fontFamily="@font/roboto_regular"
+            android:textSize="12sp"
+            android:textColor="@color/text_secondary"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/dnsLayoutDeviceCard"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/staSSIDLayoutDeviceCard"
+        app:layout_constraintStart_toStartOf="@id/deviceNameTextViewDeviceCard"
+        app:layout_constraintEnd_toStartOf="@id/connectionButtonDeviceCard"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
+        >
+
+        <ImageView
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:src="@drawable/globe_solid"
+            app:tint="@color/text_secondary"
+            android:layout_marginEnd="8dp"
+            />
+
+        <TextView
+            android:id="@+id/dnsTextViewDeviceCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="esp32-uwb-device.local"
+            android:fontFamily="@font/roboto_regular"
+            android:textSize="12sp"
+            android:textColor="@color/text_secondary"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/roleLayoutDeviceCard"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/dnsLayoutDeviceCard"
+        app:layout_constraintStart_toStartOf="@id/deviceNameTextViewDeviceCard"
+        app:layout_constraintEnd_toStartOf="@id/connectionButtonDeviceCard"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
+        >
+
+        <ImageView
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:src="@drawable/user_tag_solid"
+            app:tint="@color/text_secondary"
+            android:layout_marginEnd="8dp"
+            />
+
+        <TextView
+            android:id="@+id/roleTextViewDeviceCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="Server"
+            android:fontFamily="@font/roboto_regular"
+            android:textSize="12sp"
+            android:textColor="@color/text_secondary"
+            />
+
+    </LinearLayout>
+
     <TextView
         android:id="@+id/connectedTimeTextViewDeviceCard"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/deviceNameTextViewDeviceCard"
+        app:layout_constraintTop_toBottomOf="@id/roleLayoutDeviceCard"
         app:layout_constraintStart_toStartOf="@id/deviceNameTextViewDeviceCard"
         app:layout_constraintEnd_toStartOf="@id/connectionButtonDeviceCard"
         android:layout_marginTop="4dp"
@@ -85,7 +181,8 @@
         android:insetBottom="0dp"
         android:insetLeft="0dp"
         android:insetRight="0dp"
-        app:layout_constraintTop_toTopOf="@id/connectedTimeTextViewDeviceCard"
+        app:layout_constraintTop_toTopOf="@id/staSSIDLayoutDeviceCard"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:strokeColor="@color/text_secondary"
         app:strokeWidth="1dp"

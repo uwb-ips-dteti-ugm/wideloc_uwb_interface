@@ -1,5 +1,6 @@
 package com.rizqi.wideloc.data.repository
 
+import android.util.Log
 import com.rizqi.wideloc.data.local.DeviceDataSource
 import com.rizqi.wideloc.data.local.entity.DeviceRole
 import com.rizqi.wideloc.domain.model.DeviceData

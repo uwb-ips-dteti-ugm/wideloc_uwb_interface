@@ -1,6 +1,7 @@
 package com.rizqi.wideloc.presentation.ui.devices
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -37,21 +38,22 @@ class DevicesFragment : BaseFragment<FragmentDevicesBinding>(FragmentDevicesBind
             addDeviceBottomSheet.show(parentFragmentManager, addDeviceBottomSheet.tag)
         }
 
-        addDeviceBottomSheet.show(parentFragmentManager, addDeviceBottomSheet.tag)
-
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.availableDevices.collect { devices ->
-                    devicesAdapter.submitList(devices)
-                }
-            }
-
-            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.reconfigureDevices.collect {devices ->
-                    reconfigureDevicesAdapter.submitList(devices)
+                viewModel.availableDevices.collect {
+                    devicesAdapter.submitList(it)
                 }
             }
         }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.reconfigureDevices.collect {
+                    reconfigureDevicesAdapter.submitList(it)
+                }
+            }
+        }
+
 
     }
 }

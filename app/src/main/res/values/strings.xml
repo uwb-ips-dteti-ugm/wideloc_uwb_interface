@@ -115,5 +115,7 @@
     <string name="device_address">Device Address</string>
     <string name="set_the_device_to_auto_start">Set the device to <b>auto start</b></string>
     <string name="please_connect_to_the_same_network_as_the_uwb_network">Please connect to the same network as the UWB network(%1$s)</string>
+    <string name="never_connected_yet">Never connected yet</string>
+    <string name="network_not_configured_yet">Network not configured yet</string>
 
 </resources>
