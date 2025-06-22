@@ -73,8 +73,9 @@ class DeviceConfigFragment : BaseFragment<FragmentDeviceConfigBinding>(FragmentD
                 is Result.Loading<*> -> toggleButtonAndProgressIndicator(true)
                 is Result.Success<*> -> {
                     toggleButtonAndProgressIndicator(false)
-                    Toast.makeText(requireContext(), "Success", Toast.LENGTH_LONG).show()
-//                    (parentFragment as? ConnectViaWiFiFragment)?.goToNextPage()
+                    Toast.makeText(requireContext(),
+                        getString(com.rizqi.wideloc.R.string.device_configured), Toast.LENGTH_LONG).show()
+                    (parentFragment?.parentFragment as? AddDeviceBottomSheet)?.dismiss()
                 }
                 null -> toggleButtonAndProgressIndicator(false)
             }

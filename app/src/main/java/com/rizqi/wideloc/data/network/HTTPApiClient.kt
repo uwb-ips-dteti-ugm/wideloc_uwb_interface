@@ -56,7 +56,7 @@ class HTTPApiClient(private val baseUrl: String = Constants.ESP_BASE_URL) {
     }
 
     suspend fun post(endpoint: String, body: String): String = withContext(Dispatchers.IO) {
-        val url = URL("$baseUrl$endpoint")
+        val url = URL("http://$baseUrl$endpoint")
         val connection = url.openConnection() as HttpURLConnection
 
         Log.d(TAG, "🟡 [POST] URL: $url")

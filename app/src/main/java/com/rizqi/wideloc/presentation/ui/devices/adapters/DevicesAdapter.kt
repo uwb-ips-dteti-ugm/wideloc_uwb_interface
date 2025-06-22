@@ -8,10 +8,13 @@ import com.bumptech.glide.Glide
 import com.rizqi.wideloc.R
 import com.rizqi.wideloc.databinding.DeviceCardBinding
 import com.rizqi.wideloc.domain.model.DeviceData
+import com.rizqi.wideloc.utils.DomainDataMapper.asWifiProtocolEntity
 import com.rizqi.wideloc.utils.formatToString
 import java.io.File
 
-class DevicesAdapter : RecyclerView.Adapter<DevicesAdapter.DeviceViewHolder>() {
+class DevicesAdapter(
+    private val onClick: (DeviceData) -> Unit
+) : RecyclerView.Adapter<DevicesAdapter.DeviceViewHolder>() {
 
     private val devices = mutableListOf<DeviceData>()
 
@@ -37,11 +40,19 @@ class DevicesAdapter : RecyclerView.Adapter<DevicesAdapter.DeviceViewHolder>() {
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(device: DeviceData) {
+            val context = binding.root.context
+
             Glide.with(binding.deviceImageViewDeviceCard.context)
                 .load(File(device.imageUrl))
                 .into(binding.deviceImageViewDeviceCard)
             binding.deviceNameTextViewDeviceCard.text = device.name
-            binding.connectedTimeTextViewDeviceCard.text = device.lastConnectedAt.formatToString()
+            binding.connectedTimeTextViewDeviceCard.text =
+                if (device.lastConnectedAt == null) context.getString(R.string.never_connected_yet)
+                else device.lastConnectedAt.formatToString()
+            binding.staSSIDTextViewDeviceCard.text = device.protocol.asWifiProtocolEntity()?.networkSSID ?: context.getString(R.string.network_not_configured_yet)
+            binding.dnsTextViewDeviceCard.text = device.protocol.asWifiProtocolEntity()?.mdns ?: context.getString(R.string.network_not_configured_yet)
+            binding.roleTextViewDeviceCard.text = device.role.name
+            binding.root.setOnClickListener { onClick(device) }
         }
     }
 }

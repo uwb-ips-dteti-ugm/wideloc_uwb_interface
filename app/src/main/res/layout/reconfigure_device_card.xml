@@ -52,7 +52,7 @@
         android:id="@+id/deviceStatusCardViewDeviceCard"
         android:layout_width="16dp"
         android:layout_height="16dp"
-        android:backgroundTint="@color/background_success"
+        android:backgroundTint="@color/background_error"
         app:cardCornerRadius="16dp"
         app:cardElevation="0dp"
         app:layout_constraintEnd_toEndOf="parent"

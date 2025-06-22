@@ -29,7 +29,9 @@ class DevicesFragment : BaseFragment<FragmentDevicesBinding>(FragmentDevicesBind
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        devicesAdapter = DevicesAdapter()
+        devicesAdapter = DevicesAdapter{
+
+        }
         reconfigureDevicesAdapter = ReconfigureDevicesAdapter{ device ->
             addDeviceBottomSheet.setDeviceData(device)
             addDeviceBottomSheet.show(parentFragmentManager, addDeviceBottomSheet.tag)

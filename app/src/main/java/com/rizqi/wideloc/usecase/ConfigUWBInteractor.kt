@@ -1,5 +1,6 @@
 package com.rizqi.wideloc.usecase
 
+import android.util.Log
 import com.rizqi.wideloc.domain.model.UWBConfigData
 import com.rizqi.wideloc.domain.model.WifiConfigData
 import com.rizqi.wideloc.domain.repository.UWBDeviceRepository
