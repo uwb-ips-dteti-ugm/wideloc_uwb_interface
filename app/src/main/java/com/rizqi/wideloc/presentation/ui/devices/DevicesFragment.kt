@@ -30,7 +30,10 @@ class DevicesFragment : BaseFragment<FragmentDevicesBinding>(FragmentDevicesBind
         super.onViewCreated(view, savedInstanceState)
 
         devicesAdapter = DevicesAdapter()
-        reconfigureDevicesAdapter = ReconfigureDevicesAdapter()
+        reconfigureDevicesAdapter = ReconfigureDevicesAdapter{ device ->
+            addDeviceBottomSheet.setDeviceData(device)
+            addDeviceBottomSheet.show(parentFragmentManager, addDeviceBottomSheet.tag)
+        }
 
         binding.devicesRecyclerViewFragmentDevices.adapter = devicesAdapter
         binding.reconfigureDevicesRecyclerViewFragmentDevices.adapter = reconfigureDevicesAdapter

@@ -27,6 +27,7 @@ import com.rizqi.wideloc.usecase.ConnectWifiUseCase
 import com.rizqi.wideloc.usecase.GenerateIDInteractor
 import com.rizqi.wideloc.usecase.GenerateIDUseCase
 import com.rizqi.wideloc.utils.Constants
+import com.rizqi.wideloc.utils.DomainDataMapper.asWifiProtocolEntity
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
@@ -89,6 +90,9 @@ class AddDeviceViewModel @Inject constructor(
     val configUWBResult: LiveData<Result<Boolean>?> get() = _configUWBResult
 
     private var savedDeviceData: DeviceData? = null
+
+    private val _jumpToPage = MutableLiveData<Int?>()
+    val jumpTopage: LiveData<Int?> get() = _jumpToPage
 
     init {
         _id.value = generateIDUseCase.invoke()
@@ -365,8 +369,6 @@ class AddDeviceViewModel @Inject constructor(
             autoStart = isAutoStart
         )
 
-        Log.e("TAG", "configureDevice: ${validateUWBConfig()}", )
-
         if (!validateUWBConfig()) return
 
         val validConfig = uwbConfig.value?.copy() ?: UWBConfig()
@@ -401,7 +403,7 @@ class AddDeviceViewModel @Inject constructor(
 
     }
 
-    fun validateUWBConfig(): Boolean {
+    private fun validateUWBConfig(): Boolean {
         val uwbConfigError = UWBConfigError()
 
 //        Server Role
@@ -434,6 +436,56 @@ class AddDeviceViewModel @Inject constructor(
         val name = deviceSetupModel.value?.name ?: "name_unknown"
         val id = id.value ?: "id_unknown"
         return "$id-$role-$name-"
+    }
+
+    fun setDeviceData(deviceData: DeviceData){
+        resetAll()
+        val networkProtocol = deviceData.protocol.asWifiProtocolEntity()
+        _id.value = deviceData.id
+        _wifiInformation.value = WifiInformation(
+            ssid = networkProtocol?.networkSSID ?: "",
+            ipv4 = networkProtocol?.networkSSID ?: "",
+            password = networkProtocol?.networkPassword ?: ""
+        )
+        _deviceSetupModel.value = DeviceSetupModel(
+            name = deviceData.name,
+            offsetX = deviceData.offset.x,
+            offsetY = deviceData.offset.y,
+            offsetZ = deviceData.offset.z,
+            role = deviceData.role,
+            imagePath = deviceData.imageUrl
+        )
+        networkProtocol?.let {
+            _networkConfig.value = NetworkConfig(
+                dns = it.mdns,
+                port = it.port,
+                apSSID = it.deviceAccessPointSSID,
+                isApSSIDSameAsDNS = it.deviceAccessPointSSID == it.mdns,
+                apPassword = it.deviceAccessPointPPassword,
+                staSSID = it.networkSSID,
+                staPassword = it.networkPassword,
+                isAutoConnect = it.autoConnect
+            )
+        }
+        deviceData.uwbConfigData?.let {
+            _uwbConfig.value = UWBConfig(
+                client = it.maxClient,
+                networkAddress = it.networkAddress,
+                deviceAddress = it.deviceAddress,
+                server = availableServers.value?.find { server ->
+                    server.uwbConfigData?.networkAddress == it.networkAddress
+                },
+                autoStart = it.autoStart
+            )
+        }
+        savedDeviceData = deviceData
+        if (deviceSetupModel.value != null && networkConfig.value != null) {
+            _jumpToPage.value = 3
+        }
+    }
+
+    fun hasJumpToPage(){
+        _jumpToPage.value = null
     }
 
     data class DeviceSetupModel(

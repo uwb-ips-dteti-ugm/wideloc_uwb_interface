@@ -18,8 +18,9 @@ class DeviceInteractor @Inject constructor(
         repository.getAllDevices()
 
     override fun getAvailableDevices(): Flow<List<DeviceData>> =
-        repository.getAllDevices().map { devices ->
-            devices.filter { it.isAvailable }
+        repository.getAllDevices()
+            .map { devices ->
+            devices.filter { it.isAvailable && it.uwbConfigData != null }
         }
 
     override fun getReconfigureDevices(): Flow<List<DeviceData>> =

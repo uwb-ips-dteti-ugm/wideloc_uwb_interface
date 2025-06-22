@@ -21,6 +21,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.rizqi.wideloc.R
 import com.rizqi.wideloc.databinding.AddDeviceBottomSheetBinding
+import com.rizqi.wideloc.domain.model.DeviceData
 import com.rizqi.wideloc.presentation.ui.connect_via_wifi.ConnectViaWiFiFragment
 import com.rizqi.wideloc.receiver.WifiInfoReceiver
 import dagger.hilt.android.AndroidEntryPoint
@@ -37,6 +38,7 @@ class AddDeviceBottomSheet : BottomSheetDialogFragment() {
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
 
     private val addDeviceViewModel: AddDeviceViewModel by activityViewModels()
+    private var sharedDeviceData: DeviceData? = null
 
     private lateinit var wifiInfoReceiver: WifiInfoReceiver
 
@@ -51,6 +53,8 @@ class AddDeviceBottomSheet : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        sharedDeviceData?.let { addDeviceViewModel.setDeviceData(it) }
 
         wifiInfoReceiver = WifiInfoReceiver(requireContext(), this)
 
@@ -162,6 +166,10 @@ class AddDeviceBottomSheet : BottomSheetDialogFragment() {
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
         addDeviceViewModel.resetAll()
+    }
+
+    fun setDeviceData(deviceData: DeviceData){
+        sharedDeviceData = deviceData
     }
 
 }

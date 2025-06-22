@@ -12,7 +12,9 @@ import com.rizqi.wideloc.utils.DomainDataMapper.asWifiProtocolEntity
 import com.rizqi.wideloc.utils.formatToString
 import java.io.File
 
-class ReconfigureDevicesAdapter : RecyclerView.Adapter<ReconfigureDevicesAdapter.DeviceViewHolder>() {
+class ReconfigureDevicesAdapter(
+    private val onClick: (DeviceData) -> Unit
+) : RecyclerView.Adapter<ReconfigureDevicesAdapter.DeviceViewHolder>() {
 
     private val devices = mutableListOf<DeviceData>()
 
@@ -50,6 +52,7 @@ class ReconfigureDevicesAdapter : RecyclerView.Adapter<ReconfigureDevicesAdapter
             binding.staSSIDTextViewDeviceCard.text = device.protocol.asWifiProtocolEntity()?.networkSSID ?: context.getString(R.string.network_not_configured_yet)
             binding.dnsTextViewDeviceCard.text = device.protocol.asWifiProtocolEntity()?.mdns ?: context.getString(R.string.network_not_configured_yet)
             binding.roleTextViewDeviceCard.text = device.role.name
+            binding.root.setOnClickListener { onClick(device) }
         }
     }
 }
