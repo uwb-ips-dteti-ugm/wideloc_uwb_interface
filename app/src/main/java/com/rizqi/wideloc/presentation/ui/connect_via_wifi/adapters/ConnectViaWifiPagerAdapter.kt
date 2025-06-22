@@ -3,6 +3,7 @@ package com.rizqi.wideloc.presentation.ui.connect_via_wifi.adapters
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.rizqi.wideloc.presentation.ui.connect_via_wifi.ConnectDeviceWifiFragment
+import com.rizqi.wideloc.presentation.ui.connect_via_wifi.DeviceConfigFragment
 import com.rizqi.wideloc.presentation.ui.connect_via_wifi.InputURLFragment
 import com.rizqi.wideloc.presentation.ui.connect_via_wifi.NetworkConfigFragment
 import com.rizqi.wideloc.presentation.ui.connect_via_wifi.SetUpDeviceFragment
@@ -14,7 +15,7 @@ class ConnectViaWifiPagerAdapter(fragment: Fragment): FragmentStateAdapter(fragm
         ConnectDeviceWifiFragment(),
         SetUpDeviceFragment(),
         NetworkConfigFragment(),
-//        InputURLFragment(),
+        DeviceConfigFragment(),
 //        TestConnectionFragment(),
     )
 

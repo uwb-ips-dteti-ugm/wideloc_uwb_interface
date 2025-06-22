@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 
 data class UWBConfigEntity(
     @ColumnInfo(name = "auto_start")
-    val autoStart: String,
+    val autoStart: Boolean,
     @ColumnInfo(name = "is_server")
     val isServer: Boolean,
     @ColumnInfo(name = "max_client")

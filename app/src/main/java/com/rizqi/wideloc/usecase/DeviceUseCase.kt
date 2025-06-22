@@ -34,4 +34,8 @@ interface DeviceUseCase {
     suspend fun getFirstByRole(role: DeviceRole): DeviceData?
 
     suspend fun isAnyServerSaved(): Boolean
+
+    suspend fun generateNetworkAddress(): Int
+
+    suspend fun generateDeviceAddress(): Int
 }

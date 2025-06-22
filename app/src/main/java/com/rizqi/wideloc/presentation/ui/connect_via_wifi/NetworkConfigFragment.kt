@@ -1,10 +1,6 @@
 package com.rizqi.wideloc.presentation.ui.connect_via_wifi
 
-import android.content.Context
-import android.net.ConnectivityManager
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.activityViewModels
@@ -14,19 +10,13 @@ import com.rizqi.wideloc.presentation.ui.BaseFragment
 import com.rizqi.wideloc.presentation.ui.devices.bottomsheets.add_device.AddDeviceBottomSheet
 import com.rizqi.wideloc.presentation.ui.devices.bottomsheets.add_device.AddDeviceViewModel
 import com.rizqi.wideloc.utils.ViewUtils.hideKeyboardAndClearFocus
-import java.net.HttpURLConnection
-import java.net.URL
 
 class NetworkConfigFragment : BaseFragment<FragmentNetworkConfigBinding>(FragmentNetworkConfigBinding::inflate) {
 
     private val addDeviceViewModel: AddDeviceViewModel by activityViewModels()
 
-    private lateinit var connectivityManager: ConnectivityManager
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        connectivityManager = requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
         (parentFragment?.parentFragment as? AddDeviceBottomSheet)?.toggleWifiInfoVisibility(true)
         recalculateContentHeight()
@@ -44,7 +34,10 @@ class NetworkConfigFragment : BaseFragment<FragmentNetworkConfigBinding>(Fragmen
             when(result){
                 is Result.Error -> toggleButtonAndProgressIndicator(false)
                 is Result.Loading<*> -> toggleButtonAndProgressIndicator(true)
-                is Result.Success<*> -> toggleButtonAndProgressIndicator(false)
+                is Result.Success<*> -> {
+                    toggleButtonAndProgressIndicator(false)
+                    (parentFragment as? ConnectViaWiFiFragment)?.goToNextPage()
+                }
                 null -> toggleButtonAndProgressIndicator(false)
             }
         }
@@ -95,13 +88,6 @@ class NetworkConfigFragment : BaseFragment<FragmentNetworkConfigBinding>(Fragmen
         }
         binding.dnsInputLayoutNetworkConfigFragment.prefixText = addDeviceViewModel.getNamePrefix()
         binding.apSSIDInputLayoutNetworkConfigFragment.prefixText = addDeviceViewModel.getNamePrefix()
-    }
-
-    override fun onDestroyView() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            connectivityManager.bindProcessToNetwork(null)
-        }
-        super.onDestroyView()
     }
 
     private fun recalculateContentHeight() {

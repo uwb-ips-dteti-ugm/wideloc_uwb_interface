@@ -1,5 +1,7 @@
 package com.rizqi.wideloc.di
 
+import com.rizqi.wideloc.usecase.ConfigUWBInteractor
+import com.rizqi.wideloc.usecase.ConfigUWBUseCase
 import com.rizqi.wideloc.usecase.ConfigWifiInteractor
 import com.rizqi.wideloc.usecase.ConfigWifiUseCase
 import com.rizqi.wideloc.usecase.ConnectWifiInteractor
@@ -23,4 +25,7 @@ abstract class UseCaseModule {
 
     @Binds
     abstract fun bindConnectWifiUseCase(useCase: ConnectWifiInteractor): ConnectWifiUseCase
+
+    @Binds
+    abstract fun bindConfigUWBUseCase(useCase: ConfigUWBInteractor): ConfigUWBUseCase
 }

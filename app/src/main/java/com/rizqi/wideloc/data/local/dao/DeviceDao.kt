@@ -37,4 +37,11 @@ interface DeviceDao {
 
     @Query("SELECT * FROM devices WHERE role = :role LIMIT 1")
     suspend fun getFirstByRole(role: DeviceRole): DeviceEntity?
+
+    @Query("SELECT uwb_config_device_address FROM devices WHERE uwb_config_device_address IS NOT NULL ORDER BY created_at DESC LIMIT 1")
+    suspend fun getLastUwbDeviceAddress(): Int?
+
+    @Query("SELECT uwb_config_network_address FROM devices WHERE uwb_config_network_address IS NOT NULL ORDER BY created_at DESC LIMIT 1")
+    suspend fun getLastUwbNetworkAddress(): Int?
+
 }

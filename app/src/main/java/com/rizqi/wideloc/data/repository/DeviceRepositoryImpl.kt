@@ -48,4 +48,8 @@ class DeviceRepositoryImpl @Inject constructor(
 
     override suspend fun getFirstByRole(role: DeviceRole): DeviceData? = localDataSource.getFirstByRole(role)?.asDeviceData()
 
+    override suspend fun getNetworkAddressLastId() = localDataSource.getNetworkAddressLastId()
+
+    override suspend fun getDeviceAddressLastId() = localDataSource.getDeviceAddressLastId()
+
 }

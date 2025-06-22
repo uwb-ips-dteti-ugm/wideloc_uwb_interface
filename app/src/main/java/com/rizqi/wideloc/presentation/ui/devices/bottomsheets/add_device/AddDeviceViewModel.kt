@@ -13,16 +13,20 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import com.rizqi.wideloc.data.Result
 import com.rizqi.wideloc.data.local.entity.DeviceRole
+import com.rizqi.wideloc.data.local.entity.UWBMode
 import com.rizqi.wideloc.domain.model.DeviceData
 import com.rizqi.wideloc.domain.model.DeviceOffsetData
+import com.rizqi.wideloc.domain.model.UWBConfigData
 import com.rizqi.wideloc.domain.model.WifiConfigData
 import com.rizqi.wideloc.domain.model.WifiConnectData
 import com.rizqi.wideloc.domain.model.WifiProtocolData
 import com.rizqi.wideloc.presentation.ui.connect_via_wifi.adapters.WifiInformation
+import com.rizqi.wideloc.usecase.ConfigUWBUseCase
 import com.rizqi.wideloc.usecase.ConfigWifiUseCase
 import com.rizqi.wideloc.usecase.ConnectWifiUseCase
 import com.rizqi.wideloc.usecase.GenerateIDInteractor
 import com.rizqi.wideloc.usecase.GenerateIDUseCase
+import com.rizqi.wideloc.utils.Constants
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
@@ -34,12 +38,16 @@ class AddDeviceViewModel @Inject constructor(
     private val deviceUseCase: DeviceUseCase,
     private val configWifiUseCase: ConfigWifiUseCase,
     private val connectWifiUseCase: ConnectWifiUseCase,
+    private val configUWBUseCase: ConfigUWBUseCase,
 ) : ViewModel() {
 
     private val generateIDUseCase: GenerateIDUseCase = GenerateIDInteractor()
 
     private val _id = MutableLiveData<String>()
     val id: LiveData<String> get() = _id
+
+    private val _availableServers = MutableLiveData<List<DeviceData>>()
+    val availableServers: LiveData<List<DeviceData>> get() = _availableServers
 
     private val _isAnyServerExist = MutableLiveData<Boolean>()
     val isAnyServerExist: LiveData<Boolean> get() = _isAnyServerExist
@@ -62,22 +70,31 @@ class AddDeviceViewModel @Inject constructor(
     private val _saveDeviceResult = MutableLiveData<Result<Boolean>?>()
     val saveDeviceResult: LiveData<Result<Boolean>?> get() = _saveDeviceResult
 
-    private val _hostAddress = MutableLiveData<String?>()
-    val hostAddress: LiveData<String?> get() = _hostAddress
-
     private val _networkConfig = MutableLiveData<NetworkConfig>(NetworkConfig())
     val networkConfig: LiveData<NetworkConfig> get() = _networkConfig
+
+    private val _uwbConfig = MutableLiveData<UWBConfig>(UWBConfig())
+    val uwbConfig: LiveData<UWBConfig> get() = _uwbConfig
 
     private val _networkConfigError = MutableLiveData<NetworkConfigError?>(NetworkConfigError())
     val networkConfigError: LiveData<NetworkConfigError?> get() = _networkConfigError
 
+    private val _uwbConfigError = MutableLiveData<UWBConfigError?>(UWBConfigError())
+    val uwbConfigError: LiveData<UWBConfigError?> get() = _uwbConfigError
+
     private val _configNetworkResult = MutableLiveData<Result<Boolean>?>()
     val configNetworkResult: LiveData<Result<Boolean>?> get() = _configNetworkResult
+
+    private val _configUWBResult = MutableLiveData<Result<Boolean>?>()
+    val configUWBResult: LiveData<Result<Boolean>?> get() = _configUWBResult
+
+    private var savedDeviceData: DeviceData? = null
 
     init {
         _id.value = generateIDUseCase.invoke()
         viewModelScope.launch {
             _isAnyServerExist.value = deviceUseCase.isAnyServerSaved()
+            _availableServers.value = deviceUseCase.getByRole(DeviceRole.Server)
         }
     }
 
@@ -139,10 +156,29 @@ class AddDeviceViewModel @Inject constructor(
             createdAt = LocalDateTime.now(),
             uwbConfigData = null
         )
+        savedDeviceData = deviceData
         viewModelScope.launch {
             try {
                 _saveDeviceResult.value = Result.Loading()
                 deviceUseCase.insertDevice(deviceData)
+                _saveDeviceResult.value = Result.Success(true)
+            } catch (e: Exception){
+                _saveDeviceResult.value = Result.Error(e.message ?: "Failed to save")
+            }
+        }
+    }
+
+    private fun updateDeviceUWBConfigInDatabase(uwbConfigData: UWBConfigData){
+        if (savedDeviceData == null) throw return
+
+        savedDeviceData = savedDeviceData!!.copy(
+            uwbConfigData = uwbConfigData
+        )
+
+        viewModelScope.launch {
+            try {
+                _saveDeviceResult.value = Result.Loading()
+                deviceUseCase.insertDevice(savedDeviceData!!)
                 _saveDeviceResult.value = Result.Success(true)
             } catch (e: Exception){
                 _saveDeviceResult.value = Result.Error(e.message ?: "Failed to save")
@@ -158,12 +194,18 @@ class AddDeviceViewModel @Inject constructor(
         _nameValidationResult.value = null
         _networkConfig.value = NetworkConfig()
         _networkConfigError.value = null
+        _uwbConfig.value = UWBConfig()
     }
 
     fun setConnectedWifi(wifiInfo: WifiInfo?) {
         _connectedWifiInfo.value = wifiInfo
         _connectedWifiInfoError.value = if (wifiInformation.value == null) {
             context.getString(R.string.you_have_not_selected_a_uwb_network_before)
+        } else if (networkConfig.value?.staSSID != null && (wifiInfo?.ssid?.replace("\"", "") != networkConfig.value?.staSSID) ) {
+            context.getString(
+                R.string.please_connect_to_the_same_network_as_the_uwb_network,
+                networkConfig.value?.staSSID
+            )
         } else if (wifiInfo?.ssid?.replace("\"", "") != wifiInformation.value?.ssid) {
             context.getString(
                 R.string.network_is_different_from_the_one_selected,
@@ -207,6 +249,24 @@ class AddDeviceViewModel @Inject constructor(
 
     fun setAutoConnect(isAutoConnect: Boolean){
         _networkConfig.value = networkConfig.value?.copy(isAutoConnect = isAutoConnect)
+    }
+
+    fun setServer(server: DeviceData){
+        _uwbConfig.value = uwbConfig.value?.copy(server = server)
+    }
+
+    fun getNetworkAddress(callback: (Int) -> Unit){
+        viewModelScope.launch {
+            val address = deviceUseCase.generateNetworkAddress()
+            callback(address)
+        }
+    }
+
+    fun getDeviceAddress(callback: (Int) -> Unit){
+        viewModelScope.launch {
+            val address = deviceUseCase.generateDeviceAddress()
+            callback(address)
+        }
     }
     
     fun configureNetwork(){
@@ -284,6 +344,91 @@ class AddDeviceViewModel @Inject constructor(
         return dnsError == null && portError == null && apSSIDError == null && apPasswordError == null && staSSIDError == null && staPasswordError == null
     }
 
+    fun configureDevice(
+        maxClient: String,
+        networkAddress: String,
+        deviceAddress: String,
+        isAutoStart: Boolean,
+    ){
+        var autoGenerateNetworkAddress = 0
+        var autoGenerateDeviceAddress = 0
+        getNetworkAddress {
+            autoGenerateNetworkAddress = it
+        }
+        getDeviceAddress {
+            autoGenerateDeviceAddress = it
+        }
+        _uwbConfig.value = uwbConfig.value?.copy(
+            client = maxClient.toIntOrNull() ?: 16,
+            networkAddress = networkAddress.toIntOrNull() ?: autoGenerateNetworkAddress,
+            deviceAddress = deviceAddress.toIntOrNull() ?: autoGenerateDeviceAddress,
+            autoStart = isAutoStart
+        )
+
+        Log.e("TAG", "configureDevice: ${validateUWBConfig()}", )
+
+        if (!validateUWBConfig()) return
+
+        val validConfig = uwbConfig.value?.copy() ?: UWBConfig()
+
+        val uwbConfigData = UWBConfigData(
+            autoStart = validConfig.autoStart,
+            isServer = deviceSetupModel.value?.role == DeviceRole.Server,
+            maxClient = validConfig.client,
+            mode = UWBMode.TWR,
+            networkAddress = if (deviceSetupModel.value?.role == DeviceRole.Server){
+                validConfig.networkAddress
+            } else {
+                validConfig.server?.uwbConfigData?.networkAddress ?: autoGenerateNetworkAddress
+            },
+            deviceAddress = validConfig.deviceAddress
+        )
+
+        viewModelScope.launch {
+            try {
+                _configUWBResult.value = Result.Loading()
+                val configResult = configUWBUseCase.invoke(networkConfig.value?.dns ?: Constants.ESP_BASE_URL, uwbConfigData)
+                if (configResult){
+                    updateDeviceUWBConfigInDatabase(uwbConfigData)
+                    _configUWBResult.value = Result.Success(true)
+                } else {
+                    _configUWBResult.value = Result.Error("Something wrong! Failed to configure uwb network")
+                }
+            } catch (e: Exception){
+                _configUWBResult.value = Result.Error(e.message ?: "Failed to configure uwb network")
+            }
+        }
+
+    }
+
+    fun validateUWBConfig(): Boolean {
+        val uwbConfigError = UWBConfigError()
+
+//        Server Role
+        if (deviceSetupModel.value?.role == DeviceRole.Server){
+            if ((uwbConfig.value?.client ?: 0) < 1) {
+                uwbConfigError.client = "Client number can't be less than 1"
+            }
+            if ((uwbConfig.value?.networkAddress ?: 0) < 1) {
+                uwbConfigError.networkAddress = "Network address can't be less than 1"
+            }
+            if ((uwbConfig.value?.deviceAddress ?: 0) < 1) {
+                uwbConfigError.deviceAddress = "Device address can't be less than 1"
+            }
+        }
+//        Anchor & Client Role
+        else {
+            if (uwbConfig.value?.server == null) {
+                uwbConfigError.server = "Select a server, cause this device has role as client/anchor"
+            }
+            if ((uwbConfig.value?.deviceAddress ?: 0) < 1) {
+                uwbConfigError.deviceAddress = "Device address can't be less than 1"
+            }
+        }
+        _uwbConfigError.value = uwbConfigError
+        return uwbConfigError.getIsValid()
+    }
+
     fun getNamePrefix(): String {
         val role = deviceSetupModel.value?.role?.name ?: "role_unknown"
         val name = deviceSetupModel.value?.name ?: "name_unknown"
@@ -319,5 +464,24 @@ class AddDeviceViewModel @Inject constructor(
         val staSSID: String? = null,
         val staPassword: String? = null,
     )
+
+    data class UWBConfig(
+        val client: Int = 16,
+        val networkAddress: Int = 0,
+        val deviceAddress: Int = 1,
+        val server: DeviceData? = null,
+        val autoStart: Boolean = true,
+    )
+
+    data class UWBConfigError(
+        var client: String? = null,
+        var networkAddress: String? = null,
+        var deviceAddress: String? = null,
+        var server: String? = null,
+    ) {
+        fun getIsValid(): Boolean {
+            return client == null && networkAddress == null && deviceAddress == null && server == null
+        }
+    }
 
 }

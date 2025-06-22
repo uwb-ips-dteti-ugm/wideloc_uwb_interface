@@ -6,17 +6,18 @@ import com.rizqi.wideloc.data.network.HTTPApiClient
 import com.rizqi.wideloc.data.network.UWBDeviceApi
 import com.rizqi.wideloc.data.network.dto.TWRDto
 import com.rizqi.wideloc.domain.model.ClientData
+import com.rizqi.wideloc.domain.model.UWBConfigData
 import com.rizqi.wideloc.domain.model.WifiConfigData
 import com.rizqi.wideloc.domain.model.WifiConnectData
 import com.rizqi.wideloc.domain.repository.UWBDeviceRepository
 import com.rizqi.wideloc.utils.Constants
+import com.rizqi.wideloc.utils.DomainDataMapper.asUWBConfigEntity
 import com.rizqi.wideloc.utils.DomainDataMapper.toDto
 import javax.inject.Inject
 
 class UWBDeviceRepositoryImpl @Inject constructor(
     private val uwbDeviceApi: UWBDeviceApi,
 ) : UWBDeviceRepository {
-    private val httpApiClient = HTTPApiClient()
     override suspend fun getClientInfo(): List<ClientData> {
         return listOf()
     }
@@ -27,7 +28,7 @@ class UWBDeviceRepositoryImpl @Inject constructor(
 
     override suspend fun connectWifi(wifiConnectData: WifiConnectData): Boolean {
         val jsonBody = Gson().toJson(wifiConnectData.toDto())
-        val response = httpApiClient.post(Constants.WIFI_CONNECT_ENDPOINT, jsonBody)
+        HTTPApiClient().post(Constants.WIFI_CONNECT_ENDPOINT, jsonBody)
         return true
     }
 
@@ -37,11 +38,13 @@ class UWBDeviceRepositoryImpl @Inject constructor(
 
     override suspend fun configWifi(wifiConfigData: WifiConfigData): Boolean {
         val jsonBody = Gson().toJson(wifiConfigData.toDto())
-        val response = httpApiClient.post(Constants.WIFI_CONFIG_ENDPOINT, jsonBody)
+        HTTPApiClient().post(Constants.WIFI_CONFIG_ENDPOINT, jsonBody)
         return true
     }
 
-    override suspend fun configUWB(): Boolean {
+    override suspend fun configUWB(dns: String, uwbConfigData: UWBConfigData): Boolean {
+        val jsonBody = Gson().toJson(uwbConfigData.asUWBConfigEntity())
+        HTTPApiClient(dns).post(Constants.UWB_CONFIG_ENDPOINT, jsonBody)
         return true
     }
 

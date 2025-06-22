@@ -25,4 +25,8 @@ interface DeviceRepository {
     suspend fun getByRole(role: DeviceRole): List<DeviceData>
 
     suspend fun getFirstByRole(role: DeviceRole): DeviceData?
+
+    suspend fun getNetworkAddressLastId(): Int?
+
+    suspend fun getDeviceAddressLastId(): Int?
 }

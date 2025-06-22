@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        app:stpi_stepCount="3"
+        app:stpi_stepCount="4"
         app:stpi_circleColor="@color/border_secondary"
         app:stpi_indicatorColor="@color/text_primary"
         app:stpi_lineColor="@color/border_secondary"

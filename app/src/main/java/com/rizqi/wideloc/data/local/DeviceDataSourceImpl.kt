@@ -41,4 +41,8 @@ class DeviceDataSourceImpl @Inject constructor(
     override suspend fun getByRole(role: DeviceRole): List<DeviceEntity> = deviceDao.getByRole(role)
 
     override suspend fun getFirstByRole(role: DeviceRole): DeviceEntity? = deviceDao.getFirstByRole(role)
+
+    override suspend fun getNetworkAddressLastId() = deviceDao.getLastUwbNetworkAddress()
+
+    override suspend fun getDeviceAddressLastId() = deviceDao.getLastUwbDeviceAddress()
 }

@@ -59,6 +59,7 @@
         <item>Connect Device Wifi</item>
         <item>Set Up Device</item>
         <item>Configure Network</item>
+        <item>Configure Device</item>
     </string-array>
     <string-array name="bluetooth_steps">
         <item>Turn On Bluetooth</item>
@@ -107,5 +108,12 @@
     <string name="password_must_be_at_least_8_characters">Password must be at least 8 characters</string>
     <string name="please_fill_the_station_ssid">Please! Fill the station SSID</string>
     <string name="please_fill_the_station_password">Please! Fill the station password</string>
+    <string name="configure_device">Configure Device</string>
+    <string name="client_max">Maximal Client</string>
+    <string name="select_server">Select Server</string>
+    <string name="network_address">Network Address</string>
+    <string name="device_address">Device Address</string>
+    <string name="set_the_device_to_auto_start">Set the device to <b>auto start</b></string>
+    <string name="please_connect_to_the_same_network_as_the_uwb_network">Please connect to the same network as the UWB network(%1$s)</string>
 
 </resources>

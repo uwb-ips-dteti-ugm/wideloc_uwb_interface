@@ -81,5 +81,13 @@ class DeviceInteractor @Inject constructor(
     override suspend fun isAnyServerSaved(): Boolean {
         return getByRole(DeviceRole.Server).isNotEmpty()
     }
+
+    override suspend fun generateNetworkAddress(): Int {
+        return (repository.getNetworkAddressLastId() ?: 0) + 1
+    }
+
+    override suspend fun generateDeviceAddress(): Int {
+        return (repository.getDeviceAddressLastId() ?: 0) + 1
+    }
 }
 
