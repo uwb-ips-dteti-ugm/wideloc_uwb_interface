@@ -31,6 +31,7 @@ import com.rizqi.wideloc.utils.DomainDataMapper.asWifiProtocolEntity
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
+import kotlin.math.log
 
 @HiltViewModel
 class AddDeviceViewModel @Inject constructor(
@@ -131,7 +132,6 @@ class AddDeviceViewModel @Inject constructor(
         } else {
             _nameValidationResult.value = Result.Success(true)
         }
-
         _deviceSetupModel.value?.let {
             _saveDeviceResult.value = Result.Success(true)
         }
@@ -200,25 +200,33 @@ class AddDeviceViewModel @Inject constructor(
         _networkConfig.value = NetworkConfig()
         _networkConfigError.value = null
         _uwbConfig.value = UWBConfig()
+        _jumpToPage.value = null
     }
 
     fun setConnectedWifi(wifiInfo: WifiInfo?) {
         _connectedWifiInfo.value = wifiInfo
-        _connectedWifiInfoError.value = null
-        if (wifiInformation.value == null) {
-           _connectedWifiInfoError.value =  context.getString(R.string.you_have_not_selected_a_uwb_network_before)
-        }
-        if (!networkConfig.value?.staSSID.isNullOrBlank() && (wifiInfo?.ssid?.replace("\"", "") != networkConfig.value?.staSSID) ) {
-            _connectedWifiInfoError.value = context.getString(
-                R.string.please_connect_to_the_same_network_as_the_uwb_network,
-                networkConfig.value?.staSSID
-            )
-        }
-        if (networkConfig.value?.staSSID.isNullOrBlank() && (wifiInfo?.ssid?.replace("\"", "") != wifiInformation.value?.ssid)) {
-            context.getString(
-                R.string.network_is_different_from_the_one_selected,
-                wifiInformation.value?.ssid
-            )
+
+        val currentSSID = wifiInfo?.ssid?.replace("\"", "")
+        val selectedSSID = wifiInformation.value?.ssid
+        val configSSID = networkConfig.value?.staSSID
+
+        _connectedWifiInfoError.value = when {
+            selectedSSID.isNullOrBlank() -> {
+                context.getString(R.string.you_have_not_selected_a_uwb_network_before)
+            }
+            !configSSID.isNullOrBlank() && currentSSID != configSSID && savedDeviceData != null -> {
+                context.getString(
+                    R.string.please_connect_to_the_same_network_as_the_uwb_network,
+                    configSSID
+                )
+            }
+            configSSID.isNullOrBlank() && selectedSSID.isNotBlank() && currentSSID != selectedSSID -> {
+                context.getString(
+                    R.string.network_is_different_from_the_one_selected,
+                    selectedSSID
+                )
+            }
+            else -> null
         }
     }
 
@@ -371,7 +379,6 @@ class AddDeviceViewModel @Inject constructor(
             autoStart = isAutoStart
         )
 
-
         if (!validateUWBConfig()) return
 
         val validConfig = uwbConfig.value?.copy() ?: UWBConfig()
@@ -392,7 +399,8 @@ class AddDeviceViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 _configUWBResult.value = Result.Loading()
-                val configResult = configUWBUseCase.invoke(networkConfig.value?.dns ?: Constants.ESP_BASE_URL, uwbConfigData)
+                val baseUrl = savedDeviceData?.protocol?.asWifiProtocolEntity()?.mdns?.let { "http://$it" } ?: Constants.ESP_BASE_URL
+                val configResult = configUWBUseCase.invoke(baseUrl, uwbConfigData)
                 if (configResult){
                     updateDeviceUWBConfigInDatabase(uwbConfigData)
                     _configUWBResult.value = Result.Success(true)

@@ -1,6 +1,7 @@
 package com.rizqi.wideloc.presentation.ui.connect_via_wifi
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.activityViewModels
@@ -19,7 +20,6 @@ class NetworkConfigFragment : BaseFragment<FragmentNetworkConfigBinding>(Fragmen
         super.onViewCreated(view, savedInstanceState)
 
         (parentFragment?.parentFragment as? AddDeviceBottomSheet)?.toggleWifiInfoVisibility(true)
-        recalculateContentHeight()
 
         addDeviceViewModel.networkConfig.observe(viewLifecycleOwner) { networkConfig ->
             if (networkConfig.isApSSIDSameAsDNS) {
@@ -48,6 +48,10 @@ class NetworkConfigFragment : BaseFragment<FragmentNetworkConfigBinding>(Fragmen
             binding.apPasswordInputLayoutConnectDeviceWifiFragment.error = error?.apPassword
             binding.staSSIDInputLayoutNetworkConfigFragment.error = error?.staSSID
             binding.staPasswordInputLayoutConnectDeviceWifiFragment.error = error?.staPassword
+        }
+        addDeviceViewModel.deviceSetupModel.observe(viewLifecycleOwner){
+            binding.dnsInputLayoutNetworkConfigFragment.prefixText = addDeviceViewModel.getNamePrefix()
+            binding.apSSIDInputLayoutNetworkConfigFragment.prefixText = addDeviceViewModel.getNamePrefix()
         }
 
         binding.root.setOnClickListener {
@@ -88,6 +92,8 @@ class NetworkConfigFragment : BaseFragment<FragmentNetworkConfigBinding>(Fragmen
         }
         binding.dnsInputLayoutNetworkConfigFragment.prefixText = addDeviceViewModel.getNamePrefix()
         binding.apSSIDInputLayoutNetworkConfigFragment.prefixText = addDeviceViewModel.getNamePrefix()
+
+        recalculateContentHeight()
     }
 
     private fun recalculateContentHeight() {

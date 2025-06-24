@@ -166,6 +166,7 @@ class AddDeviceBottomSheet : BottomSheetDialogFragment() {
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
         addDeviceViewModel.resetAll()
+        sharedDeviceData = null
     }
 
     fun setDeviceData(deviceData: DeviceData){

@@ -1,5 +1,6 @@
 package com.rizqi.wideloc.data.network
 
+import android.net.http.HttpException
 import android.util.Log
 import com.rizqi.wideloc.utils.Constants
 import kotlinx.coroutines.Dispatchers
@@ -56,7 +57,7 @@ class HTTPApiClient(private val baseUrl: String = Constants.ESP_BASE_URL) {
     }
 
     suspend fun post(endpoint: String, body: String): String = withContext(Dispatchers.IO) {
-        val url = URL("http://$baseUrl$endpoint")
+        val url = URL("$baseUrl$endpoint")
         val connection = url.openConnection() as HttpURLConnection
 
         Log.d(TAG, "🟡 [POST] URL: $url")
@@ -91,7 +92,7 @@ class HTTPApiClient(private val baseUrl: String = Constants.ESP_BASE_URL) {
             if (errorStream != null) {
                 Log.e(TAG, "❌ [POST] Error Body: $errorStream")
             }
-            throw e
+            throw Exception(errorStream.toString())
         } finally {
             connection.disconnect()
         }

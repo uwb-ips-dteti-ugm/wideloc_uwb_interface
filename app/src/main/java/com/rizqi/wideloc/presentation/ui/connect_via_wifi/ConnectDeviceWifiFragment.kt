@@ -242,7 +242,7 @@ class ConnectDeviceWifiFragment :
             override fun onUnavailable() {
                 if (!isCallbackCalled) {
                     isCallbackCalled = true
-                    requireActivity().runOnUiThread {
+                    activity?.runOnUiThread {
                         Toast.makeText(requireContext(), "Failed to connect: network unavailable", Toast.LENGTH_SHORT).show()
                     }
                 }
