@@ -8,6 +8,8 @@ import com.rizqi.wideloc.usecase.ConnectWifiInteractor
 import com.rizqi.wideloc.usecase.ConnectWifiUseCase
 import com.rizqi.wideloc.usecase.DeviceInteractor
 import com.rizqi.wideloc.usecase.DeviceUseCase
+import com.rizqi.wideloc.usecase.GetUpdatedPositionInteractor
+import com.rizqi.wideloc.usecase.GetUpdatedPositionUseCase
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -28,4 +30,7 @@ abstract class UseCaseModule {
 
     @Binds
     abstract fun bindConfigUWBUseCase(useCase: ConfigUWBInteractor): ConfigUWBUseCase
+
+    @Binds
+    abstract fun bindGetUpdatedPositionUseCase(useCase: GetUpdatedPositionInteractor): GetUpdatedPositionUseCase
 }

@@ -44,7 +44,7 @@ class ConnectViaWiFiFragment : Fragment() {
             }
         )
 
-        addDeviceViewModel.jumpTopage.observe(viewLifecycleOwner){page ->
+        addDeviceViewModel.jumpToPage.observe(viewLifecycleOwner){ page ->
             if (page != null){
                 goToPage(page)
                 addDeviceViewModel.hasJumpToPage()

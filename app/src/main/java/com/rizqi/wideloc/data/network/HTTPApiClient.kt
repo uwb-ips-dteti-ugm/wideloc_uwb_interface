@@ -18,7 +18,7 @@ class HTTPApiClient(private val baseUrl: String = Constants.ESP_BASE_URL) {
         private const val TAG = "HTTPApiClient"
     }
 
-    suspend fun get(endpoint: String, param: List<Pair<String, Any>>): String = withContext(Dispatchers.IO) {
+    suspend fun get(endpoint: String, param: List<Pair<String, Any>> = listOf()): String = withContext(Dispatchers.IO) {
         val query = param.joinToString("&") { (key, value) ->
             "${URLEncoder.encode(key, "UTF-8")}=${URLEncoder.encode(value.toString(), "UTF-8")}"
         }
@@ -56,7 +56,7 @@ class HTTPApiClient(private val baseUrl: String = Constants.ESP_BASE_URL) {
         }
     }
 
-    suspend fun post(endpoint: String, body: String): String = withContext(Dispatchers.IO) {
+    suspend fun post(endpoint: String, body: String? = null): String = withContext(Dispatchers.IO) {
         val url = URL("$baseUrl$endpoint")
         val connection = url.openConnection() as HttpURLConnection
 
@@ -71,7 +71,7 @@ class HTTPApiClient(private val baseUrl: String = Constants.ESP_BASE_URL) {
             connection.readTimeout = 5000
 
             connection.outputStream.use { os: OutputStream ->
-                os.write(body.toByteArray(Charsets.UTF_8))
+                os.write(body?.toByteArray(Charsets.UTF_8))
                 os.flush()
             }
 

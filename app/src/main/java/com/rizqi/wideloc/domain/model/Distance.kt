@@ -4,7 +4,8 @@ data class Distance(
     val id: String,
     val point1: Point,
     val point2: Point,
-    val d: Double,
+    val distance: Double,
+    val timestamp: Long,
 ) {
     fun withPoint1X(newValue: Double): Distance {
         return this.copy(point1 = point1.copy(x = point1.x.copy(value = newValue)))

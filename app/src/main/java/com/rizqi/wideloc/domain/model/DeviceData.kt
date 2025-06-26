@@ -14,4 +14,8 @@ data class DeviceData(
     val isAvailable: Boolean,
     val lastConnectedAt: LocalDateTime?,
     val createdAt: LocalDateTime,
-)
+) {
+    fun getCorrespondingPointId() = "$id.point"
+    fun getCorrespondingXId() = "$id.point.x"
+    fun getCorrespondingYId() = "$id.point.y"
+}

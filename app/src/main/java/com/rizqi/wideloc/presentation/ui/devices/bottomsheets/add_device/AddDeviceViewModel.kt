@@ -2,7 +2,6 @@ package com.rizqi.wideloc.presentation.ui.devices.bottomsheets.add_device
 
 import android.content.Context
 import android.net.wifi.WifiInfo
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -31,7 +30,6 @@ import com.rizqi.wideloc.utils.DomainDataMapper.asWifiProtocolEntity
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
-import kotlin.math.log
 
 @HiltViewModel
 class AddDeviceViewModel @Inject constructor(
@@ -93,7 +91,7 @@ class AddDeviceViewModel @Inject constructor(
     private var savedDeviceData: DeviceData? = null
 
     private val _jumpToPage = MutableLiveData<Int?>()
-    val jumpTopage: LiveData<Int?> get() = _jumpToPage
+    val jumpToPage: LiveData<Int?> get() = _jumpToPage
 
     init {
         _id.value = generateIDUseCase.invoke()
@@ -192,14 +190,24 @@ class AddDeviceViewModel @Inject constructor(
     }
 
     fun resetAll() {
+        _id.value = generateIDUseCase.invoke()
+        viewModelScope.launch {
+            _isAnyServerExist.value = deviceUseCase.isAnyServerSaved()
+            _availableServers.value = deviceUseCase.getByRole(DeviceRole.Server)
+        }
         _wifiInformation.value = null
         _connectedWifiInfo.value = null
         _connectedWifiInfoError.value = null
         _deviceSetupModel.value = DeviceSetupModel()
         _nameValidationResult.value = null
+        _saveDeviceResult.value = null
         _networkConfig.value = NetworkConfig()
         _networkConfigError.value = null
         _uwbConfig.value = UWBConfig()
+        _uwbConfigError.value = null
+        _configNetworkResult.value = null
+        _configUWBResult.value = null
+        savedDeviceData = null
         _jumpToPage.value = null
     }
 

@@ -2,6 +2,8 @@ package com.rizqi.wideloc.di
 
 import com.rizqi.wideloc.data.local.DeviceDataSource
 import com.rizqi.wideloc.data.local.DeviceDataSourceImpl
+import com.rizqi.wideloc.data.local.TWRDataSource
+import com.rizqi.wideloc.data.local.TWRDataSourceImpl
 import com.rizqi.wideloc.data.websocket.WideLocSocketDataSource
 import com.rizqi.wideloc.data.websocket.WideLocSocketDataSourceImpl
 import dagger.Binds
@@ -18,5 +20,8 @@ abstract class DataSourceModule {
 
     @Binds
     abstract fun bindSocketDataSource(wideLocSocketDataSourceImpl: WideLocSocketDataSourceImpl): WideLocSocketDataSource
+
+    @Binds
+    abstract fun bindTWRDataSource(twrDataSourceImpl: TWRDataSourceImpl): TWRDataSource
 
 }

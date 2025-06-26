@@ -1,10 +1,10 @@
 package com.rizqi.wideloc.usecase
 
 class GenerateIDInteractor : GenerateIDUseCase {
-    private val chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+    private val chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 
-    override fun invoke(): String {
-        return (1..4)
+    override fun invoke(length: Int): String {
+        return (1..length)
             .map { chars.random() }
             .joinToString("")
     }

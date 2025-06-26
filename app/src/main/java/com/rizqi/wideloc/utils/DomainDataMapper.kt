@@ -4,25 +4,28 @@ import com.google.gson.Gson
 import com.rizqi.wideloc.data.local.entity.BluetoothProtocolEntity
 import com.rizqi.wideloc.data.local.entity.DeviceEntity
 import com.rizqi.wideloc.data.local.entity.DeviceOffsetEntity
-import com.rizqi.wideloc.data.local.entity.DeviceProtocol
 import com.rizqi.wideloc.data.local.entity.DeviceProtocol.*
+import com.rizqi.wideloc.data.local.entity.TWRDataEntity
 import com.rizqi.wideloc.data.local.entity.UWBConfigEntity
 import com.rizqi.wideloc.data.local.entity.WiFiProtocolEntity
+import com.rizqi.wideloc.data.network.dto.ClientDto
+import com.rizqi.wideloc.data.network.dto.TWRDataDto
 import com.rizqi.wideloc.data.network.dto.WifiConfigDto
 import com.rizqi.wideloc.data.network.dto.WifiConnectDto
 import com.rizqi.wideloc.data.websocket.request.CalibrationRequest
 import com.rizqi.wideloc.data.websocket.response.TrackingResponse
 import com.rizqi.wideloc.domain.model.BluetoothProtocolData
 import com.rizqi.wideloc.domain.model.CalibrationData
+import com.rizqi.wideloc.domain.model.ClientData
 import com.rizqi.wideloc.domain.model.DeviceData
 import com.rizqi.wideloc.domain.model.DeviceOffsetData
 import com.rizqi.wideloc.domain.model.ProtocolData
+import com.rizqi.wideloc.domain.model.TWRData
 import com.rizqi.wideloc.domain.model.TrackingData
 import com.rizqi.wideloc.domain.model.UWBConfigData
 import com.rizqi.wideloc.domain.model.WifiConfigData
 import com.rizqi.wideloc.domain.model.WifiConnectData
 import com.rizqi.wideloc.domain.model.WifiProtocolData
-import com.rizqi.wideloc.utils.DomainDataMapper.asProtocolData
 
 object DomainDataMapper {
     fun mapTrackingResponseTextToTrackingData(
@@ -161,5 +164,26 @@ object DomainDataMapper {
         apPassword = this.apPassword,
         staSSID = this.staSSID,
         staPassword = this.staPassword,
+    )
+
+    fun ClientDto.toClientData() = ClientData(
+        address = this.address,
+        mode = this.mode,
+        lastUpdate = this.lastUpdate
+    )
+
+    fun TWRDataDto.toTWRData() = TWRData(
+        address1 = this.addr1,
+        address2 = this.addr2,
+        timestamp = this.timestamp,
+        distance = this.distance,
+    )
+
+    fun TWRData.toTWRDataEntity(sessionId: Int?) = TWRDataEntity(
+        sessionId = sessionId,
+        address1 = this.address1,
+        address2 = this.address2,
+        timestamp = this.timestamp.toLong(),
+        distance = this.distance,
     )
 }

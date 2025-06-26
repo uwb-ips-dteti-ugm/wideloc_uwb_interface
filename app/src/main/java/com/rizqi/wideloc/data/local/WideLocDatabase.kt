@@ -6,19 +6,23 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.rizqi.wideloc.data.local.dao.DeviceDao
+import com.rizqi.wideloc.data.local.dao.TWRDataDao
 import com.rizqi.wideloc.data.local.entity.DeviceEntity
+import com.rizqi.wideloc.data.local.entity.TWRDataEntity
 import com.rizqi.wideloc.utils.Converters
 import dagger.hilt.android.qualifiers.ApplicationContext
 
 @Database(
     entities = [
-        DeviceEntity::class
+        DeviceEntity::class,
+        TWRDataEntity::class
     ],
-    version = 1
+    version = 2
 )
 @TypeConverters(Converters::class)
 abstract class WideLocDatabase : RoomDatabase() {
     abstract fun deviceDao() : DeviceDao
+    abstract fun twrDataDao() : TWRDataDao
 
     companion object {
         @Volatile

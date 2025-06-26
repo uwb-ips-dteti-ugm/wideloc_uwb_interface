@@ -45,4 +45,6 @@ class DeviceDataSourceImpl @Inject constructor(
     override suspend fun getNetworkAddressLastId() = deviceDao.getLastUwbNetworkAddress()
 
     override suspend fun getDeviceAddressLastId() = deviceDao.getLastUwbDeviceAddress()
+
+    override suspend fun getDeviceByNetworkAddress(networkAddress: Int): DeviceEntity? = deviceDao.getDeviceByNetworkAddress(networkAddress)
 }
