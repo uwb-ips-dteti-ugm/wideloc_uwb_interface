@@ -44,7 +44,7 @@ interface DeviceDao {
     @Query("SELECT uwb_config_network_address FROM devices WHERE uwb_config_network_address IS NOT NULL ORDER BY created_at DESC LIMIT 1")
     suspend fun getLastUwbNetworkAddress(): Int?
 
-    @Query("SELECT * FROM devices WHERE uwb_config_network_address = :networkAddress LIMIT 1")
-    suspend fun getDeviceByNetworkAddress(networkAddress: Int): DeviceEntity?
+    @Query("SELECT * FROM devices WHERE uwb_config_device_address = :deviceAddress LIMIT 1")
+    suspend fun getDeviceByDeviceAddress(deviceAddress: Int): DeviceEntity?
 
 }

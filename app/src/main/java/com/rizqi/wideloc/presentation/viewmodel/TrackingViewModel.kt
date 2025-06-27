@@ -4,11 +4,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.rizqi.wideloc.data.Result
 import com.rizqi.wideloc.data.local.entity.DeviceRole
 import com.rizqi.wideloc.domain.model.DeviceTrackingHistoryData
+import com.rizqi.wideloc.domain.model.DistancesWithTimestamp
 import com.rizqi.wideloc.domain.model.Point
+import com.rizqi.wideloc.domain.model.TrackingSessionData
 import com.rizqi.wideloc.domain.model.Variable
 import com.rizqi.wideloc.domain.repository.DeviceRepository
+import com.rizqi.wideloc.usecase.GenerateDistanceCombinationInteractor
+import com.rizqi.wideloc.usecase.GenerateDistanceCombinationUseCase
 import com.rizqi.wideloc.usecase.GenerateIDInteractor
 import com.rizqi.wideloc.usecase.GenerateIDUseCase
 import com.rizqi.wideloc.usecase.GetUpdatedPositionUseCase
@@ -27,52 +32,70 @@ class TrackingViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val generateIDUseCase: GenerateIDUseCase = GenerateIDInteractor()
+    private val generateDistanceCombination: GenerateDistanceCombinationUseCase =
+        GenerateDistanceCombinationInteractor()
 
-    private val _sessionId = MutableLiveData<String>()
-    val sessionId: LiveData<String> get() = _sessionId
+    private val _session = MutableLiveData<TrackingSessionData>()
+    val session: LiveData<TrackingSessionData> get() = _session
 
-    private val _deviceTrackingHistoryFlow = MutableStateFlow<List<DeviceTrackingHistoryData>?>(null)
-    val deviceTrackingHistoryFlow: StateFlow<List<DeviceTrackingHistoryData>?> get() = _deviceTrackingHistoryFlow
+    private val _observeResult = MutableLiveData<Result<TrackingSessionData?>?>(null)
+    val observeResult: LiveData<Result<TrackingSessionData?>?> = _observeResult
 
     init {
-        _sessionId.value = generateIDUseCase.invoke()
-
         viewModelScope.launch {
             val devices = deviceRepository.getAllDevices().first { it.isNotEmpty() }
-            val data = devices.map {
+            val distances = generateDistanceCombination.invoke(devices)
+            val deviceTrackingHistories = devices.map { device ->
                 DeviceTrackingHistoryData(
-                    deviceData = it,
+                    deviceData = device,
                     points = listOf(
                         Point(
-                            id = it.getCorrespondingPointId(),
-                            x = Variable(it.getCorrespondingXId(), 0.0),
-                            y = Variable(it.getCorrespondingYId(), 0.0)
+                            id = device.getCorrespondingPointId(),
+                            x = Variable(
+                                id = device.getCorrespondingXId(),
+                                value = 0.0
+                            ),
+                            y = Variable(
+                                id = device.getCorrespondingYId(),
+                                value = 0.0
+                            ),
                         )
                     ),
-                    distances = listOf(),
                     timestamp = 0
                 )
             }
-            _deviceTrackingHistoryFlow.value = data
+            _session.value = TrackingSessionData(
+                sessionId = 0,
+                recordedDistances = listOf(
+                    DistancesWithTimestamp(
+                        timestamp = 0,
+                        distances = distances
+                    )
+                ),
+                deviceTrackingHistoryData = deviceTrackingHistories
+            )
         }
 
     }
 
     fun startObserveData() {
         viewModelScope.launch {
-            val data = _deviceTrackingHistoryFlow.value ?: return@launch
+//            _observeResult.value = Result.Loading()
+            val session = session.value ?: return@launch
             val server = deviceRepository.getFirstByRole(DeviceRole.Server)
             val anchors = deviceRepository.getByRole(DeviceRole.Anchor)
             if (server == null || anchors.isEmpty()) return@launch
-
-            while (true) {
-                getUpdatedPositionUseCase.invoke(
-                    sessionId = 1,
+//            try {
+                val updatedSession = getUpdatedPositionUseCase.invoke(
+                    session = session,
                     server = server,
-                    anchors = anchors,
-                    deviceTrackingHistories = data
+                    anchors = anchors
                 )
-            }
+                _session.value = updatedSession
+//                _observeResult.value = Result.Success(updatedSession)
+//            } catch (e: Exception){
+//                _observeResult.value = Result.Error(e.message.toString())
+//            }
         }
     }
 }

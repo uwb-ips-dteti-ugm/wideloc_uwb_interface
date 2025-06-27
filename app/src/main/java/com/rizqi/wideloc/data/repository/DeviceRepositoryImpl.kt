@@ -1,6 +1,5 @@
 package com.rizqi.wideloc.data.repository
 
-import android.util.Log
 import com.rizqi.wideloc.data.local.DeviceDataSource
 import com.rizqi.wideloc.data.local.entity.DeviceRole
 import com.rizqi.wideloc.domain.model.DeviceData
@@ -53,5 +52,5 @@ class DeviceRepositoryImpl @Inject constructor(
 
     override suspend fun getDeviceAddressLastId() = localDataSource.getDeviceAddressLastId()
 
-    override suspend fun getDeviceByNetworkAddress(networkAddress: Int): DeviceData? = localDataSource.getDeviceByNetworkAddress(networkAddress)?.asDeviceData()
+    override suspend fun getDeviceByDeviceAddress(deviceAddress: Int): DeviceData? = localDataSource.getDeviceByDeviceAddress(deviceAddress)?.asDeviceData()
 }

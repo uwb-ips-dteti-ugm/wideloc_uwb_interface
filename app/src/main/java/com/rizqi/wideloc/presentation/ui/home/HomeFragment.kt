@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.rizqi.wideloc.data.Result
 import com.rizqi.wideloc.databinding.FragmentHomeBinding
 import com.rizqi.wideloc.presentation.ui.BaseFragment
 import com.rizqi.wideloc.presentation.viewmodel.TrackingViewModel
@@ -19,6 +20,15 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        trackingViewModel.observeResult.observe(viewLifecycleOwner){result ->
+            when(result){
+                is Result.Error -> Toast.makeText(requireContext(), result.errorMessage, Toast.LENGTH_LONG).show()
+                is Result.Loading<*> -> Unit
+                is Result.Success<*> -> Unit
+                null -> Unit
+            }
+        }
 
         binding.startRecordButtonHome.setOnClickListener {
             trackingViewModel.startObserveData()
