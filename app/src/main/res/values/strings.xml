@@ -117,6 +117,7 @@
     <string name="please_connect_to_the_same_network_as_the_uwb_network">Please connect to the same network as the UWB network(%1$s)</string>
     <string name="never_connected_yet">Never connected yet</string>
     <string name="network_not_configured_yet">Network not configured yet</string>
+    <string name="dns_not_configured_yet">DNS not configured yet</string>
     <string name="device_configured">Device Configured</string>
     <string name="select_devices">Select Devices</string>
     <string name="select">Select</string>

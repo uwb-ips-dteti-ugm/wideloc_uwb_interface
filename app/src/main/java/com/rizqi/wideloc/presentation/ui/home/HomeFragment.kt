@@ -31,10 +31,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
         }
 
         binding.startRecordButtonHome.setOnClickListener {
-            trackingViewModel.startObserveData()
+            setupTrackingSessionBottomSheet.show(parentFragmentManager, setupTrackingSessionBottomSheet.tag)
         }
-
-        setupTrackingSessionBottomSheet.show(parentFragmentManager, setupTrackingSessionBottomSheet.tag)
 
     }
 

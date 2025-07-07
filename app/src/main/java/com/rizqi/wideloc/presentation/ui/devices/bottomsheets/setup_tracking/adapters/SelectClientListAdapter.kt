@@ -55,6 +55,10 @@ class SelectClientListAdapter(
         fun bind(device: DeviceData) {
             val context = binding.root.context
 
+            val layoutParams = binding.root.layoutParams as ViewGroup.MarginLayoutParams
+            layoutParams.bottomMargin = 32
+            binding.root.layoutParams = layoutParams
+
             if (selectedDevices.contains(device)) {
                 binding.root.background = ContextCompat.getDrawable(context, R.drawable.selected_device_card_background)
                 binding.deviceNameTextViewSetupTrackingSessionDeviceCard.setTextColor(ContextCompat.getColor(context, R.color.text_on_primary))
@@ -84,7 +88,7 @@ class SelectClientListAdapter(
             binding.staSSIDTextViewSetupTrackingSessionDeviceCard.text =
                 device.protocol.asWifiProtocolEntity()?.networkSSID ?: context.getString(R.string.network_not_configured_yet)
             binding.dnsTextViewSetupTrackingSessionDeviceCard.text =
-                device.protocol.asWifiProtocolEntity()?.mdns ?: context.getString(R.string.network_not_configured_yet)
+                device.protocol.asWifiProtocolEntity()?.mdns ?: context.getString(R.string.dns_not_configured_yet)
 
             binding.root.setOnClickListener {
                 if (selectedDevices.contains(device)){

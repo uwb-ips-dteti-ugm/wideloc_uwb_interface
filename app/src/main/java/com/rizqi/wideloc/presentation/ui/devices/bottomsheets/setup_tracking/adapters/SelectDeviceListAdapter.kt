@@ -86,7 +86,7 @@ class SelectDeviceListAdapter(
             binding.staSSIDTextViewSetupTrackingSessionDeviceCard.text =
                 device.protocol.asWifiProtocolEntity()?.networkSSID ?: context.getString(R.string.network_not_configured_yet)
             binding.dnsTextViewSetupTrackingSessionDeviceCard.text =
-                device.protocol.asWifiProtocolEntity()?.mdns ?: context.getString(R.string.network_not_configured_yet)
+                device.protocol.asWifiProtocolEntity()?.mdns ?: context.getString(R.string.dns_not_configured_yet)
 
             binding.root.setOnClickListener {
                 selectedDevice = device

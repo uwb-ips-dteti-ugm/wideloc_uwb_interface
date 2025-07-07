@@ -102,21 +102,21 @@ class TrackingViewModel @Inject constructor(
     private val _layoutInitialCoordinate = MutableLiveData<LayoutInitialCoordinate>()
     val layoutInitialCoordinate: LiveData<LayoutInitialCoordinate> get() = _layoutInitialCoordinate
 
+    private val _saveDeviceLayout = MutableLiveData<Result<Boolean>>()
+    val saveDeviceLayout: LiveData<Result<Boolean>> get() = _saveDeviceLayout
+
     init {
         viewModelScope.launch {
 
-//            _serverList.value = deviceRepository.getByRole(DeviceRole.Server)
-//                .filter {
-//                it.isAvailable && it.uwbConfigData != null
-//            }
+            _serverList.value = deviceRepository.getByRole(DeviceRole.Server)
+                .filter {
+                it.isAvailable && it.uwbConfigData != null
+            }
 
             mapRepository.getAllMaps().collect{
                 _availableMaps.value = it
             }
 
-            _selectedServer.value = deviceRepository.getFirstByRole(DeviceRole.Server)
-            selectedAnchor = deviceRepository.getFirstByRole(DeviceRole.Anchor)
-            selectedClients = deviceRepository.getByRole(DeviceRole.Client)
 //            val devices = deviceRepository.getAllDevices().first { it.isNotEmpty() }
 //            val distances = generateDistanceCombination.invoke(devices)
 //            val deviceTrackingHistories = devices.map { device ->
@@ -376,11 +376,13 @@ class TrackingViewModel @Inject constructor(
         )
     }
 
+    fun saveDeviceLayout(){
+        _saveDeviceLayout.value = Result.Success(true)
+        startObserveData()
+    }
+
     fun initLayoutInitialCoordinate(){
         viewModelScope.launch {
-            _selectedServer.value = deviceRepository.getFirstByRole(DeviceRole.Server)
-            selectedAnchor = deviceRepository.getFirstByRole(DeviceRole.Anchor)
-            selectedClients = deviceRepository.getByRole(DeviceRole.Client)
             _layoutInitialCoordinate.value = LayoutInitialCoordinate(
                 serverCoordinate = DeviceCoordinate(
                     deviceData = selectedServer.value,
@@ -398,15 +400,6 @@ class TrackingViewModel @Inject constructor(
                     )
                 }
             )
-            _mapTransform.value = MapTransform(
-                length = 4.0,
-                width = 2.0,
-                rotation = 0f,
-                isFlipX = false
-            )
-            mapRepository.getAllMaps().collect{
-                _selectedMap.value = it.first()
-            }
         }
     }
 

@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.core.widget.doAfterTextChanged
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.activityViewModels
@@ -18,6 +19,7 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.google.android.material.textfield.TextInputLayout
 import com.rizqi.wideloc.R
+import com.rizqi.wideloc.data.Result
 import com.rizqi.wideloc.databinding.DeviceTagBinding
 import com.rizqi.wideloc.databinding.FragmentSetLayoutBinding
 import com.rizqi.wideloc.domain.model.DeviceData
@@ -54,6 +56,9 @@ class SetLayoutFragment :
 
         binding.root.setOnClickListener {
             hideKeyboardAndClearFocus(requireActivity().currentFocus ?: it)
+        }
+        binding.saveButtonFragmentSetLayout.setOnClickListener {
+            trackingViewModel.saveDeviceLayout()
         }
 
         clientSetLayoutCustomAdapter = ClientSetLayoutCustomAdapter(
@@ -130,63 +135,70 @@ class SetLayoutFragment :
 
             recalculateContentHeight()
         }
-        trackingViewModel.initLayoutInitialCoordinate()
-        trackingViewModel.mapCombinedWithTransform.observe(viewLifecycleOwner){ (mapData, mapTransform) ->
-            Glide.with(requireContext())
-                .asBitmap()
-                .load(mapData?.imageUri?.let { StorageUtils.getFileFromPath(it) })
-                .error(R.drawable.map_dummy)
-                .into(
-                    object : CustomTarget<Bitmap>(){
-                        override fun onResourceReady(
-                            resource: Bitmap,
-                            transition: Transition<in Bitmap>?
-                        ) {
-                            var transformedBitmap = resource
-                            mapTransform?.let {
-                                if (it.isFlipX){
-                                    transformedBitmap = flipBitmap(transformedBitmap)
-                                }
-                                transformedBitmap = rotateBitmap(transformedBitmap, it.rotation)
-                            }
-
-                            // Create ImageView dynamically
-                            val bitmapWidth = transformedBitmap.width
-                            val bitmapHeight = transformedBitmap.height
-
-                            val transformWidth = mapTransform?.width ?: bitmapWidth.toDouble()
-                            val transformHeight = mapTransform?.length ?: bitmapHeight.toDouble()
-
-                            val cartesianWidth = binding.cartesianViewFragmentSetLayout.width
-                            val cartesianHeight = binding.cartesianViewFragmentSetLayout.height
-
-                            // Calculate scaling factor to fit image inside CartesianView
-                            val scaleX = cartesianWidth / transformWidth
-                            val scaleY = cartesianHeight / transformHeight
-                            val scale = minOf(scaleX, scaleY).toFloat()
-
-                            // Final layout dimensions after scaling
-                            val scaledWidth = (transformWidth * scale).toInt()
-                            val scaledHeight = (transformHeight * scale).toInt()
-
-                            val matrix = Matrix().apply {
-                                val cropScaleX = scaledWidth.toFloat() / bitmapWidth
-                                val cropScaleY = scaledHeight.toFloat() / bitmapHeight
-                                postScale(cropScaleX, cropScaleY)
-                            }
-
-                            // Set background using the matrix
-                            binding.cartesianViewFragmentSetLayout.setMapBackground(transformedBitmap, matrix)
-
-                        }
-
-                        override fun onLoadCleared(placeholder: Drawable?) {
-
-                        }
-
-                    }
-                )
+        trackingViewModel.saveDeviceLayout.observe(viewLifecycleOwner){result ->
+            when(result){
+                is Result.Error -> Toast.makeText(requireContext(), result.errorMessage, Toast.LENGTH_LONG).show()
+                is Result.Loading<*> -> Unit
+                is Result.Success<*> -> (parentFragment?.parentFragment as SetupTrackingSessionBottomSheet?)?.dismiss()
+            }
         }
+        trackingViewModel.initLayoutInitialCoordinate()
+//        trackingViewModel.mapCombinedWithTransform.observe(viewLifecycleOwner){ (mapData, mapTransform) ->
+//            Glide.with(requireContext())
+//                .asBitmap()
+//                .load(mapData?.imageUri?.let { StorageUtils.getFileFromPath(it) })
+//                .error(R.drawable.map_dummy)
+//                .into(
+//                    object : CustomTarget<Bitmap>(){
+//                        override fun onResourceReady(
+//                            resource: Bitmap,
+//                            transition: Transition<in Bitmap>?
+//                        ) {
+//                            var transformedBitmap = resource
+//                            mapTransform?.let {
+//                                if (it.isFlipX){
+//                                    transformedBitmap = flipBitmap(transformedBitmap)
+//                                }
+//                                transformedBitmap = rotateBitmap(transformedBitmap, it.rotation)
+//                            }
+//
+//                            // Create ImageView dynamically
+//                            val bitmapWidth = transformedBitmap.width
+//                            val bitmapHeight = transformedBitmap.height
+//
+//                            val transformWidth = mapTransform?.width ?: bitmapWidth.toDouble()
+//                            val transformHeight = mapTransform?.length ?: bitmapHeight.toDouble()
+//
+//                            val cartesianWidth = binding.cartesianViewFragmentSetLayout.width
+//                            val cartesianHeight = binding.cartesianViewFragmentSetLayout.height
+//
+//                            // Calculate scaling factor to fit image inside CartesianView
+//                            val scaleX = cartesianWidth / transformWidth
+//                            val scaleY = cartesianHeight / transformHeight
+//                            val scale = minOf(scaleX, scaleY).toFloat()
+//
+//                            // Final layout dimensions after scaling
+//                            val scaledWidth = (transformWidth * scale).toInt()
+//                            val scaledHeight = (transformHeight * scale).toInt()
+//
+//                            val matrix = Matrix().apply {
+//                                val cropScaleX = scaledWidth.toFloat() / bitmapWidth
+//                                val cropScaleY = scaledHeight.toFloat() / bitmapHeight
+//                                postScale(cropScaleX, cropScaleY)
+//                            }
+//
+//                            // Set background using the matrix
+//                            binding.cartesianViewFragmentSetLayout.setMapBackground(transformedBitmap, matrix)
+//
+//                        }
+//
+//                        override fun onLoadCleared(placeholder: Drawable?) {
+//
+//                        }
+//
+//                    }
+//                )
+//        }
 
         recalculateContentHeight()
     }

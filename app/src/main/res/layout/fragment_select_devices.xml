@@ -15,7 +15,7 @@
         android:textColor="@color/text_default"
         android:textSize="18sp" />
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -41,7 +41,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/serverRecyclerViewSelectDevicesFragment"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="140dp"
                 android:clipToPadding="false"
                 android:orientation="horizontal"
                 android:layout_marginTop="8dp"
@@ -61,7 +61,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/anchorRecyclerViewSelectDevicesFragment"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="140dp"
                 android:clipToPadding="false"
                 android:orientation="horizontal"
                 android:layout_marginTop="8dp"
@@ -109,7 +109,7 @@
 
         </LinearLayout>
 
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
     
     <com.google.android.material.button.MaterialButton
         android:id="@+id/connectButtonSelectDevicesFragment"

@@ -10,10 +10,10 @@ import com.rizqi.wideloc.presentation.ui.devices.bottomsheets.setup_tracking.Set
 class SetupTrackingSessionPagerAdapter(fragment: Fragment): FragmentStateAdapter(fragment) {
 
     private val pages = listOf(
-        SetLayoutFragment(),
         SelectDevicesFragment(),
         ConnectNetworkFragment(),
         SetUpMapFragment(),
+        SetLayoutFragment(),
     )
 
     override fun getItemCount(): Int = pages.size
