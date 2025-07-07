@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.wifi.WifiInfo
 import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -86,6 +87,11 @@ class TrackingViewModel @Inject constructor(
 
     private val _mapTransform = MutableLiveData<MapTransform>()
     val mapTransform: LiveData<MapTransform> get() = _mapTransform
+
+    val mapCombinedWithTransform = MediatorLiveData<Pair<MapData?, MapTransform?>>().apply {
+        addSource(selectedMap) {value = it to mapTransform.value}
+        addSource(mapTransform) {value = selectedMap.value to it}
+    }
 
     private val _saveMapError = MutableLiveData<SaveMapError>(SaveMapError())
     val saveMapError: LiveData<SaveMapError> get() = _saveMapError
@@ -392,6 +398,15 @@ class TrackingViewModel @Inject constructor(
                     )
                 }
             )
+            _mapTransform.value = MapTransform(
+                length = 4.0,
+                width = 2.0,
+                rotation = 0f,
+                isFlipX = false
+            )
+            mapRepository.getAllMaps().collect{
+                _selectedMap.value = it.first()
+            }
         }
     }
 

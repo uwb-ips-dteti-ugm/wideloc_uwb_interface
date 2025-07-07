@@ -12,6 +12,7 @@ import com.rizqi.wideloc.databinding.ItemDeviceSetLayoutBinding
 import com.rizqi.wideloc.domain.model.DeviceData
 import com.rizqi.wideloc.presentation.viewmodel.TrackingViewModel
 import com.rizqi.wideloc.presentation.viewmodel.TrackingViewModel.CoordinateTarget
+import com.rizqi.wideloc.utils.toDisplayString
 import java.util.Locale
 
 class ClientSetLayoutCustomAdapter(
@@ -188,7 +189,7 @@ class ClientSetLayoutCustomAdapter(
         }
 
         private fun updateEditableFieldIfNeeded(editText: EditText, newValue: Double) {
-            val formattedValue = String.format(Locale.US, "%.5f", newValue).trimEnd('0').trimEnd('.')
+            val formattedValue = newValue.toDisplayString()
             val currentText = editText.text.toString().trim()
             if (currentText != formattedValue && !editText.hasFocus()) {
                 editText.setText(formattedValue)

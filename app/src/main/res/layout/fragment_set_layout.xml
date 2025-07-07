@@ -314,14 +314,14 @@
                     android:layout_height="400dp"
                     >
 
-                    <ImageView
-                        android:id="@+id/mapImageViewFragmentSetLayout"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center_horizontal"
-                        android:scaleType="fitCenter"
-                        android:layout_marginTop="4dp"
-                        tools:src="@drawable/map_dummy" />
+<!--                    <ImageView-->
+<!--                        android:id="@+id/mapImageViewFragmentSetLayout"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="match_parent"-->
+<!--                        android:layout_gravity="center_horizontal"-->
+<!--                        android:scaleType="fitCenter"-->
+<!--                        android:layout_marginTop="4dp"-->
+<!--                        tools:src="@drawable/map_dummy" />-->
 
                     <com.rizqi.wideloc.presentation.ui.cartesian_view.CartesianView
                         android:id="@+id/cartesianViewFragmentSetLayout"

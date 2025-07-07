@@ -23,7 +23,9 @@ import com.rizqi.wideloc.presentation.ui.BaseFragment
 import com.rizqi.wideloc.presentation.ui.dialogs.AddMapDialog
 import com.rizqi.wideloc.presentation.viewmodel.TrackingViewModel
 import com.rizqi.wideloc.utils.StorageUtils
+import com.rizqi.wideloc.utils.ViewUtils.flipBitmap
 import com.rizqi.wideloc.utils.ViewUtils.hideKeyboardAndClearFocus
+import com.rizqi.wideloc.utils.ViewUtils.rotateBitmap
 
 class SetUpMapFragment : BaseFragment<FragmentSetUpMapBinding>(FragmentSetUpMapBinding::inflate) {
 
@@ -168,32 +170,6 @@ class SetUpMapFragment : BaseFragment<FragmentSetUpMapBinding>(FragmentSetUpMapB
                 ),
             )
         }
-    }
-
-    private fun rotateBitmap(bitmap: Bitmap, degrees: Float): Bitmap {
-        val matrix = Matrix().apply { postRotate(degrees) }
-        return Bitmap.createBitmap(
-            /* source = */ bitmap,
-            /* x = */ 0,
-            /* y = */ 0,
-            /* width = */ bitmap.width,
-            /* height = */ bitmap.height,
-            /* m = */ matrix,
-            /* filter = */ true
-        )
-    }
-
-    private fun flipBitmap(bitmap: Bitmap): Bitmap {
-        val matrix = Matrix().apply { preScale(-1f, 1f) }
-        return Bitmap.createBitmap(
-            /* source = */ bitmap,
-            /* x = */ 0,
-            /* y = */ 0,
-            /* width = */ bitmap.width,
-            /* height = */ bitmap.height,
-            /* m = */ matrix,
-            /* filter = */ true
-        )
     }
 
 }

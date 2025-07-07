@@ -158,4 +158,5 @@
     <string name="preview">Preview</string>
     <string name="start">Start</string>
     <string name="map_shifting">Map Shifting</string>
+    <string name="coordinate">(%1$s, %2$s)</string>
 </resources>
