@@ -31,4 +31,8 @@ interface DeviceRepository {
     suspend fun getDeviceAddressLastId(): Int?
 
     suspend fun getDeviceByDeviceAddress(deviceAddress: Int): DeviceData?
+
+    suspend fun getAnchorsByNetworkAddress(networkAddress: Int): List<DeviceData>
+
+    suspend fun getClientsByNetworkAddress(networkAddress: Int): List<DeviceData>
 }

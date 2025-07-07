@@ -26,4 +26,8 @@ object StorageUtils {
             null
         }
     }
+
+    fun getFileFromPath(path: String): File {
+        return File(path)
+    }
 }

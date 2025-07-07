@@ -1,0 +1,132 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_default"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="@font/roboto_medium"
+        android:text="@string/select_devices"
+        android:textColor="@color/text_default"
+        android:textSize="18sp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="16dp"
+            >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/select_server"
+                android:fontFamily="@font/roboto_regular"
+                android:textSize="16sp"
+                android:textColor="@color/text_default"
+                />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/serverRecyclerViewSelectDevicesFragment"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:clipToPadding="false"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp"
+                android:overScrollMode="never"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/select_anchor"
+                android:fontFamily="@font/roboto_regular"
+                android:textSize="16sp"
+                android:textColor="@color/text_default"
+                />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/anchorRecyclerViewSelectDevicesFragment"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:clipToPadding="false"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp"
+                android:overScrollMode="never"
+                />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/select_clients"
+                    android:fontFamily="@font/roboto_regular"
+                    android:textSize="16sp"
+                    android:textColor="@color/text_default"
+                    android:layout_alignParentStart="true"
+                    />
+
+                <TextView
+                    android:id="@+id/selectAllTextViewSelectDevicesFragment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/select_all"
+                    android:textColor="@color/background_primary"
+                    android:fontFamily="@font/roboto_regular"
+                    android:textSize="12sp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    />
+
+            </RelativeLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/clientsRecyclerViewSelectDevicesFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="64dp"
+                />
+
+        </LinearLayout>
+
+    </ScrollView>
+    
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/connectButtonSelectDevicesFragment"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/background_primary"
+        android:fontFamily="@font/roboto_semibold"
+        android:insetLeft="0dp"
+        android:insetTop="0dp"
+        android:insetRight="0dp"
+        android:insetBottom="0dp"
+        android:text="@string/select"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        app:cornerRadius="64dp"
+        app:iconGravity="textEnd"
+        app:iconSize="16dp" />
+</LinearLayout>

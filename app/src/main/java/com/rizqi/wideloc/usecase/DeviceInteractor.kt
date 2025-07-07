@@ -94,5 +94,13 @@ class DeviceInteractor @Inject constructor(
     override suspend fun generateDeviceAddress(): Int {
         return (repository.getDeviceAddressLastId() ?: 0) + 1
     }
+
+    override suspend fun getAnchorsByNetworkAddress(networkAddress: Int): List<DeviceData> {
+        return repository.getAnchorsByNetworkAddress(networkAddress)
+    }
+
+    override suspend fun getClientsByNetworkAddress(networkAddress: Int): List<DeviceData> {
+        return repository.getClientsByNetworkAddress(networkAddress)
+    }
 }
 

@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/background_default"
+    android:orientation="vertical"
+    >
+
+    <TextView
+        android:id="@+id/titleTextViewFragmentSetUpMap"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="@string/setup_map"
+        android:fontFamily="@font/roboto_medium"
+        android:textSize="18sp"
+        android:textColor="@color/text_default"
+        />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        android:fillViewport="true"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/size"
+                android:fontFamily="@font/roboto_regular"
+                android:textSize="16sp"
+                android:textColor="@color/text_default"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:baselineAligned="false"
+                android:orientation="horizontal"
+                android:weightSum="2"
+                >
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/lengthInputLayoutSetUpMapFragment"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="@string/length"
+                    app:hintTextColor="@color/text_primary"
+                    app:boxStrokeColor="@color/text_primary"
+                    app:boxStrokeWidth="2dp"
+                    app:boxStrokeWidthFocused="3dp"
+                    app:boxCornerRadiusTopStart="8dp"
+                    app:boxCornerRadiusTopEnd="8dp"
+                    app:boxCornerRadiusBottomStart="8dp"
+                    app:boxCornerRadiusBottomEnd="8dp"
+                    app:cursorColor="@color/text_primary"
+                    android:layout_marginEnd="8dp"
+                    >
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/lengthInputEditTextSetUpMapFragment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal"
+                        android:imeOptions="actionNext"
+                        />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/widthInputLayoutSetUpMapFragment"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="@string/width"
+                    app:hintTextColor="@color/text_primary"
+                    app:boxStrokeColor="@color/text_primary"
+                    app:boxStrokeWidth="2dp"
+                    app:boxStrokeWidthFocused="3dp"
+                    app:boxCornerRadiusTopStart="8dp"
+                    app:boxCornerRadiusTopEnd="8dp"
+                    app:boxCornerRadiusBottomStart="8dp"
+                    app:boxCornerRadiusBottomEnd="8dp"
+                    app:cursorColor="@color/text_primary"
+                    android:layout_marginEnd="8dp"
+                    >
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/widthInputEditTextSetUpMapFragment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal"
+                        android:imeOptions="actionNext"
+                        />
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp"
+                >
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/selectMapInputLayoutSetUpMapFragment"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="@string/select_map"
+                    app:hintTextColor="@color/text_primary"
+                    app:boxStrokeColor="@color/text_primary"
+                    app:boxStrokeWidth="2dp"
+                    app:boxStrokeWidthFocused="3dp"
+                    app:boxCornerRadiusTopStart="8dp"
+                    app:boxCornerRadiusTopEnd="8dp"
+                    app:boxCornerRadiusBottomStart="8dp"
+                    app:boxCornerRadiusBottomEnd="8dp"
+                    app:cursorColor="@color/text_primary"
+                    >
+
+                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                        android:id="@+id/selectMapAutoCompleteSetUpMapFragment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"
+                        android:imeOptions="actionGo"
+                        android:minHeight="56dp"
+                        android:paddingVertical="12dp"
+                        android:fontFamily="@font/roboto_regular"
+                        android:textSize="16sp"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:clickable="true"
+                        android:dropDownHeight="wrap_content"
+                        />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/addMapButtonSetUpFragment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:backgroundTint="@color/background_default"
+                    app:cornerRadius="24dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:insetLeft="0dp"
+                    android:insetRight="0dp"
+                    app:icon="@drawable/ic_plus"
+                    app:iconGravity="textStart"
+                    app:iconPadding="8dp"
+                    app:iconSize="14dp"
+                    app:iconTint="@color/background_primary"
+                    app:strokeColor="@color/border_secondary"
+                    app:strokeWidth="2dp"
+                    android:text="@string/add_map"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+                    android:fontFamily="@font/roboto_regular"
+                    android:textAllCaps="false"
+                    android:textSize="14sp"
+                    android:textColor="@color/text_primary"
+                    android:layout_marginStart="8dp"
+                    android:layout_gravity="center_vertical"
+                    app:rippleColor="@color/background_primary_2"
+                    android:gravity="center_vertical"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/mapLayoutFragmentSetUpMap"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="24dp"
+                android:visibility="gone"
+                >
+
+                <ImageView
+                    android:id="@+id/mapImageViewFragmentSetUpMap"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:scaleType="fitCenter"
+                    tools:src="@drawable/map_dummy" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="32dp"
+                    >
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/rotateButtonFragmentSetUpMap"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:backgroundTint="@color/background_default"
+                        app:cornerRadius="24dp"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:insetLeft="0dp"
+                        android:insetRight="0dp"
+                        app:icon="@drawable/ic_rotate_right_solid"
+                        app:iconGravity="textStart"
+                        app:iconPadding="0dp"
+                        app:iconSize="16dp"
+                        app:iconTint="@color/background_primary"
+                        app:strokeWidth="2dp"
+                        app:strokeColor="@color/background_primary"
+                        />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/flipButtonFragmentSetUpMap"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="8dp"
+                        android:backgroundTint="@color/background_default"
+                        app:cornerRadius="24dp"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:insetLeft="0dp"
+                        android:insetRight="0dp"
+                        app:icon="@drawable/ic_flip_horizontal"
+                        app:iconGravity="textStart"
+                        app:iconPadding="0dp"
+                        app:iconSize="16dp"
+                        app:iconTint="@color/background_primary"
+                        app:strokeWidth="2dp"
+                        app:strokeColor="@color/background_primary"
+                        />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/saveButtonFragmentSetUpMap"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:backgroundTint="@color/background_primary"
+        android:fontFamily="@font/roboto_semibold"
+        android:insetLeft="0dp"
+        android:insetTop="0dp"
+        android:insetRight="0dp"
+        android:insetBottom="0dp"
+        android:text="@string/save"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        app:cornerRadius="64dp"
+        app:iconGravity="textEnd"
+        app:iconSize="16dp"
+        />
+
+</LinearLayout>

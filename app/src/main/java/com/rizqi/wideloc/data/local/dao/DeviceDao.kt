@@ -47,4 +47,7 @@ interface DeviceDao {
     @Query("SELECT * FROM devices WHERE uwb_config_device_address = :deviceAddress LIMIT 1")
     suspend fun getDeviceByDeviceAddress(deviceAddress: Int): DeviceEntity?
 
+    @Query("SELECT * FROM devices WHERE role = :role AND uwb_config_network_address = :networkAddress")
+    suspend fun getDevicesByRoleAndNetworkAddress(role: DeviceRole, networkAddress: Int): List<DeviceEntity>
+
 }

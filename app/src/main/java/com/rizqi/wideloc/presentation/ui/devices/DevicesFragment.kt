@@ -30,7 +30,7 @@ class DevicesFragment : BaseFragment<FragmentDevicesBinding>(FragmentDevicesBind
         super.onViewCreated(view, savedInstanceState)
 
         devicesAdapter = DevicesAdapter{
-
+// TODO: edit & delete device
         }
         reconfigureDevicesAdapter = ReconfigureDevicesAdapter{ device ->
             addDeviceBottomSheet.setDeviceData(device)

@@ -18,3 +18,5 @@ fun CharSequence.isValidHostAddress(): Boolean {
     val regex = "wss?:\\/\\/$ipv4Pattern(:(\\d*))?\\/".toRegex()
     return regex.matches(this)
 }
+
+fun Double.toDisplayString(): String = String.format("%.5f", this).trimEnd('0').trimEnd('.')

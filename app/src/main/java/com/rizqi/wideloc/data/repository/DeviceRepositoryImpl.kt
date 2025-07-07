@@ -53,4 +53,9 @@ class DeviceRepositoryImpl @Inject constructor(
     override suspend fun getDeviceAddressLastId() = localDataSource.getDeviceAddressLastId()
 
     override suspend fun getDeviceByDeviceAddress(deviceAddress: Int): DeviceData? = localDataSource.getDeviceByDeviceAddress(deviceAddress)?.asDeviceData()
+
+    override suspend fun getAnchorsByNetworkAddress(networkAddress: Int): List<DeviceData> = localDataSource.getAnchorsByNetworkAddress(networkAddress).map { it.asDeviceData() }
+
+    override suspend fun getClientsByNetworkAddress(networkAddress: Int): List<DeviceData> = localDataSource.getClientsByNetworkAddress(networkAddress).map { it.asDeviceData() }
+
 }

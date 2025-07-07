@@ -5,6 +5,7 @@ import com.rizqi.wideloc.data.local.entity.BluetoothProtocolEntity
 import com.rizqi.wideloc.data.local.entity.DeviceEntity
 import com.rizqi.wideloc.data.local.entity.DeviceOffsetEntity
 import com.rizqi.wideloc.data.local.entity.DeviceProtocol.*
+import com.rizqi.wideloc.data.local.entity.MapEntity
 import com.rizqi.wideloc.data.local.entity.TWRDataEntity
 import com.rizqi.wideloc.data.local.entity.UWBConfigEntity
 import com.rizqi.wideloc.data.local.entity.WiFiProtocolEntity
@@ -19,6 +20,7 @@ import com.rizqi.wideloc.domain.model.CalibrationData
 import com.rizqi.wideloc.domain.model.ClientData
 import com.rizqi.wideloc.domain.model.DeviceData
 import com.rizqi.wideloc.domain.model.DeviceOffsetData
+import com.rizqi.wideloc.domain.model.MapData
 import com.rizqi.wideloc.domain.model.ProtocolData
 import com.rizqi.wideloc.domain.model.TWRData
 import com.rizqi.wideloc.domain.model.TrackingData
@@ -185,5 +187,16 @@ object DomainDataMapper {
         address2 = this.address2,
         timestamp = this.timestamp.toLong(),
         distance = this.distance,
+    )
+
+    fun MapEntity.toMapData() = MapData(
+        id = this.id,
+        name = this.name,
+        imageUri = this.imageUri
+    )
+
+    fun MapData.toMapEntity() = MapEntity(
+        name = this.name,
+        imageUri = this.imageUri
     )
 }

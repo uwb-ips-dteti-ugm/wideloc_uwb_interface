@@ -44,6 +44,8 @@ class DevicesAdapter(
 
             Glide.with(binding.deviceImageViewDeviceCard.context)
                 .load(File(device.imageUrl))
+                .placeholder(R.drawable.esp32_uwb_dw3000)
+                .error(R.drawable.esp32_uwb_dw3000)
                 .into(binding.deviceImageViewDeviceCard)
             binding.deviceNameTextViewDeviceCard.text = device.name
             binding.connectedTimeTextViewDeviceCard.text =

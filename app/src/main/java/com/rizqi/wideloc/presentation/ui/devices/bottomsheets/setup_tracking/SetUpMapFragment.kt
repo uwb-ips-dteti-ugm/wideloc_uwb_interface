@@ -1,0 +1,199 @@
+package com.rizqi.wideloc.presentation.ui.devices.bottomsheets.setup_tracking
+
+import android.R
+import android.graphics.Bitmap
+import android.graphics.Matrix
+import android.graphics.drawable.Drawable
+import android.net.Uri
+import android.os.Bundle
+import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.activityViewModels
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
+import com.rizqi.wideloc.data.Result
+import com.rizqi.wideloc.databinding.FragmentSetUpMapBinding
+import com.rizqi.wideloc.domain.model.MapData
+import com.rizqi.wideloc.presentation.ui.BaseFragment
+import com.rizqi.wideloc.presentation.ui.dialogs.AddMapDialog
+import com.rizqi.wideloc.presentation.viewmodel.TrackingViewModel
+import com.rizqi.wideloc.utils.StorageUtils
+import com.rizqi.wideloc.utils.ViewUtils.hideKeyboardAndClearFocus
+
+class SetUpMapFragment : BaseFragment<FragmentSetUpMapBinding>(FragmentSetUpMapBinding::inflate) {
+
+    private val trackingViewModel: TrackingViewModel by activityViewModels()
+
+    private lateinit var pickImageLauncher: ActivityResultLauncher<String>
+    private var addMapDialog: AddMapDialog? = null
+
+    private lateinit var mapAdapter: ArrayAdapter<String>
+    private var selectedMap: MapData? = null
+
+    private var mapImageBitmap: Bitmap? = null
+    private var mapImageRotation = 0f
+    private var mapImageFlippedHorizontally = false
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        (parentFragment?.parentFragment as? SetupTrackingSessionBottomSheet)?.toggleWifiInfoVisibility(
+            true
+        )
+
+        pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()){uri ->
+            uri?.let {
+                addMapDialog?.updateImage(it)
+            }
+        }
+        addMapDialog = AddMapDialog(
+            context = requireContext(),
+            onPickImage = { pickImageLauncher.launch("image/*") },
+            onSave = { name, imageUri ->
+                val imageFile = StorageUtils.copyUriToInternalStorage(requireContext(), imageUri, "${name}_${System.currentTimeMillis()}.jpg")
+                val imagePath = imageFile?.absolutePath
+                trackingViewModel.insertMap(name, imagePath)
+            }
+        )
+
+        binding.root.setOnClickListener {
+            hideKeyboardAndClearFocus(requireActivity().currentFocus ?: it)
+        }
+        binding.addMapButtonSetUpFragment.setOnClickListener {
+            addMapDialog?.show()
+        }
+
+        trackingViewModel.availableMaps.observe(viewLifecycleOwner) { maps ->
+            mapAdapter = ArrayAdapter(
+                requireContext(),
+                R.layout.simple_dropdown_item_1line,
+                maps.map { it.name }
+            )
+            binding.selectMapAutoCompleteSetUpMapFragment.apply {
+                setAdapter(mapAdapter)
+                setText(selectedMap?.name, false)
+                setOnItemClickListener { _, _, index, _ ->
+                    val map = maps[index]
+                    selectedMap = map
+                    trackingViewModel.setSelectedMap(map)
+                    binding.mapLayoutFragmentSetUpMap.visibility = View.VISIBLE
+                    Glide.with(context)
+                        .asBitmap()
+                        .load(StorageUtils.getFileFromPath(map.imageUri))
+                        .into(
+                            object : CustomTarget<Bitmap>(){
+                                override fun onResourceReady(
+                                    resource: Bitmap,
+                                    transition: Transition<in Bitmap>?
+                                ) {
+                                    mapImageBitmap = resource
+                                    binding.mapImageViewFragmentSetUpMap.setImageBitmap(resource)
+                                }
+
+                                override fun onLoadCleared(placeholder: Drawable?) {
+
+                                }
+
+                            }
+                        )
+                    recalculateContentHeight()
+                }
+                setOnClickListener {
+                    binding.selectMapAutoCompleteSetUpMapFragment.showDropDown()
+                    recalculateContentHeight()
+                }
+            }
+        }
+        trackingViewModel.saveMapError.observe(viewLifecycleOwner){error ->
+            binding.lengthInputLayoutSetUpMapFragment.error = error.length
+            binding.widthInputLayoutSetUpMapFragment.error = error.width
+            binding.selectMapInputLayoutSetUpMapFragment.error = error.map
+            recalculateContentHeight()
+        }
+        trackingViewModel.saveMapResult.observe(viewLifecycleOwner){result ->
+            when(result){
+                is Result.Error -> Toast.makeText(requireContext(), result.errorMessage, Toast.LENGTH_LONG).show()
+                is Result.Loading<*> -> Unit
+                is Result.Success<*> -> {
+                    (parentFragment as? SetupTrackingSessionFragment)?.goToNextPage()
+                }
+            }
+        }
+
+        binding.rotateButtonFragmentSetUpMap.setOnClickListener {
+            mapImageBitmap?.let {
+                mapImageRotation = (mapImageRotation + 90f) % 360f
+                mapImageBitmap = rotateBitmap(it, 90f)
+                binding.mapImageViewFragmentSetUpMap.setImageBitmap(mapImageBitmap)
+                recalculateContentHeight()
+            }
+        }
+
+        binding.flipButtonFragmentSetUpMap.setOnClickListener {
+            mapImageBitmap?.let {
+                mapImageFlippedHorizontally = !mapImageFlippedHorizontally
+                mapImageBitmap = flipBitmap(it)
+                binding.mapImageViewFragmentSetUpMap.setImageBitmap(mapImageBitmap)
+                recalculateContentHeight()
+            }
+        }
+
+        binding.saveButtonFragmentSetUpMap.setOnClickListener {
+            val length = binding.lengthInputEditTextSetUpMapFragment.text.toString()
+            val width = binding.widthInputEditTextSetUpMapFragment.text.toString()
+
+            trackingViewModel.saveMapSelection(
+                lengthText = length,
+                widthText = width,
+                mapRotation = mapImageRotation,
+                isFlipX = mapImageFlippedHorizontally
+            )
+        }
+
+        recalculateContentHeight()
+
+    }
+
+    private fun recalculateContentHeight() {
+        view?.post {
+            (parentFragment?.parentFragment as? SetupTrackingSessionBottomSheet)?.recalculateHeight(
+                listOf(
+                    (parentFragment as SetupTrackingSessionFragment).binding.stepsIndicatorFragmentSetupTrackingSession,
+                    binding.root,
+                ),
+            )
+        }
+    }
+
+    private fun rotateBitmap(bitmap: Bitmap, degrees: Float): Bitmap {
+        val matrix = Matrix().apply { postRotate(degrees) }
+        return Bitmap.createBitmap(
+            /* source = */ bitmap,
+            /* x = */ 0,
+            /* y = */ 0,
+            /* width = */ bitmap.width,
+            /* height = */ bitmap.height,
+            /* m = */ matrix,
+            /* filter = */ true
+        )
+    }
+
+    private fun flipBitmap(bitmap: Bitmap): Bitmap {
+        val matrix = Matrix().apply { preScale(-1f, 1f) }
+        return Bitmap.createBitmap(
+            /* source = */ bitmap,
+            /* x = */ 0,
+            /* y = */ 0,
+            /* width = */ bitmap.width,
+            /* height = */ bitmap.height,
+            /* m = */ matrix,
+            /* filter = */ true
+        )
+    }
+
+}

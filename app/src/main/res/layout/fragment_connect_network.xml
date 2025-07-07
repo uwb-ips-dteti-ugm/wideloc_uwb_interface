@@ -1,6 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -12,21 +11,22 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:fontFamily="@font/roboto_medium"
-        android:text="@string/select_available_networks"
+        android:text="@string/connect_device_networks"
         android:textColor="@color/text_default"
         android:textSize="18sp" />
 
     <TextView
+        android:id="@+id/descriptionTextViewConnectNetworkFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:fontFamily="@font/roboto_regular"
-        android:text="@string/make_sure_to_select_the_uwb_access_point_commonly_starts_by_esp32_uwb"
+        android:text="@string/select_the_same_network_as_the_server"
         android:textColor="@color/text_secondary"
         android:textSize="14sp" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/refreshButtonConnectDeviceWifiFragment"
+        android:id="@+id/refreshButtonConnectNetworkFragment"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:backgroundTint="@color/background_default"
@@ -40,8 +40,6 @@
         app:iconPadding="8dp"
         app:iconSize="14dp"
         app:iconTint="@color/background_primary"
-        app:layout_constraintBottom_toTopOf="@id/startRecordButtonHome"
-        app:layout_constraintEnd_toEndOf="parent"
         app:strokeColor="@color/border_secondary"
         app:strokeWidth="2dp"
         android:text="@string/refresh_scan"
@@ -55,6 +53,7 @@
         app:rippleColor="@color/background_primary_2"
         />
 
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -63,7 +62,7 @@
         android:fillViewport="true">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/availableWifiRecyclerViewConnectDeviceWifiFragment"
+            android:id="@+id/availableWifiRecyclerViewConnectNetworkFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clipToPadding="false" />
@@ -80,7 +79,7 @@
         android:textSize="16sp" />
 
     <TextView
-        android:id="@+id/selectedWifiTextViewConnectDeviceWifiFragment"
+        android:id="@+id/selectedWifiTextViewConnectNetworkFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
@@ -90,7 +89,7 @@
         android:textSize="16sp" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/wifiPasswordInputLayoutConnectDeviceWifiFragment"
+        android:id="@+id/wifiPasswordInputLayoutConnectNetworkFragment"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -110,7 +109,7 @@
         >
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/wifiPasswordInputEditTextConnectDeviceWifiFragment"
+            android:id="@+id/wifiPasswordInputEditTextConnectNetworkFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:imeOptions="actionGo"
@@ -119,7 +118,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/connectButtonConnectDeviceWifiFragment"
+        android:id="@+id/connectButtonConnectNetworkFragment"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:layout_marginTop="16dp"
@@ -138,7 +137,7 @@
         app:iconSize="16dp" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/skipButtonConnectDeviceWifiFragment"
+        android:id="@+id/skipButtonConnectNetworkFragment"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         app:layout_constraintTop_toBottomOf="@id/forgetDeviceButtonDeviceDetailBottomSheet"

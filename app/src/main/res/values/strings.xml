@@ -118,5 +118,44 @@
     <string name="never_connected_yet">Never connected yet</string>
     <string name="network_not_configured_yet">Network not configured yet</string>
     <string name="device_configured">Device Configured</string>
-
+    <string name="select_devices">Select Devices</string>
+    <string name="select">Select</string>
+    <string name="selected">Selected</string>
+    <string name="select_anchor">Select Anchor</string>
+    <string name="select_clients">Select Clients</string>
+    <string-array name="setup_tracking_session_steps">
+        <item>Select Devices</item>
+        <item>Connect to The Network</item>
+        <item>Setup The Map</item>
+        <item>Set Devices Layout</item>
+    </string-array>
+    <string name="select_all"><u>Select all</u></string>
+    <string name="select_a_server_first">Select a server first</string>
+    <string name="select_a_anchor_first">Select an anchor first</string>
+    <string name="select_clients_first">Select at least one client</string>
+    <string name="connect_device_networks">Connect to The Device Network</string>
+    <string name="select_the_same_network_as_the_server">Select the same network as the server network, namely connected to %1$s</string>
+    <string name="setup_map">Setup Map</string>
+    <string name="size">Size(in Meter)</string>
+    <string name="length">Length</string>
+    <string name="width">Width</string>
+    <string name="select_map">Select Map</string>
+    <string name="add_map">Add Map</string>
+    <string name="name_cant_be_empty">Name can\'t be empty</string>
+    <string name="select_an_image_of_your_map">Select an image of your map!</string>
+    <string name="length_can_t_be_empty_or_less_than_zero">Length can\'t be empty or less than zero</string>
+    <string name="width_can_t_be_empty_or_less_than_zero">Width can\'t be empty or less than zero</string>
+    <string name="select_a_map_first">Select a map first</string>
+    <string name="there_are_some_invalid_input">There are some invalid input</string>
+    <string name="set_devices_layout">Set Initial Device Layout</string>
+    <string name="server">Server</string>
+    <string name="the_server_coordinates_are_set_as_point_0_0_0_you_can_set_the_offset_if_you_want_to_shift_it">The server coordinates are set as point 0(0,0). You can set the offset if you want to shift it.</string>
+    <string name="x_offset">Offset X</string>
+    <string name="y_offset">Offset Y</string>
+    <string name="anchor">Anchor</string>
+    <string name="anchor_coordinates_are_assumed_to_be_fixed_unchanging_make_sure_you_set_them_correctly">Anchor coordinates are assumed to be fixed (unchanging). Make sure you set them correctly.</string>
+    <string name="clients">Clients</string>
+    <string name="preview">Preview</string>
+    <string name="start">Start</string>
+    <string name="map_shifting">Map Shifting</string>
 </resources>

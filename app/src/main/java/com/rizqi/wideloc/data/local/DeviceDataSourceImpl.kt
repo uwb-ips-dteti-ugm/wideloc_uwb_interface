@@ -47,4 +47,8 @@ class DeviceDataSourceImpl @Inject constructor(
     override suspend fun getDeviceAddressLastId() = deviceDao.getLastUwbDeviceAddress()
 
     override suspend fun getDeviceByDeviceAddress(deviceAddress: Int): DeviceEntity? = deviceDao.getDeviceByDeviceAddress(deviceAddress)
+
+    override suspend fun getAnchorsByNetworkAddress(networkAddress: Int): List<DeviceEntity> = deviceDao.getDevicesByRoleAndNetworkAddress(DeviceRole.Anchor, networkAddress)
+
+    override suspend fun getClientsByNetworkAddress(networkAddress: Int): List<DeviceEntity> = deviceDao.getDevicesByRoleAndNetworkAddress(DeviceRole.Client, networkAddress)
 }

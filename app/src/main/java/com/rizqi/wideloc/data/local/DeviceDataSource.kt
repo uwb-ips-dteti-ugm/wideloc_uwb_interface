@@ -31,4 +31,8 @@ interface DeviceDataSource {
     suspend fun getDeviceAddressLastId(): Int?
 
     suspend fun getDeviceByDeviceAddress(deviceAddress: Int): DeviceEntity?
+
+    suspend fun getAnchorsByNetworkAddress(networkAddress: Int): List<DeviceEntity>
+
+    suspend fun getClientsByNetworkAddress(networkAddress: Int): List<DeviceEntity>
 }

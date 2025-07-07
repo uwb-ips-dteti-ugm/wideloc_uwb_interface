@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:background="@color/background_default">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/valueInputLayoutItemInputUpDown"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:hint="@string/x"
+        app:hintTextColor="@color/text_primary"
+        app:boxStrokeColor="@color/text_primary"
+        app:boxStrokeWidth="2dp"
+        app:boxStrokeWidthFocused="3dp"
+        app:boxCornerRadiusTopStart="8dp"
+        app:boxCornerRadiusTopEnd="8dp"
+        app:boxCornerRadiusBottomStart="8dp"
+        app:boxCornerRadiusBottomEnd="8dp"
+        app:cursorColor="@color/text_primary">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/valueInputEditTextItemInputUpDown"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal"
+            android:imeOptions="actionNext" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <LinearLayout
+        android:id="@+id/buttonLayoutItemInputUpDown"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_vertical"
+        android:layout_marginStart="8dp"
+        >
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/upButtonItemInputUpDown"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:backgroundTint="@color/background_default"
+            app:cornerRadius="20dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:insetLeft="0dp"
+            android:insetRight="0dp"
+            app:icon="@drawable/ic_caret_up_solid"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
+            app:iconSize="16dp"
+            app:iconTint="@color/text_default"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+            app:strokeWidth="0dp"
+            />
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/downButtonItemInputUpDown"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:backgroundTint="@color/background_default"
+            app:cornerRadius="20dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:insetLeft="0dp"
+            android:insetRight="0dp"
+            app:icon="@drawable/ic_caret_down_solid"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
+            app:iconSize="16dp"
+            app:iconTint="@color/text_default"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+            app:strokeWidth="0dp"
+            />
+    </LinearLayout>
+</LinearLayout>

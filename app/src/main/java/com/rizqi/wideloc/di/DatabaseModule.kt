@@ -3,6 +3,7 @@ package com.rizqi.wideloc.di
 import android.content.Context
 import com.rizqi.wideloc.data.local.WideLocDatabase
 import com.rizqi.wideloc.data.local.dao.DeviceDao
+import com.rizqi.wideloc.data.local.dao.MapDao
 import com.rizqi.wideloc.data.local.dao.TWRDataDao
 import dagger.Module
 import dagger.Provides
@@ -27,4 +28,8 @@ object DatabaseModule {
     @Provides
     @Singleton
     fun provideTWRDataDao(database: WideLocDatabase): TWRDataDao = database.twrDataDao()
+
+    @Provides
+    @Singleton
+    fun provideMapDao(database: WideLocDatabase): MapDao = database.mapDao()
 }

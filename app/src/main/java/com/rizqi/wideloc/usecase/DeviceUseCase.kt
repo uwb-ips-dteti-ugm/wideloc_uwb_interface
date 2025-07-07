@@ -38,4 +38,8 @@ interface DeviceUseCase {
     suspend fun generateNetworkAddress(): Int
 
     suspend fun generateDeviceAddress(): Int
+
+    suspend fun getAnchorsByNetworkAddress(networkAddress: Int): List<DeviceData>
+
+    suspend fun getClientsByNetworkAddress(networkAddress: Int): List<DeviceData>
 }

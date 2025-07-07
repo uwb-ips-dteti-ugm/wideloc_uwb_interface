@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/background_default"
+    android:layout_marginBottom="16dp">
+
+    <TextView
+        android:id="@+id/titleTextViewItemDeviceSetLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="@string/server"
+        android:fontFamily="@font/roboto_regular"
+        android:textSize="16sp"
+        android:textColor="@color/text_default"
+        />
+
+    <TextView
+        android:id="@+id/subtitleTextViewItemDeviceSetLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_regular"
+        tools:text="@string/the_server_coordinates_are_set_as_point_0_0_0_you_can_set_the_offset_if_you_want_to_shift_it"
+        android:textColor="@color/text_secondary"
+        android:textSize="14sp"
+        android:visibility="gone"/>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:layout_marginTop="4dp"
+        >
+
+        <include
+            android:id="@+id/xInputItemDeviceSetLayout"
+            layout="@layout/item_input_edit_text_with_up_down"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            />
+
+        <include
+            android:id="@+id/xOffsetInputItemDeviceSetLayout"
+            layout="@layout/item_input_edit_text_with_up_down"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:layout_marginTop="4dp"
+        >
+
+        <include
+            android:id="@+id/yInputItemDeviceSetLayout"
+            layout="@layout/item_input_edit_text_with_up_down"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            />
+
+        <include
+            android:id="@+id/yOffsetInputItemDeviceSetLayout"
+            layout="@layout/item_input_edit_text_with_up_down"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            />
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/background_default"
+    android:orientation="vertical"
+    >
+
+    <TextView
+        android:id="@+id/titleTextViewFragmentSetLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="@string/set_devices_layout"
+        android:fontFamily="@font/roboto_medium"
+        android:textSize="18sp"
+        android:textColor="@color/text_default"
+        />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        android:fillViewport="true"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/server"
+                    android:fontFamily="@font/roboto_regular"
+                    android:textSize="16sp"
+                    android:textColor="@color/text_default"
+                    />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_regular"
+                    android:text="@string/the_server_coordinates_are_set_as_point_0_0_0_you_can_set_the_offset_if_you_want_to_shift_it"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="14sp" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal"
+                    android:weightSum="2"
+                    android:layout_marginTop="4dp"
+                    >
+
+                    <include
+                        android:id="@+id/xServerInputLayoutSetUpMapFragment"
+                        layout="@layout/item_input_edit_text_with_up_down"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="8dp"
+                        />
+
+                    <include
+                        android:id="@+id/xOffsetServerInputLayoutSetUpMapFragment"
+                        layout="@layout/item_input_edit_text_with_up_down"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal"
+                    android:weightSum="2"
+                    android:layout_marginTop="4dp"
+                    >
+
+                    <include
+                        android:id="@+id/yServerInputLayoutSetUpMapFragment"
+                        layout="@layout/item_input_edit_text_with_up_down"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="8dp"
+                        />
+
+                    <include
+                        android:id="@+id/yOffsetServerInputLayoutSetUpMapFragment"
+                        layout="@layout/item_input_edit_text_with_up_down"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="16dp"
+                >
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/anchor"
+                    android:fontFamily="@font/roboto_regular"
+                    android:textSize="16sp"
+                    android:textColor="@color/text_default"
+                    />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_regular"
+                    android:text="@string/anchor_coordinates_are_assumed_to_be_fixed_unchanging_make_sure_you_set_them_correctly"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="14sp" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal"
+                    android:weightSum="2"
+                    android:layout_marginTop="4dp"
+                    >
+
+                    <include
+                        android:id="@+id/xAnchorInputLayoutSetUpMapFragment"
+                        layout="@layout/item_input_edit_text_with_up_down"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="8dp"
+                        />
+
+                    <include
+                        android:id="@+id/xOffsetAnchorInputLayoutSetUpMapFragment"
+                        layout="@layout/item_input_edit_text_with_up_down"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal"
+                    android:weightSum="2"
+                    android:layout_marginTop="4dp"
+                    >
+
+                    <include
+                        android:id="@+id/yAnchorInputLayoutSetUpMapFragment"
+                        layout="@layout/item_input_edit_text_with_up_down"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="8dp"
+                        />
+
+                    <include
+                        android:id="@+id/yOffsetAnchorInputLayoutSetUpMapFragment"
+                        layout="@layout/item_input_edit_text_with_up_down"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="16dp"
+                >
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/clients"
+                    android:fontFamily="@font/roboto_regular"
+                    android:textSize="16sp"
+                    android:textColor="@color/text_default"
+                    />
+
+                <LinearLayout
+                    android:id="@+id/clientsCoordinateLayoutFragmentSetLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="8dp"
+                    />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/clientsCoordinateRecyclerViewFragmentSetLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    android:layout_marginTop="8dp"
+                    tools:itemCount="3"
+                    tools:listitem="@layout/item_device_set_layout"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/map_shifting"
+                    android:fontFamily="@font/roboto_regular"
+                    android:textSize="16sp"
+                    android:textColor="@color/text_default"
+                    />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal"
+                    android:weightSum="1"
+                    android:layout_marginTop="4dp"
+                    >
+
+                    <include
+                        android:id="@+id/xOffsetMapInputLayoutSetUpMapFragment"
+                        layout="@layout/item_input_edit_text_with_up_down"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal"
+                    android:weightSum="1"
+                    android:layout_marginTop="4dp"
+                    >
+
+                    <include
+                        android:id="@+id/yOffsetMapInputLayoutSetUpMapFragment"
+                        layout="@layout/item_input_edit_text_with_up_down"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/mapLayoutFragmentSetLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="24dp"
+                android:visibility="visible"
+                >
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/preview"
+                    android:fontFamily="@font/roboto_regular"
+                    android:textSize="16sp"
+                    android:textColor="@color/text_default"
+                    />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="400dp"
+                    >
+
+                    <ImageView
+                        android:id="@+id/mapImageViewFragmentSetLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_horizontal"
+                        android:scaleType="fitCenter"
+                        android:layout_marginTop="4dp"
+                        tools:src="@drawable/map_dummy" />
+
+                    <com.rizqi.wideloc.presentation.ui.cartesian_view.CartesianView
+                        android:id="@+id/cartesianViewFragmentSetLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        />
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/saveButtonFragmentSetLayout"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:backgroundTint="@color/background_primary"
+        android:fontFamily="@font/roboto_semibold"
+        android:insetLeft="0dp"
+        android:insetTop="0dp"
+        android:insetRight="0dp"
+        android:insetBottom="0dp"
+        android:text="@string/start"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        app:cornerRadius="64dp"
+        app:iconGravity="textEnd"
+        app:iconSize="16dp"
+        />
+
+</LinearLayout>

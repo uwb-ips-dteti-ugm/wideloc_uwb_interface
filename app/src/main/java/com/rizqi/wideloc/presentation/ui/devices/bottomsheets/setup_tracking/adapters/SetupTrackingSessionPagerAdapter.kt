@@ -1,0 +1,24 @@
+package com.rizqi.wideloc.presentation.ui.devices.bottomsheets.setup_tracking.adapters
+
+import androidx.fragment.app.Fragment
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.rizqi.wideloc.presentation.ui.devices.bottomsheets.setup_tracking.ConnectNetworkFragment
+import com.rizqi.wideloc.presentation.ui.devices.bottomsheets.setup_tracking.SelectDevicesFragment
+import com.rizqi.wideloc.presentation.ui.devices.bottomsheets.setup_tracking.SetLayoutFragment
+import com.rizqi.wideloc.presentation.ui.devices.bottomsheets.setup_tracking.SetUpMapFragment
+
+class SetupTrackingSessionPagerAdapter(fragment: Fragment): FragmentStateAdapter(fragment) {
+
+    private val pages = listOf(
+        SetLayoutFragment(),
+        SelectDevicesFragment(),
+        ConnectNetworkFragment(),
+        SetUpMapFragment(),
+    )
+
+    override fun getItemCount(): Int = pages.size
+
+    override fun createFragment(position: Int): Fragment {
+        return pages[position]
+    }
+}
