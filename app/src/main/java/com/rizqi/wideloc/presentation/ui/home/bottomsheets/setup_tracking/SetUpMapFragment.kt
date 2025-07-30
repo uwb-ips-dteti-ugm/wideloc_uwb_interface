@@ -77,7 +77,7 @@ class SetUpMapFragment : BaseFragment<FragmentSetUpMapBinding>(FragmentSetUpMapB
         )
         binding.unitAutoCompleteSetUpMapFragment.apply {
             setAdapter(mapUnitAdapter)
-            setText(selectedMapUnit.name, false)
+            setText(selectedMapUnit.name.lowercase(), false)
             setOnItemClickListener { _, _, index, _ ->
                 val unit = TrackingViewModel.MapUnit.entries[index]
                 selectedMapUnit = unit

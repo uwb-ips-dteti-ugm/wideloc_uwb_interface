@@ -10,9 +10,9 @@ import com.rizqi.wideloc.presentation.ui.home.bottomsheets.setup_tracking.SetUpM
 class SetupTrackingSessionPagerAdapter(fragment: Fragment): FragmentStateAdapter(fragment) {
 
     private val pages = listOf(
-//        SelectDevicesFragment(),
+        SelectDevicesFragment(),
 //        ConnectNetworkFragment(),
-//        SetUpMapFragment(),
+        SetUpMapFragment(),
         SetLayoutFragment(),
     )
 

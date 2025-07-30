@@ -82,14 +82,14 @@ class TrackingViewModel @Inject constructor(
     val availableMaps: LiveData<List<MapData>> get() = _availableMaps
     private val _selectedMap = MutableLiveData<MapData>()
     val selectedMap: LiveData<MapData> get() = _selectedMap
-    private val _mapTransform = MutableLiveData<MapTransform>()
+    private val _mapTransform = MutableLiveData<MapTransform>(MapTransform())
     val mapTransform: LiveData<MapTransform> get() = _mapTransform
     val mapCombinedWithTransform = MediatorLiveData<Pair<MapData?, MapTransform?>>().apply {
         addSource(selectedMap) { value = it to mapTransform.value }
         addSource(mapTransform) { value = selectedMap.value to it }
     }
 
-    private val _saveMapError = MutableLiveData<SaveMapError>(SaveMapError())
+    private val _saveMapError = MutableLiveData(SaveMapError())
     val saveMapError: LiveData<SaveMapError> get() = _saveMapError
     private val _saveMapResult = MutableLiveData<Result<Boolean>>()
     val saveMapResult: LiveData<Result<Boolean>> get() = _saveMapResult

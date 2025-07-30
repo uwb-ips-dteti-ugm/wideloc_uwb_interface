@@ -83,10 +83,14 @@ class SetLayoutFragment :
         setupAllEditableCoordinateFields()
 
         // LiveData observer
-        trackingViewModel.mapTransform.observe(viewLifecycleOwner){mapTransform ->
-            binding.cartesianViewFragmentSetLayout.applyMapTransform(mapTransform)
-            recalculateContentHeight()
+        trackingViewModel.mapTransform.value?.let {
+            binding.cartesianViewFragmentSetLayout.post {
+                binding.cartesianViewFragmentSetLayout.applyMapTransform(
+                    it
+                )
+            }
         }
+
         trackingViewModel.layoutInitialCoordinate.observe(viewLifecycleOwner) { layout ->
             val server = layout.serverCoordinate.coordinate
             binding.xServerInputLayoutSetUpMapFragment.valueInputEditTextItemInputUpDown.setText(server.x.toDisplayString())
