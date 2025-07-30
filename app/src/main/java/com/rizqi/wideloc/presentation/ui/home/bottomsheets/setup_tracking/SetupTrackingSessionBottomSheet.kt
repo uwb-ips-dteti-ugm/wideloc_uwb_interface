@@ -1,4 +1,4 @@
-package com.rizqi.wideloc.presentation.ui.devices.bottomsheets.setup_tracking
+package com.rizqi.wideloc.presentation.ui.home.bottomsheets.setup_tracking
 
 import android.content.DialogInterface
 import android.os.Bundle

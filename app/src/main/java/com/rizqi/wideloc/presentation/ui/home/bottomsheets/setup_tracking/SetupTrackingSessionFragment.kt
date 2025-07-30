@@ -1,4 +1,4 @@
-package com.rizqi.wideloc.presentation.ui.devices.bottomsheets.setup_tracking
+package com.rizqi.wideloc.presentation.ui.home.bottomsheets.setup_tracking
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,7 +9,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.viewpager2.widget.ViewPager2
 import com.rizqi.wideloc.databinding.FragmentSetupTrackingSessionBinding
 import com.rizqi.wideloc.presentation.ui.devices.bottomsheets.add_device.AddDeviceViewModel
-import com.rizqi.wideloc.presentation.ui.devices.bottomsheets.setup_tracking.adapters.SetupTrackingSessionPagerAdapter
+import com.rizqi.wideloc.presentation.ui.home.bottomsheets.setup_tracking.adapters.SetupTrackingSessionPagerAdapter
 
 class SetupTrackingSessionFragment : Fragment() {
 

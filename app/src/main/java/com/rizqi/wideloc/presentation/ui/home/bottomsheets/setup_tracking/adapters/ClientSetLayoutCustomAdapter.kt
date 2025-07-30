@@ -1,49 +1,87 @@
-package com.rizqi.wideloc.presentation.ui.devices.bottomsheets.setup_tracking.adapters
+package com.rizqi.wideloc.presentation.ui.home.bottomsheets.setup_tracking.adapters
 
-import android.annotation.SuppressLint
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.EditText
-import androidx.core.widget.doAfterTextChanged
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.ListUpdateCallback
 import com.google.android.material.textfield.TextInputLayout
 import com.rizqi.wideloc.R
 import com.rizqi.wideloc.databinding.ItemDeviceSetLayoutBinding
 import com.rizqi.wideloc.domain.model.DeviceData
 import com.rizqi.wideloc.presentation.viewmodel.TrackingViewModel
 import com.rizqi.wideloc.presentation.viewmodel.TrackingViewModel.CoordinateTarget
+import com.rizqi.wideloc.utils.toDisplayString
 import java.util.Locale
 
-class ClientSetLayoutAdapter(
+class ClientSetLayoutCustomAdapter(
     private val trackingViewModel: TrackingViewModel,
-    private val recalculateContentHeight: () -> Unit,
-) : ListAdapter<TrackingViewModel.DeviceCoordinate, ClientSetLayoutAdapter.ClientLayoutViewHolder>(DIFF_CALLBACK) {
+    private val linearLayout: LinearLayout,
+    private val recalculateContentHeight: () -> Unit
+) {
 
+    private val devicesCoordinate = mutableListOf<TrackingViewModel.DeviceCoordinate>()
+    private val viewHolders = mutableListOf<ClientLayoutViewHolder>()
 
-    companion object {
-        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<TrackingViewModel.DeviceCoordinate>() {
-            override fun areItemsTheSame(
-                oldItem: TrackingViewModel.DeviceCoordinate,
-                newItem: TrackingViewModel.DeviceCoordinate
-            ): Boolean {
-                return oldItem.deviceData?.id == newItem.deviceData?.id
+    fun submitList(newList: List<TrackingViewModel.DeviceCoordinate>) {
+        val diffCallback = object : DiffUtil.Callback() {
+            override fun getOldListSize(): Int = devicesCoordinate.size
+            override fun getNewListSize(): Int = newList.size
+
+            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                return devicesCoordinate[oldItemPosition].deviceData?.id == newList[newItemPosition].deviceData?.id
             }
 
-            override fun areContentsTheSame(
-                oldItem: TrackingViewModel.DeviceCoordinate,
-                newItem: TrackingViewModel.DeviceCoordinate
-            ): Boolean {
-                return oldItem.coordinate.areContentsTheSame(newItem.coordinate)
+            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                return devicesCoordinate[oldItemPosition].coordinate.areContentsTheSame(newList[newItemPosition].coordinate)
             }
         }
+
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
+        val oldList = devicesCoordinate.toList()
+
+        devicesCoordinate.clear()
+        devicesCoordinate.addAll(newList)
+
+        // Apply changes to LinearLayout
+        diffResult.dispatchUpdatesTo(object : ListUpdateCallback {
+            override fun onInserted(position: Int, count: Int) {
+                for (i in 0 until count) {
+                    val newItem = devicesCoordinate[position + i]
+                    val binding = ItemDeviceSetLayoutBinding.inflate(LayoutInflater.from(linearLayout.context), linearLayout, false)
+                    val viewHolder = ClientLayoutViewHolder(binding)
+                    viewHolder.bind(newItem)
+                    viewHolders.add(position + i, viewHolder)
+                    linearLayout.addView(viewHolder.binding.root, position + i)
+                }
+            }
+
+            override fun onRemoved(position: Int, count: Int) {
+                for (i in 0 until count) {
+                    viewHolders.removeAt(position)
+                    linearLayout.removeViewAt(position)
+                }
+            }
+
+            override fun onMoved(fromPosition: Int, toPosition: Int) {
+                val vh = viewHolders.removeAt(fromPosition)
+                val view = linearLayout.getChildAt(fromPosition)
+                linearLayout.removeViewAt(fromPosition)
+                viewHolders.add(toPosition, vh)
+                linearLayout.addView(view, toPosition)
+            }
+
+            override fun onChanged(position: Int, count: Int, payload: Any?) {
+                for (i in 0 until count) {
+                    val updatedItem = devicesCoordinate[position + i]
+                    viewHolders[position + i].bind(updatedItem)
+                }
+            }
+        })
     }
 
-    inner class ClientLayoutViewHolder(val binding: ItemDeviceSetLayoutBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+    inner class ClientLayoutViewHolder(val binding: ItemDeviceSetLayoutBinding){
 
         fun bind(deviceCoordinate: TrackingViewModel.DeviceCoordinate) {
             binding.titleTextViewItemDeviceSetLayout.text = deviceCoordinate.deviceData?.name
@@ -123,6 +161,9 @@ class ClientSetLayoutAdapter(
 
             upButton.setOnClickListener {
                 it.post {
+                    editText.clearFocus()
+                    hideKeyboard(editText)
+
                     if (axis == "x") {
                         trackingViewModel.setX(target, delta = 0.1, isOffset = isOffset, deviceData = deviceData)
                     } else {
@@ -133,6 +174,9 @@ class ClientSetLayoutAdapter(
 
             downButton.setOnClickListener {
                 it.post {
+                    editText.clearFocus()
+                    hideKeyboard(editText)
+
                     if (axis == "x") {
                         trackingViewModel.setX(target, delta = -0.1, isOffset = isOffset, deviceData = deviceData)
                     } else {
@@ -145,21 +189,18 @@ class ClientSetLayoutAdapter(
         }
 
         private fun updateEditableFieldIfNeeded(editText: EditText, newValue: Double) {
-            val formattedValue = String.format(Locale.US, "%.5f", newValue).trimEnd('0').trimEnd('.')
+            val formattedValue = newValue.toDisplayString()
             val currentText = editText.text.toString().trim()
             if (currentText != formattedValue && !editText.hasFocus()) {
                 editText.setText(formattedValue)
             }
             recalculateContentHeight()
         }
-    }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ClientLayoutViewHolder {
-        val binding = ItemDeviceSetLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ClientLayoutViewHolder(binding)
-    }
+        private fun hideKeyboard(view: View) {
+            val imm = view.context.getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
+            imm.hideSoftInputFromWindow(view.windowToken, 0)
+        }
 
-    override fun onBindViewHolder(holder: ClientLayoutViewHolder, position: Int) {
-        holder.bind(getItem(position))
     }
 }

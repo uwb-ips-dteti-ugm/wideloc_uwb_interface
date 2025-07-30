@@ -9,7 +9,7 @@ import com.rizqi.wideloc.data.Result
 import com.rizqi.wideloc.databinding.DeviceTagBinding
 import com.rizqi.wideloc.databinding.FragmentHomeBinding
 import com.rizqi.wideloc.presentation.ui.BaseFragment
-import com.rizqi.wideloc.presentation.ui.devices.bottomsheets.setup_tracking.SetupTrackingSessionBottomSheet
+import com.rizqi.wideloc.presentation.ui.home.bottomsheets.setup_tracking.SetupTrackingSessionBottomSheet
 import com.rizqi.wideloc.presentation.viewmodel.TrackingViewModel
 import com.rizqi.wideloc.presentation.viewmodel.TrackingViewModel.RecordingState.*
 import com.rizqi.wideloc.utils.toDisplayString
@@ -79,6 +79,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                 }
 
             }
+        }
+
+        binding.cartesianViewHome.post {
+            binding.cartesianViewHome.applyMapTransform(TrackingViewModel.MapTransform())
         }
 
         binding.startRecordButtonHome.setOnClickListener {

@@ -185,13 +185,16 @@ class TrackingViewModel @Inject constructor(
     fun saveMapSelection(
         lengthText: String,
         widthText: String,
+        scaleAxisText: String,
         mapRotation: Float,
         isFlipX: Boolean,
+        mapUnit: MapUnit,
     ) {
         _saveMapResult.value = Result.Loading()
         val error = SaveMapError()
         val length = lengthText.toDoubleOrNull()
         val width = widthText.toDoubleOrNull()
+        val scaleAxis = scaleAxisText.toDoubleOrNull()
 
         if (length == null || length <= 0) {
             error.length = context.getString(R.string.length_can_t_be_empty_or_less_than_zero)
@@ -199,15 +202,20 @@ class TrackingViewModel @Inject constructor(
         if (width == null || width <= 0) {
             error.width = context.getString(R.string.width_can_t_be_empty_or_less_than_zero)
         }
-        if (selectedMap.value == null) {
-            error.map = context.getString(R.string.select_a_map_first)
+        if (scaleAxis == null || scaleAxis <= 0) {
+            error.scaleAxis = context.getString(R.string.scale_can_t_be_empty_or_less_than_zero)
         }
+//        if (selectedMap.value == null) {
+//            error.map = context.getString(R.string.select_a_map_first)
+//        }
 
         _mapTransform.value = mapTransform.value?.copy(
             length = length!!,
             width = width!!,
             rotation = mapRotation,
             isFlipX = isFlipX,
+            unit = mapUnit,
+            axisScale = scaleAxis!!,
         )
         _saveMapError.value = error
         if (!error.isValid()) {
@@ -470,10 +478,10 @@ class TrackingViewModel @Inject constructor(
     }
 
     data class MapTransform(
-        val length: Double = 0.0,
-        val width: Double = 0.0,
+        val length: Double = 6.0,
+        val width: Double = 4.0,
         val unit: MapUnit = MapUnit.CM,
-        val axisScale: Double = 10.0,
+        val axisScale: Double = 0.5,
         val rotation: Float = 0f,
         val isFlipX: Boolean = false,
     )
@@ -481,10 +489,11 @@ class TrackingViewModel @Inject constructor(
     data class SaveMapError(
         var length: String? = null,
         var width: String? = null,
+        var scaleAxis: String? = null,
         var map: String? = null,
     ) {
         fun isValid(): Boolean {
-            return length == null && width == null && map == null
+            return length == null && width == null && scaleAxis == null
         }
     }
 

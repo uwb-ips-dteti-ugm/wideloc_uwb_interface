@@ -137,7 +137,7 @@
     <string name="connect_device_networks">Connect to The Device Network</string>
     <string name="select_the_same_network_as_the_server">Select the same network as the server network, namely connected to %1$s</string>
     <string name="setup_map">Setup Map</string>
-    <string name="size">Size(in Meter)</string>
+    <string name="size">Size</string>
     <string name="length">Length</string>
     <string name="width">Width</string>
     <string name="select_map">Select Map</string>
@@ -146,6 +146,7 @@
     <string name="select_an_image_of_your_map">Select an image of your map!</string>
     <string name="length_can_t_be_empty_or_less_than_zero">Length can\'t be empty or less than zero</string>
     <string name="width_can_t_be_empty_or_less_than_zero">Width can\'t be empty or less than zero</string>
+    <string name="scale_can_t_be_empty_or_less_than_zero">Scale axis can\'t be empty or less than zero</string>
     <string name="select_a_map_first">Select a map first</string>
     <string name="there_are_some_invalid_input">There are some invalid input</string>
     <string name="set_devices_layout">Set Initial Device Layout</string>
@@ -163,4 +164,9 @@
     <string name="pause_recording">Pause Recording</string>
     <string name="resume_recording">Resume Recording</string>
     <string name="stop">Stop</string>
+    <string name="axis_scale">Axis Scale</string>
+    <string name="unit">Unit</string>
+    <string name="select_unit">Select unit</string>
+    <string name="a_x_a">a x a</string>
+    <string name="scale">Scale</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.rizqi.wideloc.presentation.ui.devices.bottomsheets.setup_tracking.adapters
+package com.rizqi.wideloc.presentation.ui.home.bottomsheets.setup_tracking.adapters
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
@@ -8,17 +8,19 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.rizqi.wideloc.R
+import com.rizqi.wideloc.databinding.ReconfigureDeviceCardBinding
 import com.rizqi.wideloc.databinding.SetupTrackingSessionDeviceCardBinding
 import com.rizqi.wideloc.domain.model.DeviceData
 import com.rizqi.wideloc.utils.DomainDataMapper.asWifiProtocolEntity
+import com.rizqi.wideloc.utils.formatToString
 import java.io.File
 
-class SelectDeviceListAdapter(
+class SelectClientListAdapter(
     private val onClick: (DeviceData) -> Unit
-) : RecyclerView.Adapter<SelectDeviceListAdapter.DeviceViewHolder>() {
+) : RecyclerView.Adapter<SelectClientListAdapter.DeviceViewHolder>() {
 
     private val devices = mutableListOf<DeviceData>()
-    private var selectedDevice: DeviceData? = null
+    private val selectedDevices = mutableListOf<DeviceData>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DeviceViewHolder {
         val binding = SetupTrackingSessionDeviceCardBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -33,31 +35,31 @@ class SelectDeviceListAdapter(
 
     @SuppressLint("NotifyDataSetChanged")
     fun submitList(newDevices: List<DeviceData>){
-        if (selectedDevice == null){
-            selectedDevice = newDevices.firstOrNull()
-            selectedDevice?.let { onClick(it) }
-        }
         devices.clear()
         devices.addAll(newDevices)
+        notifyDataSetChanged()
+    }
+
+    fun getSelectedDevices() = selectedDevices
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun selectAll() {
+        selectedDevices.clear()
+        selectedDevices.addAll(devices)
         notifyDataSetChanged()
     }
 
     inner class DeviceViewHolder(private val binding: SetupTrackingSessionDeviceCardBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        @SuppressLint("NotifyDataSetChanged")
         fun bind(device: DeviceData) {
             val context = binding.root.context
 
-            val screenWidth = context.resources.displayMetrics.widthPixels
-            val marginPx = (16 * context.resources.displayMetrics.density).toInt()
-            val targetWidth = (screenWidth * 0.8).toInt() - marginPx * 2
+            val layoutParams = binding.root.layoutParams as ViewGroup.MarginLayoutParams
+            layoutParams.bottomMargin = 32
+            binding.root.layoutParams = layoutParams
 
-            binding.root.layoutParams = RecyclerView.LayoutParams(targetWidth, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
-                marginEnd = marginPx
-            }
-
-            if (device == selectedDevice) {
+            if (selectedDevices.contains(device)) {
                 binding.root.background = ContextCompat.getDrawable(context, R.drawable.selected_device_card_background)
                 binding.deviceNameTextViewSetupTrackingSessionDeviceCard.setTextColor(ContextCompat.getColor(context, R.color.text_on_primary))
                 val onSecondaryColor = ContextCompat.getColor(context, R.color.text_on_primary_secondary)
@@ -89,11 +91,14 @@ class SelectDeviceListAdapter(
                 device.protocol.asWifiProtocolEntity()?.mdns ?: context.getString(R.string.dns_not_configured_yet)
 
             binding.root.setOnClickListener {
-                selectedDevice = device
+                if (selectedDevices.contains(device)){
+                    selectedDevices.remove(device)
+                } else {
+                    selectedDevices.add(device)
+                }
                 notifyDataSetChanged()
                 onClick(device)
             }
         }
-
     }
 }

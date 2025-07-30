@@ -1,17 +1,14 @@
-package com.rizqi.wideloc.presentation.ui.devices.bottomsheets.setup_tracking
+package com.rizqi.wideloc.presentation.ui.home.bottomsheets.setup_tracking
 
 import android.R
 import android.graphics.Bitmap
-import android.graphics.Matrix
 import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.activityViewModels
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
@@ -36,6 +33,9 @@ class SetUpMapFragment : BaseFragment<FragmentSetUpMapBinding>(FragmentSetUpMapB
 
     private lateinit var mapAdapter: ArrayAdapter<String>
     private var selectedMap: MapData? = null
+
+    private lateinit var mapUnitAdapter: ArrayAdapter<String>
+    private var selectedMapUnit: TrackingViewModel.MapUnit = TrackingViewModel.MapUnit.CM
 
     private var mapImageBitmap: Bitmap? = null
     private var mapImageRotation = 0f
@@ -68,6 +68,24 @@ class SetUpMapFragment : BaseFragment<FragmentSetUpMapBinding>(FragmentSetUpMapB
         }
         binding.addMapButtonSetUpFragment.setOnClickListener {
             addMapDialog?.show()
+        }
+
+        mapUnitAdapter = ArrayAdapter(
+            requireContext(),
+            R.layout.simple_dropdown_item_1line,
+            TrackingViewModel.MapUnit.entries.map { it.name.lowercase() }
+        )
+        binding.unitAutoCompleteSetUpMapFragment.apply {
+            setAdapter(mapUnitAdapter)
+            setText(selectedMapUnit.name, false)
+            setOnItemClickListener { _, _, index, _ ->
+                val unit = TrackingViewModel.MapUnit.entries[index]
+                selectedMapUnit = unit
+            }
+            setOnClickListener {
+                binding.unitAutoCompleteSetUpMapFragment.showDropDown()
+                recalculateContentHeight()
+            }
         }
 
         trackingViewModel.availableMaps.observe(viewLifecycleOwner) { maps ->
@@ -148,12 +166,15 @@ class SetUpMapFragment : BaseFragment<FragmentSetUpMapBinding>(FragmentSetUpMapB
         binding.saveButtonFragmentSetUpMap.setOnClickListener {
             val length = binding.lengthInputEditTextSetUpMapFragment.text.toString()
             val width = binding.widthInputEditTextSetUpMapFragment.text.toString()
+            val axisScaleUnit = binding.axisScaleInputEditTextSetUpMapFragment.text.toString()
 
             trackingViewModel.saveMapSelection(
                 lengthText = length,
                 widthText = width,
                 mapRotation = mapImageRotation,
-                isFlipX = mapImageFlippedHorizontally
+                isFlipX = mapImageFlippedHorizontally,
+                scaleAxisText = axisScaleUnit,
+                mapUnit = selectedMapUnit
             )
         }
 

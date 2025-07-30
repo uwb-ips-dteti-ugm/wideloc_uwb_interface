@@ -8,11 +8,12 @@ import android.graphics.DashPathEffect
 import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.Path
-import android.graphics.Rect
 import android.graphics.Typeface
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
+import com.rizqi.wideloc.presentation.viewmodel.TrackingViewModel
+import timber.log.Timber
 import kotlin.math.roundToInt
 
 class CartesianView @JvmOverloads constructor(
@@ -20,21 +21,18 @@ class CartesianView @JvmOverloads constructor(
     attrs: AttributeSet? = null
 ) : ViewGroup(context, attrs) {
 
-    var yMin = -10
-    var yMax = 10
-
     private var backgroundBitmap: Bitmap? = null
     private var backgroundMatrix: Matrix? = null
 
-    fun setMapBackground(bitmap: Bitmap, matrix: Matrix) {
-        backgroundBitmap = bitmap
-        backgroundMatrix = matrix
-        invalidate()
-    }
+    private var mapTransform: TrackingViewModel.MapTransform? = null
+    private var axisScale: Double = 1.0
+    private var pixelsPerUnit: Double = 1.0
+
+    private var logicalBounds: LogicalBounds? = null
 
     private val axisPaint = Paint().apply {
         color = Color.BLACK
-        strokeWidth = 4f
+        strokeWidth = 6f
         style = Paint.Style.STROKE
     }
 
@@ -47,7 +45,7 @@ class CartesianView @JvmOverloads constructor(
 
     private val labelPaint = Paint().apply {
         color = Color.BLACK
-        textSize = 24f
+        textSize = 28f
         textAlign = Paint.Align.LEFT
         isAntiAlias = true
     }
@@ -61,7 +59,55 @@ class CartesianView @JvmOverloads constructor(
     }
 
     private val viewMap = mutableMapOf<String, View>()
-    private val viewPositionMap = mutableMapOf<String, Pair<Double, Double>>() // (x, y)
+    private val viewPositionMap = mutableMapOf<String, Pair<Double, Double>>()
+
+    data class LogicalBounds(
+        val minX: Double,
+        val maxX: Double,
+        val minY: Double,
+        val maxY: Double
+    )
+
+    fun setMapBackground(bitmap: Bitmap, matrix: Matrix) {
+        backgroundBitmap = bitmap
+        backgroundMatrix = matrix
+        invalidate()
+    }
+
+    fun applyMapTransform(transform: TrackingViewModel.MapTransform) {
+        if (width == 0 || height == 0) return
+        this.mapTransform = transform
+        this.axisScale = transform.axisScale
+
+        val logicalWidth = transform.width
+        val logicalHeight = transform.length
+
+        val viewAspect = width.toDouble() / height.toDouble()
+        val mapAspect = logicalWidth / logicalHeight
+
+        val visibleWidth: Double
+        val visibleHeight: Double
+
+        if (mapAspect > viewAspect) {
+            visibleWidth = logicalWidth
+            visibleHeight = logicalWidth / viewAspect
+        } else {
+            visibleHeight = logicalHeight
+            visibleWidth = logicalHeight * viewAspect
+        }
+
+        logicalBounds = LogicalBounds(
+            minX = -visibleWidth / 2,
+            maxX = visibleWidth / 2,
+            minY = -visibleHeight / 2,
+            maxY = visibleHeight / 2
+        )
+
+        pixelsPerUnit = width / visibleWidth
+
+        invalidate()
+        requestLayout()
+    }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
@@ -69,15 +115,14 @@ class CartesianView @JvmOverloads constructor(
     }
 
     override fun onLayout(p0: Boolean, p1: Int, p2: Int, p3: Int, p4: Int) {
-        val originX = width / 2f
-        val originY = height / 2f
-        val yRange = yMax - yMin
-        val ySpacing = height / yRange.toFloat()
+        val bounds = logicalBounds ?: return
+        val scale = pixelsPerUnit
 
         for ((id, view) in viewMap) {
             val (x, y) = viewPositionMap[id] ?: continue
-            val screenX = (originX + x * ySpacing).roundToInt()
-            val screenY = (originY - y * ySpacing).roundToInt()
+
+            val screenX = ((x - bounds.minX) * scale).roundToInt()
+            val screenY = ((bounds.maxY - y) * scale).roundToInt()
 
             val childWidth = view.measuredWidth
             val childHeight = view.measuredHeight
@@ -92,88 +137,70 @@ class CartesianView @JvmOverloads constructor(
     }
 
     override fun dispatchDraw(canvas: Canvas) {
-        // Draw background map if available
         backgroundBitmap?.let { bitmap ->
             backgroundMatrix?.let { matrix ->
                 canvas.drawBitmap(bitmap, matrix, null)
             }
         }
 
-        val width = width.toFloat()
-        val height = height.toFloat()
-        val originX = width / 2
-        val originY = height / 2
+        val bounds = logicalBounds ?: return
+        val scale = pixelsPerUnit.toFloat()
 
-        val yRange = yMax - yMin
-        val ySpacing = height / yRange
+        val originX = (-bounds.minX * scale).toFloat()
+        val originY = (bounds.maxY * scale).toFloat()
 
-        axisPaint.strokeWidth = 6f
-        labelPaint.textSize = 28f
+        val widthPx = width.toFloat()
+        val heightPx = height.toFloat()
 
-        // X axis
-        canvas.drawLine(0f, originY, width, originY, axisPaint)
+        val spacing = (axisScale * scale).toFloat()
+        val gridStartX = (bounds.minX / axisScale).toInt()
+        val gridEndX = (bounds.maxX / axisScale).toInt()
+        val gridStartY = (bounds.minY / axisScale).toInt()
+        val gridEndY = (bounds.maxY / axisScale).toInt()
 
-        // Y axis
-        canvas.drawLine(originX, 0f, originX, height, axisPaint)
-
-        // Y grid lines
-        for (i in yMin..yMax) {
-            val y = originY - i * ySpacing
-            if (i != 0) {
-                val path = Path()
-                path.moveTo(0f, y)
-                path.lineTo(width, y)
-                canvas.drawPath(path, gridPaint)
-            }
-            canvas.drawText(i.toString(), originX + 8f, y + 8f, labelPaint)
-        }
-
-        // X grid lines
-        val xLabelCount = (width / ySpacing).toInt()
-        val xMin = -xLabelCount / 2
-        val xMax = xLabelCount / 2
-
-        for (i in xMin..xMax) {
-            val x = originX + i * ySpacing
+        for (i in gridStartX..gridEndX) {
+            val x = originX + i * spacing
             if (i != 0) {
                 val path = Path()
                 path.moveTo(x, 0f)
-                path.lineTo(x, height)
+                path.lineTo(x, heightPx)
                 canvas.drawPath(path, gridPaint)
             }
-            if (i != 0 || (yMin <= 0 && yMax >= 0)) {
-                canvas.drawText(i.toString(), x + 4f, originY - 8f, labelPaint)
-            }
+            canvas.drawText((i * axisScale).toString(), x + 4f, originY - 8f, labelPaint)
         }
 
-        // Axis labels
-        canvas.drawText("x", width - 28f, originY + 28f, axisLabelPaint)
+        for (j in gridStartY..gridEndY) {
+            val y = originY - j * spacing
+            if (j != 0) {
+                val path = Path()
+                path.moveTo(0f, y)
+                path.lineTo(widthPx, y)
+                canvas.drawPath(path, gridPaint)
+            }
+            canvas.drawText((j * axisScale).toString(), originX + 8f, y + 8f, labelPaint)
+        }
+
+        canvas.drawLine(0f, originY, widthPx, originY, axisPaint)
+        canvas.drawLine(originX, 0f, originX, heightPx, axisPaint)
+
+        canvas.drawText("x", widthPx - 28f, originY + 28f, axisLabelPaint)
         canvas.drawText("y", originX - 28f, 28f, axisLabelPaint)
 
-        // 👉 Now draw children (on top)
         super.dispatchDraw(canvas)
     }
 
-    fun addOrUpdatePoint(
-        id: String,
-        view: View,
-        x: Double,
-        y: Double,
-        zIndex: Int? = null
-    ) {
+    fun addOrUpdatePoint(id: String, view: View, x: Double, y: Double, zIndex: Int? = null) {
         viewPositionMap[id] = x to y
 
         if (!viewMap.containsKey(id)) {
             viewMap[id] = view
-            // Add new view at the specified zIndex
             if (zIndex != null) {
                 val safeIndex = zIndex.coerceIn(0, childCount)
                 addView(view, safeIndex)
             } else {
-                addView(view) // Default: add to top
+                addView(view)
             }
         } else {
-            // Already exists → reposition in z-order if needed
             if (zIndex != null) {
                 val currentIndex = indexOfChild(view)
                 val safeIndex = zIndex.coerceIn(0, childCount - 1)
@@ -182,12 +209,9 @@ class CartesianView @JvmOverloads constructor(
                     addView(view, safeIndex)
                 }
             }
-            // Otherwise, we don’t re-add the view
         }
-
         requestLayout()
     }
-
 
     fun removePoint(id: String) {
         val view = viewMap.remove(id) ?: return
@@ -201,11 +225,5 @@ class CartesianView @JvmOverloads constructor(
         viewPositionMap.clear()
         removeAllViews()
         requestLayout()
-    }
-
-    fun setMapBackgroundAndMatrix(bitmap: Bitmap, matrix: Matrix) {
-        backgroundBitmap = bitmap
-        backgroundMatrix = matrix
-        invalidate()
     }
 }

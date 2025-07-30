@@ -17,10 +17,10 @@ import javax.inject.Inject
 class GetUpdatedPositionInteractor @Inject constructor(
     private val twrDataSource: TWRDataSource,
     private val deviceRepository: DeviceRepository,
-    private val generateIDUseCase: GenerateIDUseCase = GenerateIDInteractor(),
-    private val newtonRaphsonUseCase: NewtonRaphsonUseCase = NewtonRaphsonInteractor(),
-    private val uwbDeviceRepository: UWBDeviceRepository = FakeUWBDeviceRepository()
 ) : GetUpdatedPositionUseCase {
+    private val generateIDUseCase: GenerateIDUseCase = GenerateIDInteractor()
+    private val newtonRaphsonUseCase: NewtonRaphsonUseCase = NewtonRaphsonInteractor()
+    private val uwbDeviceRepository: UWBDeviceRepository = FakeUWBDeviceRepository()
     private val TAG = "GetUpdatedPosition"
 
     private val gson = GsonBuilder().setPrettyPrinting().create()

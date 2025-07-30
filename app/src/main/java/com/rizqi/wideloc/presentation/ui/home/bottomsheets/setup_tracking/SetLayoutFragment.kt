@@ -1,4 +1,4 @@
-package com.rizqi.wideloc.presentation.ui.devices.bottomsheets.setup_tracking
+package com.rizqi.wideloc.presentation.ui.home.bottomsheets.setup_tracking
 
 import android.graphics.Bitmap
 import android.graphics.Matrix
@@ -24,8 +24,8 @@ import com.rizqi.wideloc.databinding.DeviceTagBinding
 import com.rizqi.wideloc.databinding.FragmentSetLayoutBinding
 import com.rizqi.wideloc.domain.model.DeviceData
 import com.rizqi.wideloc.presentation.ui.BaseFragment
-import com.rizqi.wideloc.presentation.ui.devices.bottomsheets.setup_tracking.adapters.ClientSetLayoutAdapter
-import com.rizqi.wideloc.presentation.ui.devices.bottomsheets.setup_tracking.adapters.ClientSetLayoutCustomAdapter
+import com.rizqi.wideloc.presentation.ui.home.bottomsheets.setup_tracking.adapters.ClientSetLayoutAdapter
+import com.rizqi.wideloc.presentation.ui.home.bottomsheets.setup_tracking.adapters.ClientSetLayoutCustomAdapter
 import com.rizqi.wideloc.presentation.viewmodel.TrackingViewModel
 import com.rizqi.wideloc.presentation.viewmodel.TrackingViewModel.CoordinateTarget
 import com.rizqi.wideloc.utils.StorageUtils
@@ -83,6 +83,10 @@ class SetLayoutFragment :
         setupAllEditableCoordinateFields()
 
         // LiveData observer
+        trackingViewModel.mapTransform.observe(viewLifecycleOwner){mapTransform ->
+            binding.cartesianViewFragmentSetLayout.applyMapTransform(mapTransform)
+            recalculateContentHeight()
+        }
         trackingViewModel.layoutInitialCoordinate.observe(viewLifecycleOwner) { layout ->
             val server = layout.serverCoordinate.coordinate
             binding.xServerInputLayoutSetUpMapFragment.valueInputEditTextItemInputUpDown.setText(server.x.toDisplayString())

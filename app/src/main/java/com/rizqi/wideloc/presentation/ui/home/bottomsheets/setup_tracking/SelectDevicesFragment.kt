@@ -1,4 +1,4 @@
-package com.rizqi.wideloc.presentation.ui.devices.bottomsheets.setup_tracking
+package com.rizqi.wideloc.presentation.ui.home.bottomsheets.setup_tracking
 
 import android.os.Bundle
 import android.view.View
@@ -9,8 +9,8 @@ import com.rizqi.wideloc.data.Result
 import com.rizqi.wideloc.databinding.FragmentSelectDevicesBinding
 import com.rizqi.wideloc.presentation.ui.BaseFragment
 import com.rizqi.wideloc.presentation.ui.connect_via_wifi.ConnectViaWiFiFragment
-import com.rizqi.wideloc.presentation.ui.devices.bottomsheets.setup_tracking.adapters.SelectClientListAdapter
-import com.rizqi.wideloc.presentation.ui.devices.bottomsheets.setup_tracking.adapters.SelectDeviceListAdapter
+import com.rizqi.wideloc.presentation.ui.home.bottomsheets.setup_tracking.adapters.SelectClientListAdapter
+import com.rizqi.wideloc.presentation.ui.home.bottomsheets.setup_tracking.adapters.SelectDeviceListAdapter
 import com.rizqi.wideloc.presentation.viewmodel.TrackingViewModel
 import com.rizqi.wideloc.utils.ViewUtils.hideKeyboardAndClearFocus
 
