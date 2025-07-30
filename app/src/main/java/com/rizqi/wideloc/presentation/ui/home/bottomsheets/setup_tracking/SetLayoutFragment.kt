@@ -36,6 +36,7 @@ import com.rizqi.wideloc.utils.toDisplayString
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.Locale
 
 class SetLayoutFragment :
@@ -45,14 +46,17 @@ class SetLayoutFragment :
 
     private lateinit var clientSetLayoutCustomAdapter: ClientSetLayoutCustomAdapter
 
-    private val deviceTags = mutableListOf<Pair<TrackingViewModel.DeviceCoordinate, DeviceTagBinding>>()
+    private val deviceTags =
+        mutableListOf<Pair<TrackingViewModel.DeviceCoordinate, DeviceTagBinding>>()
 
     private val scalingFactor = 100f
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        (parentFragment?.parentFragment as? SetupTrackingSessionBottomSheet)?.toggleWifiInfoVisibility(false)
+        (parentFragment?.parentFragment as? SetupTrackingSessionBottomSheet)?.toggleWifiInfoVisibility(
+            false
+        )
 
         binding.root.setOnClickListener {
             hideKeyboardAndClearFocus(requireActivity().currentFocus ?: it)
@@ -93,8 +97,13 @@ class SetLayoutFragment :
 
         trackingViewModel.layoutInitialCoordinate.observe(viewLifecycleOwner) { layout ->
             val server = layout.serverCoordinate.coordinate
-            binding.xServerInputLayoutSetUpMapFragment.valueInputEditTextItemInputUpDown.setText(server.x.toDisplayString())
-            binding.yServerInputLayoutSetUpMapFragment.valueInputEditTextItemInputUpDown.setText(server.y.toDisplayString())
+            binding.xServerInputLayoutSetUpMapFragment.valueInputEditTextItemInputUpDown.setText(
+                server.x.toDisplayString()
+            )
+            binding.yServerInputLayoutSetUpMapFragment.valueInputEditTextItemInputUpDown.setText(
+                server.y.toDisplayString()
+            )
+
             addDeviceTagToCartesianView(layout.serverCoordinate)
 
             updateEditableFieldIfNeeded(
@@ -143,9 +152,14 @@ class SetLayoutFragment :
 
             recalculateContentHeight()
         }
-        trackingViewModel.saveDeviceLayout.observe(viewLifecycleOwner){result ->
-            when(result){
-                is Result.Error -> Toast.makeText(requireContext(), result.errorMessage, Toast.LENGTH_LONG).show()
+        trackingViewModel.saveDeviceLayout.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Result.Error -> Toast.makeText(
+                    requireContext(),
+                    result.errorMessage,
+                    Toast.LENGTH_LONG
+                ).show()
+
                 is Result.Loading<*> -> Unit
                 is Result.Success<*> -> (parentFragment?.parentFragment as SetupTrackingSessionBottomSheet?)?.dismiss()
             }
@@ -369,7 +383,11 @@ class SetLayoutFragment :
         }
     }
 
-    private fun setupReadonlyCoordinateField(editText: EditText, inputLayout: TextInputLayout, hint: String) {
+    private fun setupReadonlyCoordinateField(
+        editText: EditText,
+        inputLayout: TextInputLayout,
+        hint: String
+    ) {
         editText.isEnabled = false
         inputLayout.hint = hint
     }
@@ -381,6 +399,7 @@ class SetLayoutFragment :
         if (currentText != formattedValue) {
             editText.setText(formattedValue)
         }
+
     }
 
     private fun recalculateContentHeight() {
@@ -417,6 +436,7 @@ class SetLayoutFragment :
             x.toDisplayString(),
             y.toDisplayString()
         )
+
 
         // Save for later (if needed)
         deviceTags.add(deviceCoordinate to tagBinding)

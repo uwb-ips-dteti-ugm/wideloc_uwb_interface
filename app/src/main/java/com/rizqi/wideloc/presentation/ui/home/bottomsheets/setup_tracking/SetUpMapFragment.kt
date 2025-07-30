@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -68,6 +69,15 @@ class SetUpMapFragment : BaseFragment<FragmentSetUpMapBinding>(FragmentSetUpMapB
         }
         binding.addMapButtonSetUpFragment.setOnClickListener {
             addMapDialog?.show()
+        }
+        binding.axisScaleInputEditTextSetUpMapFragment.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_GO){
+                hideKeyboardAndClearFocus(requireActivity().currentFocus ?: binding.root)
+                saveMap()
+                true
+            } else {
+                false
+            }
         }
 
         mapUnitAdapter = ArrayAdapter(
@@ -164,22 +174,26 @@ class SetUpMapFragment : BaseFragment<FragmentSetUpMapBinding>(FragmentSetUpMapB
         }
 
         binding.saveButtonFragmentSetUpMap.setOnClickListener {
-            val length = binding.lengthInputEditTextSetUpMapFragment.text.toString()
-            val width = binding.widthInputEditTextSetUpMapFragment.text.toString()
-            val axisScaleUnit = binding.axisScaleInputEditTextSetUpMapFragment.text.toString()
-
-            trackingViewModel.saveMapSelection(
-                lengthText = length,
-                widthText = width,
-                mapRotation = mapImageRotation,
-                isFlipX = mapImageFlippedHorizontally,
-                scaleAxisText = axisScaleUnit,
-                mapUnit = selectedMapUnit
-            )
+            saveMap()
         }
 
         recalculateContentHeight()
 
+    }
+
+    private fun saveMap(){
+        val length = binding.lengthInputEditTextSetUpMapFragment.text.toString()
+        val width = binding.widthInputEditTextSetUpMapFragment.text.toString()
+        val axisScaleUnit = binding.axisScaleInputEditTextSetUpMapFragment.text.toString()
+
+        trackingViewModel.saveMapSelection(
+            lengthText = length,
+            widthText = width,
+            mapRotation = mapImageRotation,
+            isFlipX = mapImageFlippedHorizontally,
+            scaleAxisText = axisScaleUnit,
+            mapUnit = selectedMapUnit
+        )
     }
 
     private fun recalculateContentHeight() {

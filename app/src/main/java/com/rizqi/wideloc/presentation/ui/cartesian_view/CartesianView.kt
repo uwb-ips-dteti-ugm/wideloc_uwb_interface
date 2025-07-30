@@ -12,6 +12,8 @@ import android.graphics.Typeface
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
+import com.rizqi.wideloc.databinding.DeviceTagBinding
 import com.rizqi.wideloc.presentation.viewmodel.TrackingViewModel
 import timber.log.Timber
 import kotlin.math.roundToInt
@@ -189,29 +191,44 @@ class CartesianView @JvmOverloads constructor(
         super.dispatchDraw(canvas)
     }
 
-    fun addOrUpdatePoint(id: String, view: View, x: Double, y: Double, zIndex: Int? = null) {
-        viewPositionMap[id] = x to y
+//    fun addOrUpdatePoint(id: String, view: View, x: Double, y: Double, zIndex: Int? = null) {
+//        viewPositionMap[id] = x to y
+//
+//        if (!viewMap.containsKey(id)) {
+//            viewMap[id] = view
+//            if (zIndex != null) {
+//                val safeIndex = zIndex.coerceIn(0, childCount)
+//                addView(view, safeIndex)
+//            } else {
+//                addView(view)
+//            }
+//        } else {
+//            if (zIndex != null) {
+//                val currentIndex = indexOfChild(view)
+//                val safeIndex = zIndex.coerceIn(0, childCount - 1)
+//                if (currentIndex != safeIndex) {
+//                    removeView(view)
+//                    addView(view, safeIndex)
+//                }
+//            }
+//        }
+//        requestLayout()
+//    }
+fun addOrUpdatePoint(id: String, view: View, x: Double, y: Double, zIndex: Int? = null) {
+    viewPositionMap[id] = x to y
 
-        if (!viewMap.containsKey(id)) {
-            viewMap[id] = view
-            if (zIndex != null) {
-                val safeIndex = zIndex.coerceIn(0, childCount)
-                addView(view, safeIndex)
-            } else {
-                addView(view)
-            }
-        } else {
-            if (zIndex != null) {
-                val currentIndex = indexOfChild(view)
-                val safeIndex = zIndex.coerceIn(0, childCount - 1)
-                if (currentIndex != safeIndex) {
-                    removeView(view)
-                    addView(view, safeIndex)
-                }
-            }
-        }
-        requestLayout()
+    viewMap[id] = view
+    removeView(view) // 💥 Always remove first to ensure layout reset
+
+    if (zIndex != null) {
+        val safeIndex = zIndex.coerceIn(0, childCount)
+        addView(view, safeIndex)
+    } else {
+        addView(view)
     }
+
+    requestLayout()
+}
 
     fun removePoint(id: String) {
         val view = viewMap.remove(id) ?: return
