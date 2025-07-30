@@ -3,6 +3,7 @@ package com.rizqi.wideloc.usecase
 import android.util.Log
 import com.google.gson.GsonBuilder
 import com.rizqi.wideloc.data.local.TWRDataSource
+import com.rizqi.wideloc.data.repository.FakeUWBDeviceRepository
 import com.rizqi.wideloc.domain.model.DeviceData
 import com.rizqi.wideloc.domain.model.Point
 import com.rizqi.wideloc.domain.model.TrackingSessionData
@@ -14,15 +15,15 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class GetUpdatedPositionInteractor @Inject constructor(
-    private val uwbDeviceRepository: UWBDeviceRepository,
     private val twrDataSource: TWRDataSource,
     private val deviceRepository: DeviceRepository,
+    private val generateIDUseCase: GenerateIDUseCase = GenerateIDInteractor(),
+    private val newtonRaphsonUseCase: NewtonRaphsonUseCase = NewtonRaphsonInteractor(),
+    private val uwbDeviceRepository: UWBDeviceRepository = FakeUWBDeviceRepository()
 ) : GetUpdatedPositionUseCase {
-    val TAG = "GetUpdatedPosition"
+    private val TAG = "GetUpdatedPosition"
 
     private val gson = GsonBuilder().setPrettyPrinting().create()
-    private val generateIDUseCase: GenerateIDUseCase = GenerateIDInteractor()
-    private val newtonRaphsonUseCase: NewtonRaphsonUseCase = NewtonRaphsonInteractor()
 
     override suspend fun invoke(
         session: TrackingSessionData,
@@ -30,13 +31,13 @@ class GetUpdatedPositionInteractor @Inject constructor(
         anchors: List<DeviceData>,
     ): TrackingSessionData {
 //        Get Raw Data
-        val serverDNS =
-            requireNotNull(server.protocol.asWifiProtocolEntity()?.mdns) { "Server DNS is null" }
-        Timber.tag(TAG).d("serverDNS:\n${gson.toJson(serverDNS)}")
+        val serverDNS = server.protocol.asWifiProtocolEntity()?.mdns
+            ?: throw IllegalStateException("Server DNS is null")
+        Timber.tag(TAG).d("[1] server dns:\n${gson.toJson(serverDNS)}")
         val rawTWRData = uwbDeviceRepository.getTWRData(serverDNS)
-        Timber.tag(TAG).d("rawTWRData:\n${gson.toJson(rawTWRData)}")
+        Timber.tag(TAG).d("[2] raw twr data:\n${gson.toJson(rawTWRData)}")
         val twrDataEntities = rawTWRData.map { it.toTWRDataEntity(session.sessionId) }
-        Timber.tag(TAG).d("twrDataEntities:\n${gson.toJson(twrDataEntities)}")
+        Timber.tag(TAG).d("[3] twr data entities:\n${gson.toJson(twrDataEntities)}")
 
 //        Save Raw Data to Database
         twrDataSource.insertTWRDatas(twrDataEntities)
@@ -51,15 +52,15 @@ class GetUpdatedPositionInteractor @Inject constructor(
 
 //        Convert Raw to Domain Data
         val lastDistances = session.recordedDistances.last()
-        val updatedDistancesList = lastDistances.distances.map { distance ->
+        val updatedDistancesList = lastDistances.distances.mapIndexed { index, distance ->
             val matchingTWR = rawTWRData
                 .filter { twr ->
                     val device1 = getCachedDevice(twr.address1)
                     val device2 = getCachedDevice(twr.address2)
 
-                    Log.d(TAG, "Matching TWR Check:\n${gson.toJson(twr)}")
-                    Log.d(TAG, "Device 1:\n${gson.toJson(device1)}")
-                    Log.d(TAG, "Device 2:\n${gson.toJson(device2)}")
+                    Timber.tag(TAG).d("[4.${index}.1] Matching TWR Check:\n${gson.toJson(twr)}")
+                    Timber.tag(TAG).d("[4.${index}.2] Device 1:\n${gson.toJson(device1)}")
+                    Timber.tag(TAG).d("[4.${index}.3] Device 2:\n${gson.toJson(device2)}")
 
                     val id1 = device1?.getCorrespondingPointId()
                     val id2 = device2?.getCorrespondingPointId()
@@ -79,32 +80,31 @@ class GetUpdatedPositionInteractor @Inject constructor(
             distances = lastDistances.distances + updatedDistancesList,
             timestamp = lastDistances.timestamp + 1,
         )
-        Timber.tag(TAG).d("initialDistances:\n${gson.toJson(updatedDistancesList)}")
-        Timber.tag(TAG).d("updatedDistanceWithTimestamps:\n${gson.toJson(updatedDistanceRecord)}")
+        Timber.tag(TAG).d("[5] initial distances:\n${gson.toJson(updatedDistancesList)}")
+        Timber.tag(TAG).d("[6] updated distance with timestamps:\n${gson.toJson(updatedDistanceRecord)}")
 
 //        Calculate the New Positions
         val fixedDevices = listOf(server) + anchors
         val fixedPointIds = fixedDevices.map { it.getCorrespondingPointId() }
-        Timber.tag(TAG).d("fixedPointIds: \n${gson.toJson(fixedPointIds)}")
+        Timber.tag(TAG).d("[7] fixed point ids: \n${gson.toJson(fixedPointIds)}")
         val predictedPoints = newtonRaphsonUseCase.newtonRaphson(
             initialDistances = updatedDistancesList,
             fixedPointIds = fixedPointIds.toSet()
         )
-//        val predictedPoints = listOf<Point>()
-        Timber.tag(TAG).d("predictedPoints: \n${gson.toJson(predictedPoints)}")
+        Timber.tag(TAG).d("[8] predictedPoints: \n${gson.toJson(predictedPoints)}")
 
 //        Return the Results
-        val updatedDeviceHistory = session.deviceTrackingHistoryData.map { history ->
+        val updatedDeviceHistory = session.deviceTrackingHistoryData.mapIndexed { index, history ->
             val pointId = history.deviceData.getCorrespondingPointId()
             val newPoint = predictedPoints.find { it.id == pointId }
             val updatedPoints = history.points + listOfNotNull(newPoint)
-            Timber.tag(TAG).d("newPoint for ${history.deviceData.id}: \n${gson.toJson(newPoint)}")
+            Timber.tag(TAG).d("[9.${index}] new point for ${history.deviceData.id}: \n${gson.toJson(newPoint)}")
 
             history.copy(
                 points = updatedPoints, timestamp = history.timestamp + 1
             )
         }
-        Timber.tag(TAG).d("updatedDeviceHistory: \n${gson.toJson(updatedDeviceHistory)}")
+        Timber.tag(TAG).d("[10] updated device history: \n${gson.toJson(updatedDeviceHistory)}")
         return session.copy(
             recordedDistances = session.recordedDistances + updatedDistanceRecord,
             deviceTrackingHistoryData = updatedDeviceHistory

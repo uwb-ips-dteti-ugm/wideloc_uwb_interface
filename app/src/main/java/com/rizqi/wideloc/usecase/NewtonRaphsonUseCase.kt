@@ -24,7 +24,7 @@ interface NewtonRaphsonUseCase {
         fixedPointIds: Set<String>,
         iteration: Int = 10,
         tolerance: Double = 1e-10,
-        h: Double = 1e-5
+        h: Double = 1e-4
     ): List<Point>
 
     suspend fun centralDifference(

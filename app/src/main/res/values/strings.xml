@@ -160,4 +160,7 @@
     <string name="start">Start</string>
     <string name="map_shifting">Map Shifting</string>
     <string name="coordinate">(%1$s, %2$s)</string>
+    <string name="pause_recording">Pause Recording</string>
+    <string name="resume_recording">Resume Recording</string>
+    <string name="stop">Stop</string>
 </resources>

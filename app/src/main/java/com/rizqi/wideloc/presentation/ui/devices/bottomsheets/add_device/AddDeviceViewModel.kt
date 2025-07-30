@@ -452,7 +452,7 @@ class AddDeviceViewModel @Inject constructor(
 
     fun getNamePrefix(): String {
         val role = deviceSetupModel.value?.role?.name ?: "role_unknown"
-        val name = deviceSetupModel.value?.name ?: "name_unknown"
+        val name = deviceSetupModel.value?.name?.replace(" ", "") ?: "name_unknown"
         val id = id.value ?: "id_unknown"
         return "$id-$role-$name-"
     }
