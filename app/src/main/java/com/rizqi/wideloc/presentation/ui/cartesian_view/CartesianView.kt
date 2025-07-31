@@ -10,13 +10,11 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.Typeface
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.ConstraintLayout
-import com.rizqi.wideloc.databinding.DeviceTagBinding
+import com.google.gson.GsonBuilder
 import com.rizqi.wideloc.domain.model.MapTransform
-import com.rizqi.wideloc.presentation.viewmodel.TrackingViewModel
-import timber.log.Timber
 import kotlin.math.roundToInt
 
 class CartesianView @JvmOverloads constructor(
@@ -64,12 +62,21 @@ class CartesianView @JvmOverloads constructor(
     private val viewMap = mutableMapOf<String, View>()
     private val viewPositionMap = mutableMapOf<String, Pair<Double, Double>>()
 
-    data class LogicalBounds(
-        val minX: Double,
-        val maxX: Double,
-        val minY: Double,
-        val maxY: Double
+    private var routeMap: Map<String, List<Pair<Double, Double>>> = emptyMap()
+
+    private val routePaints = listOf(
+        Paint().apply { color = Color.BLUE; strokeWidth = 4f; style = Paint.Style.STROKE },
+        Paint().apply { color = Color.RED; strokeWidth = 4f; style = Paint.Style.STROKE },
+        Paint().apply { color = Color.GREEN; strokeWidth = 4f; style = Paint.Style.STROKE },
+        Paint().apply { color = Color.MAGENTA; strokeWidth = 4f; style = Paint.Style.STROKE },
+        Paint().apply { color = Color.CYAN; strokeWidth = 4f; style = Paint.Style.STROKE },
     )
+
+    fun setRoutes(routeMap: Map<String, List<Pair<Double, Double>>>) {
+        this.routeMap = routeMap
+        invalidate()
+    }
+
 
     fun setMapBackground(bitmap: Bitmap, matrix: Matrix) {
         backgroundBitmap = bitmap
@@ -189,25 +196,50 @@ class CartesianView @JvmOverloads constructor(
         canvas.drawText("x", widthPx - 28f, originY + 28f, axisLabelPaint)
         canvas.drawText("y", originX - 28f, 28f, axisLabelPaint)
 
+        routeMap.entries.forEachIndexed { index, (id, route) ->
+            if (route.size < 2) return@forEachIndexed
+
+            val path = Path()
+            val (startX, startY) = route[0]
+            path.moveTo(
+                ((startX - bounds.minX) * scale).toFloat(),
+                ((bounds.maxY - startY) * scale).toFloat()
+            )
+
+            for (i in 1 until route.size) {
+                val (x, y) = route[i]
+                path.lineTo(
+                    ((x - bounds.minX) * scale).toFloat(),
+                    ((bounds.maxY - y) * scale).toFloat()
+                )
+            }
+
+            val paint = routePaints[index % routePaints.size]
+            canvas.drawPath(path, paint)
+        }
+
         super.dispatchDraw(canvas)
     }
 
 
     fun addOrUpdatePoint(id: String, view: View, x: Double, y: Double, zIndex: Int? = null) {
-    viewPositionMap[id] = x to y
+        viewPositionMap[id] = x to y
 
-    viewMap[id] = view
-    removeView(view) // 💥 Always remove first to ensure layout reset
+        viewMap[id]?.let { oldView ->
+            removeView(oldView)
+        }
 
-    if (zIndex != null) {
-        val safeIndex = zIndex.coerceIn(0, childCount)
-        addView(view, safeIndex)
-    } else {
-        addView(view)
+        viewMap[id] = view
+
+        if (zIndex != null) {
+            val safeIndex = zIndex.coerceIn(0, childCount)
+            addView(view, safeIndex)
+        } else {
+            addView(view)
+        }
+
+        requestLayout()
     }
-
-    requestLayout()
-}
 
     fun removePoint(id: String) {
         val view = viewMap.remove(id) ?: return
@@ -222,4 +254,11 @@ class CartesianView @JvmOverloads constructor(
         removeAllViews()
         requestLayout()
     }
+
+    data class LogicalBounds(
+        val minX: Double,
+        val maxX: Double,
+        val minY: Double,
+        val maxY: Double
+    )
 }

@@ -13,11 +13,41 @@ class FakeUWBDeviceRepository : UWBDeviceRepository {
     private val person1 = Pair(0.0, 0.0)
     private val person2 = Pair(1.0, 0.0)
 
-    private val person3Positions = listOf(
-        Pair(0.0, 1.0), Pair(0.5, 1.0), Pair(1.0, 1.0), Pair(1.5, 1.0), Pair(2.0, 1.0),
-        Pair(2.0, 0.0), Pair(1.5, 0.0), Pair(1.0, 0.0), Pair(0.5, 0.0), Pair(0.0, 0.0),
-        Pair(0.0, 0.5), Pair(0.0, 1.0)
+    private val person3Positions = buildRoute(
+        listOf(
+            0.0 to 1.0,
+            0.0 to 4.0,
+            2.0 to 4.0,
+            2.0 to 0.0,
+            0.0 to 0.0,
+            0.0 to 4.0
+        ),
+        step = 0.5
     )
+
+    private fun buildRoute(points: List<Pair<Double, Double>>, step: Double): List<Pair<Double, Double>> {
+        val result = mutableListOf<Pair<Double, Double>>()
+        for (i in 0 until points.lastIndex) {
+            val (x0, y0) = points[i]
+            val (x1, y1) = points[i + 1]
+
+            val dx = x1 - x0
+            val dy = y1 - y0
+            val distance = kotlin.math.hypot(dx, dy)
+            val steps = (distance / step).toInt()
+
+            for (j in 0 until steps) {
+                val t = j * step / distance
+                val x = x0 + dx * t
+                val y = y0 + dy * t
+                result.add(Pair(x, y))
+            }
+        }
+
+        result.add(points.last())
+
+        return result
+    }
 
     private var currentStep = 0
 

@@ -1,9 +1,12 @@
 package com.rizqi.wideloc.presentation.ui.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.rizqi.wideloc.R
 import com.rizqi.wideloc.data.Result
 import com.rizqi.wideloc.databinding.DeviceTagBinding
@@ -64,7 +67,13 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
         }
         trackingViewModel.session.observe(viewLifecycleOwner){session ->
             if (session == null) return@observe
-            session.deviceTrackingHistoryData.forEach { deviceTrackingHistoryData ->  
+            val routeMap = session.deviceTrackingHistoryData.associate { device ->
+                val route = device.points.map { it.x.value to it.y.value }
+                device.deviceData.id to route
+            }
+            binding.cartesianViewHome.setRoutes(routeMap)
+
+            session.deviceTrackingHistoryData.forEach { deviceTrackingHistoryData ->
                 val deviceData = deviceTrackingHistoryData.deviceData
                 val latestPoint = deviceTrackingHistoryData.points.lastOrNull()
 
@@ -82,7 +91,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
 
             }
         }
-
         trackingViewModel.mapTransform.observe(viewLifecycleOwner) {
             binding.cartesianViewHome.post {
                 binding.cartesianViewHome.applyMapTransform(

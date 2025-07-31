@@ -406,7 +406,6 @@ class TrackingViewModel @Inject constructor(
 
         _recordingState.value = RecordingState.STARTED
         observeJob = viewModelScope.launch {
-            val sessionSnapshot = session.value ?: return@launch
             val server = selectedServer.value
             val anchors = selectedAnchor?.let { listOf(it) } ?: listOf()
 
@@ -417,6 +416,8 @@ class TrackingViewModel @Inject constructor(
             var timesExecuted = 0
 
             while (isActive && (repeatCount == null || timesExecuted < repeatCount)) {
+                val sessionSnapshot = session.value ?: return@launch
+
                 if (recordingState.value == RecordingState.RESUMED) {
                     _observeResult.value = Result.Loading()
 
