@@ -401,7 +401,7 @@ class TrackingViewModel @Inject constructor(
         startObserveTWRData()
     }
 
-    private fun startObserveTWRData(repeatCount: Int? = 1) {
+    private fun startObserveTWRData(repeatCount: Int? = null) {
         if (observeJob?.isActive == true) return
 
         _recordingState.value = RecordingState.STARTED

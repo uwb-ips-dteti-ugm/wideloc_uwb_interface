@@ -17,6 +17,7 @@ import com.bumptech.glide.request.transition.Transition
 import com.rizqi.wideloc.data.Result
 import com.rizqi.wideloc.databinding.FragmentSetUpMapBinding
 import com.rizqi.wideloc.domain.model.MapData
+import com.rizqi.wideloc.domain.model.MapUnit
 import com.rizqi.wideloc.presentation.ui.BaseFragment
 import com.rizqi.wideloc.presentation.ui.dialogs.AddMapDialog
 import com.rizqi.wideloc.presentation.viewmodel.TrackingViewModel
@@ -36,7 +37,7 @@ class SetUpMapFragment : BaseFragment<FragmentSetUpMapBinding>(FragmentSetUpMapB
     private var selectedMap: MapData? = null
 
     private lateinit var mapUnitAdapter: ArrayAdapter<String>
-    private var selectedMapUnit: TrackingViewModel.MapUnit = TrackingViewModel.MapUnit.CM
+    private var selectedMapUnit: MapUnit = MapUnit.CM
 
     private var mapImageBitmap: Bitmap? = null
     private var mapImageRotation = 0f
@@ -83,13 +84,13 @@ class SetUpMapFragment : BaseFragment<FragmentSetUpMapBinding>(FragmentSetUpMapB
         mapUnitAdapter = ArrayAdapter(
             requireContext(),
             R.layout.simple_dropdown_item_1line,
-            TrackingViewModel.MapUnit.entries.map { it.name.lowercase() }
+            MapUnit.entries.map { it.name.lowercase() }
         )
         binding.unitAutoCompleteSetUpMapFragment.apply {
             setAdapter(mapUnitAdapter)
             setText(selectedMapUnit.name.lowercase(), false)
             setOnItemClickListener { _, _, index, _ ->
-                val unit = TrackingViewModel.MapUnit.entries[index]
+                val unit = MapUnit.entries[index]
                 selectedMapUnit = unit
             }
             setOnClickListener {

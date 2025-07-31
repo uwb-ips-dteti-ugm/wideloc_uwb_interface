@@ -1,43 +1,23 @@
 package com.rizqi.wideloc.presentation.ui.home.bottomsheets.setup_tracking
 
-import android.graphics.Bitmap
-import android.graphics.Matrix
-import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.widget.doAfterTextChanged
-import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.activityViewModels
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.google.android.material.textfield.TextInputLayout
 import com.rizqi.wideloc.R
 import com.rizqi.wideloc.data.Result
 import com.rizqi.wideloc.databinding.DeviceTagBinding
 import com.rizqi.wideloc.databinding.FragmentSetLayoutBinding
+import com.rizqi.wideloc.domain.model.CoordinateTarget
 import com.rizqi.wideloc.domain.model.DeviceData
 import com.rizqi.wideloc.presentation.ui.BaseFragment
-import com.rizqi.wideloc.presentation.ui.home.bottomsheets.setup_tracking.adapters.ClientSetLayoutAdapter
 import com.rizqi.wideloc.presentation.ui.home.bottomsheets.setup_tracking.adapters.ClientSetLayoutCustomAdapter
 import com.rizqi.wideloc.presentation.viewmodel.TrackingViewModel
-import com.rizqi.wideloc.presentation.viewmodel.TrackingViewModel.CoordinateTarget
-import com.rizqi.wideloc.utils.StorageUtils
-import com.rizqi.wideloc.utils.ViewUtils.flipBitmap
 import com.rizqi.wideloc.utils.ViewUtils.hideKeyboardAndClearFocus
-import com.rizqi.wideloc.utils.ViewUtils.rotateBitmap
 import com.rizqi.wideloc.utils.toDisplayString
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import timber.log.Timber
-import java.util.Locale
 
 class SetLayoutFragment :
     BaseFragment<FragmentSetLayoutBinding>(FragmentSetLayoutBinding::inflate) {

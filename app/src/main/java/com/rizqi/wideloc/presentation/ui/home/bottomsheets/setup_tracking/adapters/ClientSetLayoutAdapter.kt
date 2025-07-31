@@ -13,9 +13,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputLayout
 import com.rizqi.wideloc.R
 import com.rizqi.wideloc.databinding.ItemDeviceSetLayoutBinding
+import com.rizqi.wideloc.domain.model.CoordinateTarget
 import com.rizqi.wideloc.domain.model.DeviceData
 import com.rizqi.wideloc.presentation.viewmodel.TrackingViewModel
-import com.rizqi.wideloc.presentation.viewmodel.TrackingViewModel.CoordinateTarget
 import java.util.Locale
 
 class ClientSetLayoutAdapter(

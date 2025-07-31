@@ -4,6 +4,7 @@ import com.rizqi.wideloc.domain.model.DeviceData
 import com.rizqi.wideloc.domain.model.Distance
 import com.rizqi.wideloc.domain.model.Point
 import com.rizqi.wideloc.domain.model.Variable
+import com.rizqi.wideloc.domain.model.Coordinate
 import com.rizqi.wideloc.presentation.viewmodel.TrackingViewModel
 import kotlin.math.sqrt
 
@@ -36,7 +37,7 @@ class GenerateDistanceCombinationInteractor : GenerateDistanceCombinationUseCase
             layout.serverCoordinate.deviceData?.id -> layout.serverCoordinate.coordinate
             layout.anchorCoordinate.deviceData?.id -> layout.anchorCoordinate.coordinate
             else -> layout.clientsCoordinate.find { it.deviceData?.id == device.id }?.coordinate
-                ?: TrackingViewModel.Coordinate()
+                ?: Coordinate()
         }
         return Point(
             id = device.getCorrespondingPointId(),

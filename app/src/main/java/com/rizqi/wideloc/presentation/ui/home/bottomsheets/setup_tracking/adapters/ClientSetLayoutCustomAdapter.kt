@@ -11,7 +11,7 @@ import com.rizqi.wideloc.R
 import com.rizqi.wideloc.databinding.ItemDeviceSetLayoutBinding
 import com.rizqi.wideloc.domain.model.DeviceData
 import com.rizqi.wideloc.presentation.viewmodel.TrackingViewModel
-import com.rizqi.wideloc.presentation.viewmodel.TrackingViewModel.CoordinateTarget
+import com.rizqi.wideloc.domain.model.CoordinateTarget
 import com.rizqi.wideloc.utils.toDisplayString
 import java.util.Locale
 
