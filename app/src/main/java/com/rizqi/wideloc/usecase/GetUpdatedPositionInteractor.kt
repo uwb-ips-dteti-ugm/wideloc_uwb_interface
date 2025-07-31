@@ -5,7 +5,9 @@ import com.google.gson.GsonBuilder
 import com.rizqi.wideloc.data.local.TWRDataSource
 import com.rizqi.wideloc.data.repository.FakeUWBDeviceRepository
 import com.rizqi.wideloc.domain.model.DeviceData
+import com.rizqi.wideloc.domain.model.DistancesWithTimestamp
 import com.rizqi.wideloc.domain.model.Point
+import com.rizqi.wideloc.domain.model.TWRData
 import com.rizqi.wideloc.domain.model.TrackingSessionData
 import com.rizqi.wideloc.domain.repository.DeviceRepository
 import com.rizqi.wideloc.domain.repository.UWBDeviceRepository
@@ -50,38 +52,44 @@ class GetUpdatedPositionInteractor @Inject constructor(
             }
         }
 
+        // Cache all TWR data by canonical point ID pairs
+        val twrMap = mutableMapOf<Set<String>, TWRData>()
+        for (twr in rawTWRData) {
+            val d1 = getCachedDevice(twr.address1)
+            val d2 = getCachedDevice(twr.address2)
+
+            val id1 = d1?.getCorrespondingPointId() ?: continue
+            val id2 = d2?.getCorrespondingPointId() ?: continue
+
+            val key = setOf(id1, id2)
+            val existing = twrMap[key]
+
+            if (existing == null || twr.timestamp > existing.timestamp) {
+                twrMap[key] = twr
+            }
+        }
+
 //        Convert Raw to Domain Data
         val lastDistances = session.recordedDistances.last()
         val updatedDistancesList = lastDistances.distances.mapIndexed { index, distance ->
-            val matchingTWR = rawTWRData
-                .filter { twr ->
-                    val device1 = getCachedDevice(twr.address1)
-                    val device2 = getCachedDevice(twr.address2)
+            val key = setOf(distance.point1.id, distance.point2.id)
+            val matchingTWR = twrMap[key]
 
-                    Timber.tag(TAG).d("[4.${index}.1] Matching TWR Check:\n${gson.toJson(twr)}")
-                    Timber.tag(TAG).d("[4.${index}.2] Device 1:\n${gson.toJson(device1)}")
-                    Timber.tag(TAG).d("[4.${index}.3] Device 2:\n${gson.toJson(device2)}")
-
-                    val id1 = device1?.getCorrespondingPointId()
-                    val id2 = device2?.getCorrespondingPointId()
-
-                    (distance.point1.id == id1 && distance.point2.id == id2) || (distance.point1.id == id2 && distance.point2.id == id1)
-                }.maxByOrNull {
-                    it.timestamp
-                }
+            Timber.tag(TAG).d("[4.$index] Matching TWR Check: ${gson.toJson(matchingTWR)}")
 
             matchingTWR?.let {
                 distance.copy(
-                    distance = it.distance, timestamp = it.timestamp.toLong()
+                    distance = it.distance,
+                    timestamp = it.timestamp.toLong()
                 )
             } ?: distance
         }
-        val updatedDistanceRecord = lastDistances.copy(
-            distances = lastDistances.distances + updatedDistancesList,
+        val newDistanceRecord = DistancesWithTimestamp(
+            distances = updatedDistancesList,
             timestamp = lastDistances.timestamp + 1,
         )
         Timber.tag(TAG).d("[5] initial distances:\n${gson.toJson(updatedDistancesList)}")
-        Timber.tag(TAG).d("[6] updated distance with timestamps:\n${gson.toJson(updatedDistanceRecord)}")
+        Timber.tag(TAG).d("[6] updated distance with timestamps:\n${gson.toJson(newDistanceRecord)}")
 
 //        Calculate the New Positions
         val fixedDevices = listOf(server) + anchors
@@ -106,7 +114,7 @@ class GetUpdatedPositionInteractor @Inject constructor(
         }
         Timber.tag(TAG).d("[10] updated device history: \n${gson.toJson(updatedDeviceHistory)}")
         return session.copy(
-            recordedDistances = session.recordedDistances + updatedDistanceRecord,
+            recordedDistances = session.recordedDistances + newDistanceRecord,
             deviceTrackingHistoryData = updatedDeviceHistory
         )
     }
