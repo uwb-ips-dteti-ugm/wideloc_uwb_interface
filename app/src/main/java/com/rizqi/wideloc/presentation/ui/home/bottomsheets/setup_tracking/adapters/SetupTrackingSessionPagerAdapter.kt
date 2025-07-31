@@ -11,7 +11,7 @@ class SetupTrackingSessionPagerAdapter(fragment: Fragment): FragmentStateAdapter
 
     private val pages = listOf(
         SelectDevicesFragment(),
-//        ConnectNetworkFragment(),
+        ConnectNetworkFragment(),
         SetUpMapFragment(),
         SetLayoutFragment(),
     )

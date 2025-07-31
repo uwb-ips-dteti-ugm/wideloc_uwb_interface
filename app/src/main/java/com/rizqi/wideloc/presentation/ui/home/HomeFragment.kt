@@ -8,6 +8,8 @@ import com.rizqi.wideloc.R
 import com.rizqi.wideloc.data.Result
 import com.rizqi.wideloc.databinding.DeviceTagBinding
 import com.rizqi.wideloc.databinding.FragmentHomeBinding
+import com.rizqi.wideloc.domain.model.Coordinate
+import com.rizqi.wideloc.domain.model.MapTransform
 import com.rizqi.wideloc.presentation.ui.BaseFragment
 import com.rizqi.wideloc.presentation.ui.home.bottomsheets.setup_tracking.SetupTrackingSessionBottomSheet
 import com.rizqi.wideloc.presentation.viewmodel.TrackingViewModel
@@ -70,7 +72,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                     addDeviceTagToCartesianView(
                         TrackingViewModel.DeviceCoordinate(
                             deviceData = deviceData,
-                            coordinate = TrackingViewModel.Coordinate(
+                            coordinate = Coordinate(
                                 x = latestPoint.x.value,
                                 y = latestPoint.y.value
                             )
@@ -81,8 +83,12 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
             }
         }
 
-        binding.cartesianViewHome.post {
-            binding.cartesianViewHome.applyMapTransform(TrackingViewModel.MapTransform())
+        trackingViewModel.mapTransform.observe(viewLifecycleOwner) {
+            binding.cartesianViewHome.post {
+                binding.cartesianViewHome.applyMapTransform(
+                    it
+                )
+            }
         }
 
         binding.startRecordButtonHome.setOnClickListener {
@@ -99,6 +105,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
         binding.stopRecordButtonHome.setOnClickListener {
             trackingViewModel.stopObserveTWRData()
         }
+        binding.cartesianViewHome.post { binding.cartesianViewHome.applyMapTransform(MapTransform()) }
 
     }
 

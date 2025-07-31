@@ -2,7 +2,6 @@ package com.rizqi.wideloc.presentation.viewmodel
 
 import android.content.Context
 import android.net.wifi.WifiInfo
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,10 +10,14 @@ import androidx.lifecycle.viewModelScope
 import com.rizqi.wideloc.R
 import com.rizqi.wideloc.data.Result
 import com.rizqi.wideloc.data.local.entity.DeviceRole
+import com.rizqi.wideloc.domain.model.Coordinate
+import com.rizqi.wideloc.domain.model.CoordinateTarget
 import com.rizqi.wideloc.domain.model.DeviceData
 import com.rizqi.wideloc.domain.model.DeviceTrackingHistoryData
 import com.rizqi.wideloc.domain.model.DistancesWithTimestamp
 import com.rizqi.wideloc.domain.model.MapData
+import com.rizqi.wideloc.domain.model.MapTransform
+import com.rizqi.wideloc.domain.model.MapUnit
 import com.rizqi.wideloc.domain.model.Point
 import com.rizqi.wideloc.domain.model.TrackingSessionData
 import com.rizqi.wideloc.domain.model.Variable
@@ -31,7 +34,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
@@ -477,15 +479,6 @@ class TrackingViewModel @Inject constructor(
         _recordingState.value = RecordingState.NOT_STARTED
     }
 
-    data class MapTransform(
-        val length: Double = 6.0,
-        val width: Double = 4.0,
-        val unit: MapUnit = MapUnit.CM,
-        val axisScale: Double = 0.5,
-        val rotation: Float = 0f,
-        val isFlipX: Boolean = false,
-    )
-
     data class SaveMapError(
         var length: String? = null,
         var width: String? = null,
@@ -495,27 +488,6 @@ class TrackingViewModel @Inject constructor(
         fun isValid(): Boolean {
             return length == null && width == null && scaleAxis == null
         }
-    }
-
-    data class Coordinate(
-        val x: Double = 0.0,
-        val xOffset: Double = 0.0,
-        val y: Double = 0.0,
-        val yOffset: Double = 0.0,
-    ) {
-        fun areContentsTheSame(other: Coordinate): Boolean {
-            return this.x == other.x &&
-                    this.xOffset == other.xOffset &&
-                    this.y == other.y &&
-                    this.yOffset == other.yOffset
-        }
-    }
-
-    enum class CoordinateTarget {
-        SERVER,
-        ANCHOR,
-        CLIENT,
-        MAP
     }
 
     data class DeviceCoordinate(
@@ -536,12 +508,6 @@ class TrackingViewModel @Inject constructor(
         RESUMED,
         PAUSED,
         END,
-    }
-
-    enum class MapUnit {
-        MM,
-        CM,
-        M
     }
 
 }

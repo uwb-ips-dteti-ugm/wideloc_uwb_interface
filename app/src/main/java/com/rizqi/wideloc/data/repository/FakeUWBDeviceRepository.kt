@@ -18,19 +18,19 @@ class FakeUWBDeviceRepository  : UWBDeviceRepository {
                 address2 = 2,
                 timestamp = (System.currentTimeMillis() / 1000).toInt(),
 //                distance = Random.nextDouble(0.0, 10.0)
-                distance = 0.5
+                distance = 1.1
             ),
             TWRData(
                 address1 = 1,
                 address2 = 3,
                 timestamp = (System.currentTimeMillis() / 1000).toInt(),
-                distance = 0.5
+                distance = 1.1
             ),
             TWRData(
                 address1 = 2,
                 address2 = 3,
                 timestamp = (System.currentTimeMillis() / 1000).toInt(),
-                distance = 0.5
+                distance = 1.1
             )
         )
     }
