@@ -72,8 +72,22 @@ class CartesianView @JvmOverloads constructor(
         Paint().apply { color = Color.CYAN; strokeWidth = 4f; style = Paint.Style.STROKE },
     )
 
+    private var cachedScreenRoutes: Map<String, List<Pair<Double, Double>>> = emptyMap()
+
     fun setRoutes(routeMap: Map<String, List<Pair<Double, Double>>>) {
+        if (this.routeMap == routeMap) return // skip update
+
         this.routeMap = routeMap
+
+        // Cache screen coordinates
+        val bounds = logicalBounds ?: return
+        val scale = pixelsPerUnit
+        cachedScreenRoutes = routeMap.mapValues { (_, route) ->
+            route.map { (x, y) ->
+                ((x - bounds.minX) * scale) to ((bounds.maxY - y) * scale)
+            }
+        }
+
         invalidate()
     }
 
@@ -196,22 +210,14 @@ class CartesianView @JvmOverloads constructor(
         canvas.drawText("x", widthPx - 28f, originY + 28f, axisLabelPaint)
         canvas.drawText("y", originX - 28f, 28f, axisLabelPaint)
 
-        routeMap.entries.forEachIndexed { index, (id, route) ->
-            if (route.size < 2) return@forEachIndexed
+        cachedScreenRoutes.entries.forEachIndexed { index, (_, screenRoute) ->
+            if (screenRoute.size < 2 || screenRoute.all { it == screenRoute[0] }) return@forEachIndexed
 
-            val path = Path()
-            val (startX, startY) = route[0]
-            path.moveTo(
-                ((startX - bounds.minX) * scale).toFloat(),
-                ((bounds.maxY - startY) * scale).toFloat()
-            )
-
-            for (i in 1 until route.size) {
-                val (x, y) = route[i]
-                path.lineTo(
-                    ((x - bounds.minX) * scale).toFloat(),
-                    ((bounds.maxY - y) * scale).toFloat()
-                )
+            val path = Path().apply {
+                moveTo(screenRoute[0].first.toFloat(), screenRoute[0].second.toFloat())
+                for (i in 1 until screenRoute.size) {
+                    lineTo(screenRoute[i].first.toFloat(), screenRoute[i].second.toFloat())
+                }
             }
 
             val paint = routePaints[index % routePaints.size]
