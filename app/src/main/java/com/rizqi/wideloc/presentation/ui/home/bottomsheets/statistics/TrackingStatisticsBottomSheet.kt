@@ -7,12 +7,16 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.marginBottom
 import androidx.core.view.marginTop
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.rizqi.wideloc.R
 import com.rizqi.wideloc.databinding.TrackingStatisticsBottomSheetBinding
+import com.rizqi.wideloc.domain.model.StatisticData
+import com.rizqi.wideloc.domain.model.StatisticDatum
+import com.rizqi.wideloc.presentation.ui.home.bottomsheets.statistics.adapters.TrackingStatisticsAdapter
 import com.rizqi.wideloc.presentation.viewmodel.TrackingViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -53,7 +57,23 @@ class TrackingStatisticsBottomSheet : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         childFragmentManager.beginTransaction()
-            .replace(binding.frameTrackingStatisticsBottomSheet.id, TrackingStatisticsFragment())
+            .replace(binding.frameTrackingStatisticsBottomSheet.id, StatisticDetailFragment(
+                TrackingStatisticsAdapter.StatisticViewItem(
+                    nameResId = R.string.latency,
+                    iconResId = R.drawable.ic_bell,
+                    unitResId = R.string.ms,
+                    data = StatisticData(
+                        id = "",
+                        name = "Latency",
+                        unit = "ms",
+                        data = listOf(
+                            StatisticDatum(
+                                timestamp = System.currentTimeMillis(),
+                                value = 230.0
+                            ),
+                        )
+                    )
+                ),))
             .commit()
     }
 
@@ -116,4 +136,12 @@ class TrackingStatisticsBottomSheet : BottomSheetDialogFragment() {
             behavior.skipCollapsed = true
         }
     }
+
+    fun switchToFragment(fragment: Fragment) {
+        childFragmentManager.beginTransaction()
+            .replace(binding.frameTrackingStatisticsBottomSheet.id, fragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
 }

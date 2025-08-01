@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/device_card_background"
+    android:padding="16dp"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:layout_marginBottom="8dp">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/upCardViewStatisticDatumItemCard"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        app:cardBackgroundColor="@color/background_success_subdued"
+        app:cardCornerRadius="32dp"
+        app:cardElevation="0dp"
+        >
+
+        <ImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:src="@drawable/ic_caret_up_solid"
+            app:tint="@color/text_success"
+            android:layout_gravity="center"
+            />
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/downCardViewStatisticDatumItemCard"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        app:cardBackgroundColor="@color/background_error_subdued"
+        app:cardCornerRadius="32dp"
+        app:cardElevation="0dp"
+        android:visibility="gone"
+        >
+
+        <ImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:src="@drawable/ic_caret_down_solid"
+            app:tint="@color/text_error"
+            android:layout_gravity="center"
+            />
+
+    </androidx.cardview.widget.CardView>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginHorizontal="16dp"
+        android:orientation="vertical"
+        >
+
+        <TextView
+            android:id="@+id/dateTextViewStatisticDatumItemCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="Tuesday, 4 March 2025"
+            android:textSize="10sp"
+            android:textColor="@color/text_secondary"
+            android:fontFamily="@font/roboto_regular"
+            tools:ignore="SmallSp" />
+
+        <TextView
+            android:id="@+id/timeTextViewStatisticDatumItemCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="09:00:10"
+            android:textSize="16sp"
+            android:textColor="@color/text_default"
+            android:fontFamily="@font/roboto_regular"
+             />
+
+    </LinearLayout>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/goodCardViewStatisticDatumItemCard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="4dp"
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="@color/background_success"
+        >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/good"
+            android:textSize="10sp"
+            android:textColor="@color/text_on_primary"
+            android:fontFamily="@font/roboto_regular"
+            tools:ignore="SmallSp"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="4dp"
+            />
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/badCardViewStatisticDatumItemCard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="4dp"
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="@color/background_error"
+        android:visibility="gone"
+        >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/bad"
+            android:textSize="10sp"
+            android:textColor="@color/text_on_primary"
+            android:fontFamily="@font/roboto_regular"
+            tools:ignore="SmallSp"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="4dp"
+            />
+
+    </androidx.cardview.widget.CardView>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="bottom"
+        android:layout_marginStart="16dp"
+        >
+
+        <TextView
+            android:id="@+id/valueTextViewStatisticDatumItemCard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="230"
+            android:textSize="24sp"
+            android:textColor="@color/text_primary"
+            android:fontFamily="@font/roboto_medium"
+            />
+
+        <TextView
+            android:id="@+id/unitTextViewStatisticDatumItemCard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="ms"
+            android:textSize="12sp"
+            android:textColor="@color/text_default"
+            android:fontFamily="@font/roboto_medium"
+            android:ellipsize="end"
+            android:maxLines="1"
+            />
+
+    </LinearLayout>
+
+</LinearLayout>

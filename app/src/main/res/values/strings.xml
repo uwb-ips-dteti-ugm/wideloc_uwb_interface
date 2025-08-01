@@ -175,4 +175,9 @@
     <string name="cm">cm</string>
     <string name="power_consumption">Power Consumption</string>
     <string name="mwatt">mWatt</string>
+    <string name="statistic_detail">Statistic Detail</string>
+    <string name="history">History</string>
+    <string name="good">Good</string>
+    <string name="bad">Bad</string>
+    <string name="ms">ms</string>
 </resources>

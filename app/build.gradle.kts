@@ -85,6 +85,7 @@ dependencies {
     implementation(libs.threetenabp)
     debugImplementation(libs.chucker.debug)
     releaseImplementation(libs.chucker.release)
+    implementation(libs.mpandroidchart)
 
     testImplementation(libs.room.testing)
 

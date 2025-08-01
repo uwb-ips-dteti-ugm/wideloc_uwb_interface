@@ -8,7 +8,6 @@ import com.rizqi.wideloc.R
 import com.rizqi.wideloc.databinding.FragmentTrackingStatisticsBinding
 import com.rizqi.wideloc.domain.model.StatisticData
 import com.rizqi.wideloc.domain.model.StatisticDatum
-import com.rizqi.wideloc.domain.model.StatisticViewItem
 import com.rizqi.wideloc.presentation.ui.BaseFragment
 import com.rizqi.wideloc.presentation.ui.decorations.GridSpacingItemDecoration
 import com.rizqi.wideloc.presentation.ui.home.bottomsheets.statistics.adapters.TrackingStatisticsAdapter
@@ -20,7 +19,7 @@ class TrackingStatisticsFragment :
         super.onViewCreated(view, savedInstanceState)
 
         val items = listOf(
-            StatisticViewItem(
+            TrackingStatisticsAdapter.StatisticViewItem(
                 nameResId = R.string.latency,
                 iconResId = R.drawable.ic_bell,
                 unitResId = R.string.milliseconds,
@@ -36,7 +35,7 @@ class TrackingStatisticsFragment :
                     )
                 )
             ),
-            StatisticViewItem(
+            TrackingStatisticsAdapter.StatisticViewItem(
                 nameResId = R.string.accuracy,
                 iconResId = R.drawable.ic_plus,
                 unitResId = R.string.cm,
@@ -52,7 +51,7 @@ class TrackingStatisticsFragment :
                     )
                 )
             ),
-            StatisticViewItem(
+            TrackingStatisticsAdapter.StatisticViewItem(
                 nameResId = R.string.power_consumption,
                 iconResId = R.drawable.ic_chart,
                 unitResId = R.string.mwatt,
@@ -72,9 +71,13 @@ class TrackingStatisticsFragment :
 
         binding.statisticsRecyclerViewFragmentTrackingStatistics.apply {
             layoutManager = GridLayoutManager(context, 2)
-            adapter = TrackingStatisticsAdapter(items)
+            adapter = TrackingStatisticsAdapter(items){ item ->
+                (parentFragment as? TrackingStatisticsBottomSheet)?.switchToFragment(
+                    StatisticDetailFragment(item)
+                )
+            }
             val spacingInPixels = resources.getDimensionPixelSize(R.dimen.spacing_8dp)
-            addItemDecoration(GridSpacingItemDecoration(2, spacingInPixels, true))
+            addItemDecoration(GridSpacingItemDecoration(2, spacingInPixels, false))
             setHasFixedSize(true)
         }
 

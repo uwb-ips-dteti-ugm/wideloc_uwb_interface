@@ -2,12 +2,15 @@ package com.rizqi.wideloc.presentation.ui.home.bottomsheets.statistics.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.recyclerview.widget.RecyclerView
 import com.rizqi.wideloc.databinding.StatisticItemCardBinding
-import com.rizqi.wideloc.domain.model.StatisticViewItem
+import com.rizqi.wideloc.domain.model.StatisticData
 
 class TrackingStatisticsAdapter(
-    private val items: List<StatisticViewItem>
+    private val items: List<StatisticViewItem>,
+    private val onItemClick: (StatisticViewItem) -> Unit
 ) : RecyclerView.Adapter<TrackingStatisticsAdapter.ViewHolder>(){
 
     inner class ViewHolder(val binding: StatisticItemCardBinding): RecyclerView.ViewHolder(binding.root){
@@ -18,6 +21,10 @@ class TrackingStatisticsAdapter(
 
             val lastDatum = item.data.data.last().value
             binding.valueTextViewStatisticItemCard.text = lastDatum.toString()
+
+            binding.root.setOnClickListener {
+                onItemClick(item)
+            }
         }
     }
 
@@ -31,4 +38,14 @@ class TrackingStatisticsAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(items[position])
     }
+
+    data class StatisticViewItem(
+        @StringRes
+        val nameResId: Int,
+        @DrawableRes
+        val iconResId: Int,
+        @StringRes
+        val unitResId: Int,
+        val data: StatisticData,
+    )
 }
