@@ -169,4 +169,10 @@
     <string name="select_unit">Select unit</string>
     <string name="a_x_a">a x a</string>
     <string name="scale">Scale</string>
+    <string name="latency">Latency</string>
+    <string name="milliseconds">milliseconds</string>
+    <string name="accuracy">Accuracy</string>
+    <string name="cm">cm</string>
+    <string name="power_consumption">Power Consumption</string>
+    <string name="mwatt">mWatt</string>
 </resources>

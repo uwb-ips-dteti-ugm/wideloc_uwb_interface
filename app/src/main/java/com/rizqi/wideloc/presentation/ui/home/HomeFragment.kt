@@ -15,6 +15,7 @@ import com.rizqi.wideloc.domain.model.Coordinate
 import com.rizqi.wideloc.domain.model.MapTransform
 import com.rizqi.wideloc.presentation.ui.BaseFragment
 import com.rizqi.wideloc.presentation.ui.home.bottomsheets.setup_tracking.SetupTrackingSessionBottomSheet
+import com.rizqi.wideloc.presentation.ui.home.bottomsheets.statistics.TrackingStatisticsBottomSheet
 import com.rizqi.wideloc.presentation.viewmodel.TrackingViewModel
 import com.rizqi.wideloc.presentation.viewmodel.TrackingViewModel.RecordingState.*
 import com.rizqi.wideloc.utils.toDisplayString
@@ -26,6 +27,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     private val trackingViewModel: TrackingViewModel by activityViewModels()
 
     private val setupTrackingSessionBottomSheet = SetupTrackingSessionBottomSheet()
+    private val trackingStatisticsBottomSheet = TrackingStatisticsBottomSheet()
     private val deviceTags = mutableListOf<Pair<TrackingViewModel.DeviceCoordinate, DeviceTagBinding>>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -114,6 +116,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
             trackingViewModel.stopObserveTWRData()
         }
         binding.cartesianViewHome.post { binding.cartesianViewHome.applyMapTransform(MapTransform()) }
+        binding.statisticButtonHome.setOnClickListener {
+            trackingStatisticsBottomSheet.show(parentFragmentManager, trackingStatisticsBottomSheet.tag)
+        }
+        trackingStatisticsBottomSheet.show(parentFragmentManager, trackingStatisticsBottomSheet.tag)
 
     }
 
