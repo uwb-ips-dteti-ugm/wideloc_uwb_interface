@@ -16,7 +16,9 @@ class TrackingStatisticsAdapter(
     inner class ViewHolder(val binding: StatisticItemCardBinding): RecyclerView.ViewHolder(binding.root){
         fun bind(item: StatisticViewItem){
             binding.iconImageViewStatisticItemCard.setImageResource(item.iconResId)
-            binding.nameTextViewStatisticItemCard.setText(item.nameResId)
+            item.nameResId?.let {
+                binding.nameTextViewStatisticItemCard.setText(it)
+            } ?: binding.nameTextViewStatisticItemCard.setText(item.name)
             binding.unitTextViewStatisticItemCard.setText(item.unitResId)
 
             val lastDatum = item.data.data.last().value
@@ -41,7 +43,8 @@ class TrackingStatisticsAdapter(
 
     data class StatisticViewItem(
         @StringRes
-        val nameResId: Int,
+        val nameResId: Int?,
+        val name: String = "",
         @DrawableRes
         val iconResId: Int,
         @StringRes

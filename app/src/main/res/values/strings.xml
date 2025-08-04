@@ -180,4 +180,8 @@
     <string name="good">Good</string>
     <string name="bad">Bad</string>
     <string name="ms">ms</string>
+    <string name="position">Position</string>
+    <string name="mm">mm</string>
+    <string name="m">m</string>
+    <string name="session_id">Session Id: %1$s</string>
 </resources>

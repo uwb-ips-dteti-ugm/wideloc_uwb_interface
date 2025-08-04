@@ -12,6 +12,7 @@ import com.rizqi.wideloc.data.Result
 import com.rizqi.wideloc.databinding.DeviceTagBinding
 import com.rizqi.wideloc.databinding.FragmentHomeBinding
 import com.rizqi.wideloc.domain.model.Coordinate
+import com.rizqi.wideloc.domain.model.DeviceCoordinate
 import com.rizqi.wideloc.domain.model.MapTransform
 import com.rizqi.wideloc.presentation.ui.BaseFragment
 import com.rizqi.wideloc.presentation.ui.home.bottomsheets.setup_tracking.SetupTrackingSessionBottomSheet
@@ -28,7 +29,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
 
     private val setupTrackingSessionBottomSheet = SetupTrackingSessionBottomSheet()
     private val trackingStatisticsBottomSheet = TrackingStatisticsBottomSheet()
-    private val deviceTags = mutableListOf<Pair<TrackingViewModel.DeviceCoordinate, DeviceTagBinding>>()
+    private val deviceTags = mutableListOf<Pair<DeviceCoordinate, DeviceTagBinding>>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -81,7 +82,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
 
                 if (latestPoint != null){
                     addDeviceTagToCartesianView(
-                        TrackingViewModel.DeviceCoordinate(
+                        DeviceCoordinate(
                             deviceData = deviceData,
                             coordinate = Coordinate(
                                 x = latestPoint.x.value,
@@ -123,7 +124,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
 
     }
 
-    private fun addDeviceTagToCartesianView(deviceCoordinate: TrackingViewModel.DeviceCoordinate) {
+    private fun addDeviceTagToCartesianView(deviceCoordinate: DeviceCoordinate) {
         val tagBinding = DeviceTagBinding.inflate(layoutInflater, null, false)
 
         val deviceName = deviceCoordinate.deviceData?.name ?: "Unknown"

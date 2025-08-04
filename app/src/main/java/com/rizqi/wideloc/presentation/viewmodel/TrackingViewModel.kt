@@ -12,18 +12,24 @@ import com.rizqi.wideloc.data.Result
 import com.rizqi.wideloc.data.local.entity.DeviceRole
 import com.rizqi.wideloc.domain.model.Coordinate
 import com.rizqi.wideloc.domain.model.CoordinateTarget
+import com.rizqi.wideloc.domain.model.DeviceCoordinate
 import com.rizqi.wideloc.domain.model.DeviceData
 import com.rizqi.wideloc.domain.model.DeviceTrackingHistoryData
 import com.rizqi.wideloc.domain.model.DistancesWithTimestamp
+import com.rizqi.wideloc.domain.model.LayoutInitialCoordinate
 import com.rizqi.wideloc.domain.model.MapData
 import com.rizqi.wideloc.domain.model.MapTransform
 import com.rizqi.wideloc.domain.model.MapUnit
+import com.rizqi.wideloc.domain.model.MapUnit.*
 import com.rizqi.wideloc.domain.model.Point
+import com.rizqi.wideloc.domain.model.StatisticData
+import com.rizqi.wideloc.domain.model.StatisticDatum
 import com.rizqi.wideloc.domain.model.TrackingSessionData
 import com.rizqi.wideloc.domain.model.Variable
 import com.rizqi.wideloc.domain.repository.DeviceRepository
 import com.rizqi.wideloc.domain.repository.MapRepository
 import com.rizqi.wideloc.presentation.ui.connect_via_wifi.adapters.WifiInformation
+import com.rizqi.wideloc.presentation.ui.home.bottomsheets.statistics.adapters.TrackingStatisticsAdapter
 import com.rizqi.wideloc.usecase.GenerateDistanceCombinationInteractor
 import com.rizqi.wideloc.usecase.GenerateDistanceCombinationUseCase
 import com.rizqi.wideloc.usecase.GenerateIDInteractor
@@ -103,6 +109,9 @@ class TrackingViewModel @Inject constructor(
 
     private var observeJob: Job? = null
 
+    private val _statisticsGroup = MutableLiveData<StatisticsGroup>()
+    val statisticsGroup : LiveData<StatisticsGroup> get() = _statisticsGroup
+
     init {
         viewModelScope.launch {
             _serverList.value = deviceRepository.getByRole(DeviceRole.Server)
@@ -114,6 +123,12 @@ class TrackingViewModel @Inject constructor(
                 _availableMaps.value = it
             }
         }
+
+        _statisticsGroup.postValue(
+            StatisticsGroup(
+                positions = emptyList()
+            )
+        )
 
     }
 
@@ -230,7 +245,7 @@ class TrackingViewModel @Inject constructor(
 
     }
 
-    private fun updateCoordinate(
+    private fun updateSetupMapCoordinate(
         target: CoordinateTarget,
         deviceData: DeviceData? = null,
         axis: String,
@@ -307,7 +322,7 @@ class TrackingViewModel @Inject constructor(
         delta: Double? = null,
         isOffset: Boolean = false
     ) {
-        updateCoordinate(
+        updateSetupMapCoordinate(
             target = target,
             deviceData = deviceData,
             axis = "x",
@@ -324,7 +339,7 @@ class TrackingViewModel @Inject constructor(
         delta: Double? = null,
         isOffset: Boolean = false
     ) {
-        updateCoordinate(
+        updateSetupMapCoordinate(
             target = target,
             deviceData = deviceData,
             axis = "y",
@@ -425,7 +440,9 @@ class TrackingViewModel @Inject constructor(
                         val updatedSession = getUpdatedPositionUseCase.invoke(
                             session = sessionSnapshot,
                             server = server,
-                            anchors = anchors
+                            anchors = anchors,
+                            layoutInitialCoordinate = layoutInitialCoordinate.value,
+                            mapUnit = mapTransform.value?.unit ?: CM
                         )
                         _session.value = updatedSession
                         _observeResult.value = Result.Success(updatedSession)
@@ -491,18 +508,6 @@ class TrackingViewModel @Inject constructor(
         }
     }
 
-    data class DeviceCoordinate(
-        val deviceData: DeviceData? = null,
-        val coordinate: Coordinate = Coordinate(),
-    )
-
-    data class LayoutInitialCoordinate(
-        val serverCoordinate: DeviceCoordinate = DeviceCoordinate(),
-        val anchorCoordinate: DeviceCoordinate = DeviceCoordinate(),
-        val mapCoordinate: Coordinate = Coordinate(),
-        val clientsCoordinate: List<DeviceCoordinate> = emptyList()
-    )
-
     enum class RecordingState {
         NOT_STARTED,
         STARTED,
@@ -510,5 +515,9 @@ class TrackingViewModel @Inject constructor(
         PAUSED,
         END,
     }
+
+    data class StatisticsGroup (
+        val positions: List<TrackingStatisticsAdapter.StatisticViewItem>,
+    )
 
 }

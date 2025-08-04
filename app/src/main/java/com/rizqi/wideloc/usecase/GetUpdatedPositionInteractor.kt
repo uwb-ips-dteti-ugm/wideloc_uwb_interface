@@ -4,8 +4,12 @@ import android.util.Log
 import com.google.gson.GsonBuilder
 import com.rizqi.wideloc.data.local.TWRDataSource
 import com.rizqi.wideloc.data.repository.FakeUWBDeviceRepository
+import com.rizqi.wideloc.domain.model.DeviceCoordinate
 import com.rizqi.wideloc.domain.model.DeviceData
+import com.rizqi.wideloc.domain.model.DeviceOffsetData
 import com.rizqi.wideloc.domain.model.DistancesWithTimestamp
+import com.rizqi.wideloc.domain.model.LayoutInitialCoordinate
+import com.rizqi.wideloc.domain.model.MapUnit
 import com.rizqi.wideloc.domain.model.Point
 import com.rizqi.wideloc.domain.model.TWRData
 import com.rizqi.wideloc.domain.model.TrackingSessionData
@@ -31,6 +35,8 @@ class GetUpdatedPositionInteractor @Inject constructor(
         session: TrackingSessionData,
         server: DeviceData,
         anchors: List<DeviceData>,
+        layoutInitialCoordinate: LayoutInitialCoordinate?,
+        mapUnit: MapUnit,
     ): TrackingSessionData {
 //        Get Raw Data
         val serverDNS = server.protocol.asWifiProtocolEntity()?.mdns
@@ -79,7 +85,7 @@ class GetUpdatedPositionInteractor @Inject constructor(
 
             matchingTWR?.let {
                 distance.copy(
-                    distance = it.distance,
+                    distance = fromMeters(it.distance, mapUnit),
                     timestamp = it.timestamp.toLong()
                 )
             } ?: distance
@@ -101,21 +107,56 @@ class GetUpdatedPositionInteractor @Inject constructor(
         )
         Timber.tag(TAG).d("[8] predictedPoints: \n${gson.toJson(predictedPoints)}")
 
+//        Apply map offset after positions are acquired
+        val deviceOffsets: List<DeviceCoordinate?> = listOf(
+            layoutInitialCoordinate?.serverCoordinate,
+            layoutInitialCoordinate?.anchorCoordinate
+        ) + (layoutInitialCoordinate?.clientsCoordinate ?: emptyList())
+        val offsetAppliedPoints = predictedPoints.map { point ->
+            val pointOffset = deviceOffsets.find { deviceOffset ->
+                deviceOffset?.deviceData?.getCorrespondingPointId() == point.id
+            }
+            val x = point.x
+            val y = point.y
+            point.copy(
+                x = x.copy(
+                    value = x.value + (pointOffset?.coordinate?.xOffset ?: 0.0)
+                ),
+                y = y.copy(
+                    value = y.value + (pointOffset?.coordinate?.yOffset ?: 0.0)
+                )
+            )
+        }
+        Timber.tag(TAG).d("[9] offsetAppliedPoints: \n${gson.toJson(offsetAppliedPoints)}")
+
 //        Return the Results
         val updatedDeviceHistory = session.deviceTrackingHistoryData.mapIndexed { index, history ->
             val pointId = history.deviceData.getCorrespondingPointId()
-            val newPoint = predictedPoints.find { it.id == pointId }
+            val newPoint = offsetAppliedPoints.find { it.id == pointId }
             val updatedPoints = history.points + listOfNotNull(newPoint)
-            Timber.tag(TAG).d("[9.${index}] new point for ${history.deviceData.id}: \n${gson.toJson(newPoint)}")
+            Timber.tag(TAG).d("[10.${index}] new point for ${history.deviceData.id}: \n${gson.toJson(newPoint)}")
 
             history.copy(
                 points = updatedPoints, timestamp = history.timestamp + 1
             )
         }
-        Timber.tag(TAG).d("[10] updated device history: \n${gson.toJson(updatedDeviceHistory)}")
+        Timber.tag(TAG).d("[11] updated device history: \n${gson.toJson(updatedDeviceHistory)}")
         return session.copy(
             recordedDistances = session.recordedDistances + newDistanceRecord,
             deviceTrackingHistoryData = updatedDeviceHistory
         )
+    }
+
+    // helpers
+    private fun toMeters(value: Double, unit: MapUnit): Double = when (unit) {
+        MapUnit.MM -> value / 1000.0
+        MapUnit.CM -> value / 100.0
+        MapUnit.M  -> value
+    }
+
+    private fun fromMeters(valueMeters: Double, unit: MapUnit): Double = when (unit) {
+        MapUnit.MM -> valueMeters * 1000.0
+        MapUnit.CM -> valueMeters * 100.0
+        MapUnit.M  -> valueMeters
     }
 }
