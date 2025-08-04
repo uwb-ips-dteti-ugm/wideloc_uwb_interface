@@ -10,10 +10,8 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.Typeface
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import com.google.gson.GsonBuilder
 import com.rizqi.wideloc.domain.model.MapTransform
 import kotlin.math.roundToInt
 
@@ -26,7 +24,7 @@ class CartesianView @JvmOverloads constructor(
     private var backgroundMatrix: Matrix? = null
 
     private var mapTransform: MapTransform? = null
-    private var axisScale: Double = 1.0
+    private var axisStep: Double = 1.0
     private var pixelsPerUnit: Double = 1.0
 
     private var logicalBounds: LogicalBounds? = null
@@ -101,7 +99,7 @@ class CartesianView @JvmOverloads constructor(
     fun applyMapTransform(transform: MapTransform) {
         if (width == 0 || height == 0) return
         this.mapTransform = transform
-        this.axisScale = transform.axisScale
+        this.axisStep = transform.axisStep
 
         val logicalWidth = transform.width
         val logicalHeight = transform.length
@@ -176,11 +174,11 @@ class CartesianView @JvmOverloads constructor(
         val widthPx = width.toFloat()
         val heightPx = height.toFloat()
 
-        val spacing = (axisScale * scale).toFloat()
-        val gridStartX = (bounds.minX / axisScale).toInt()
-        val gridEndX = (bounds.maxX / axisScale).toInt()
-        val gridStartY = (bounds.minY / axisScale).toInt()
-        val gridEndY = (bounds.maxY / axisScale).toInt()
+        val spacing = (axisStep * scale).toFloat()
+        val gridStartX = (bounds.minX / axisStep).toInt()
+        val gridEndX = (bounds.maxX / axisStep).toInt()
+        val gridStartY = (bounds.minY / axisStep).toInt()
+        val gridEndY = (bounds.maxY / axisStep).toInt()
 
         for (i in gridStartX..gridEndX) {
             val x = originX + i * spacing
@@ -190,7 +188,7 @@ class CartesianView @JvmOverloads constructor(
                 path.lineTo(x, heightPx)
                 canvas.drawPath(path, gridPaint)
             }
-            canvas.drawText((i * axisScale).toString(), x + 4f, originY - 8f, labelPaint)
+            canvas.drawText((i * axisStep).toString(), x + 4f, originY - 8f, labelPaint)
         }
 
         for (j in gridStartY..gridEndY) {
@@ -201,7 +199,7 @@ class CartesianView @JvmOverloads constructor(
                 path.lineTo(widthPx, y)
                 canvas.drawPath(path, gridPaint)
             }
-            canvas.drawText((j * axisScale).toString(), originX + 8f, y + 8f, labelPaint)
+            canvas.drawText((j * axisStep).toString(), originX + 8f, y + 8f, labelPaint)
         }
 
         canvas.drawLine(0f, originY, widthPx, originY, axisPaint)

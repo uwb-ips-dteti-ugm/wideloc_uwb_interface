@@ -15,6 +15,7 @@
         android:textSize="18sp" />
 
     <TextView
+        android:id="@+id/sessionIdtextViewFragmentTrackingStatistics"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="@font/roboto_medium"
@@ -51,15 +52,24 @@
             android:textColor="@color/text_default"
             android:textSize="14sp" />
 
-        <com.evrencoskun.tableview.TableView
-            android:id="@+id/devicePositionTableViewFragmentTrackingStatistics"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            app:show_horizontal_separator="true"
-            app:show_vertical_separator="true"
-            app:separator_color="@color/border_secondary"
-            />
+            android:background="@drawable/table_outer_background"
+            android:orientation="vertical"
+            >
+
+            <com.evrencoskun.tableview.TableView
+                android:id="@+id/devicePositionTableViewFragmentTrackingStatistics"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                app:show_horizontal_separator="true"
+                app:show_vertical_separator="true"
+                app:separator_color="@color/border_secondary"
+                />
+
+        </LinearLayout>
 
     </LinearLayout>
 

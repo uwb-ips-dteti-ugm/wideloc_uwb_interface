@@ -160,7 +160,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="@string/axis_scale"
+                android:text="@string/axis_step"
                 android:fontFamily="@font/roboto_regular"
                 android:textSize="16sp"
                 android:textColor="@color/text_default"
@@ -171,7 +171,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/scale"
+                android:hint="@string/step"
                 app:hintTextColor="@color/text_primary"
                 app:boxStrokeColor="@color/text_primary"
                 app:boxStrokeWidth="2dp"
@@ -184,7 +184,7 @@
                 >
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/axisScaleInputEditTextSetUpMapFragment"
+                    android:id="@+id/axisStepInputEditTextSetUpMapFragment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="numberDecimal"

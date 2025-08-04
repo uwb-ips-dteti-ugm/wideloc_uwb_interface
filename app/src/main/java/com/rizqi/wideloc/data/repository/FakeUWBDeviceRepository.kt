@@ -11,18 +11,18 @@ import kotlin.math.sqrt
 class FakeUWBDeviceRepository : UWBDeviceRepository {
 
     private val person1 = Pair(0.0, 0.0)
-    private val person2 = Pair(1.0, 0.0)
+    private val person2 = Pair(0.01, 0.0)
 
     private val person3Positions = buildRoute(
         listOf(
-            0.0 to 1.0,
-            0.0 to 4.0,
-            2.0 to 4.0,
-            2.0 to 0.0,
+            0.0 to 0.01,
+            0.0 to 0.04,
+            0.02 to 0.04,
+            0.02 to 0.0,
             0.0 to 0.0,
-            0.0 to 4.0
+            0.0 to 0.04
         ),
-        step = 0.5
+        step = 0.005
     )
 
     private fun buildRoute(points: List<Pair<Double, Double>>, step: Double): List<Pair<Double, Double>> {

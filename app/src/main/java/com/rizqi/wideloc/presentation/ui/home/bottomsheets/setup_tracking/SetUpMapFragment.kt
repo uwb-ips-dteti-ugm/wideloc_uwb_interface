@@ -71,7 +71,7 @@ class SetUpMapFragment : BaseFragment<FragmentSetUpMapBinding>(FragmentSetUpMapB
         binding.addMapButtonSetUpFragment.setOnClickListener {
             addMapDialog?.show()
         }
-        binding.axisScaleInputEditTextSetUpMapFragment.setOnEditorActionListener { _, actionId, _ ->
+        binding.axisStepInputEditTextSetUpMapFragment.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_GO){
                 hideKeyboardAndClearFocus(requireActivity().currentFocus ?: binding.root)
                 saveMap()
@@ -185,14 +185,14 @@ class SetUpMapFragment : BaseFragment<FragmentSetUpMapBinding>(FragmentSetUpMapB
     private fun saveMap(){
         val length = binding.lengthInputEditTextSetUpMapFragment.text.toString()
         val width = binding.widthInputEditTextSetUpMapFragment.text.toString()
-        val axisScaleUnit = binding.axisScaleInputEditTextSetUpMapFragment.text.toString()
+        val axisStepUnit = binding.axisStepInputEditTextSetUpMapFragment.text.toString()
 
         trackingViewModel.saveMapSelection(
             lengthText = length,
             widthText = width,
             mapRotation = mapImageRotation,
             isFlipX = mapImageFlippedHorizontally,
-            scaleAxisText = axisScaleUnit,
+            stepAxisText = axisStepUnit,
             mapUnit = selectedMapUnit
         )
     }

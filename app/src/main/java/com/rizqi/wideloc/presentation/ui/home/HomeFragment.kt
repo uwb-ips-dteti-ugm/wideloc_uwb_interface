@@ -120,7 +120,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
         binding.statisticButtonHome.setOnClickListener {
             trackingStatisticsBottomSheet.show(parentFragmentManager, trackingStatisticsBottomSheet.tag)
         }
-        trackingStatisticsBottomSheet.show(parentFragmentManager, trackingStatisticsBottomSheet.tag)
     }
 
     private fun addDeviceTagToCartesianView(deviceCoordinate: DeviceCoordinate) {

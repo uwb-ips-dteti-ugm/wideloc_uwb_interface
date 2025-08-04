@@ -6,15 +6,14 @@
     android:layout_height="@dimen/cell_height"
     android:background="@drawable/table_cell_background"
     android:gravity="center"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingHorizontal="4dp">
 
     <TextView
         android:id="@+id/cell_data"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center_vertical"
-        android:layout_marginEnd="2dp"
-        android:layout_marginStart="2dp"
         android:gravity="center"
         android:maxLines="1"
         android:textColor="@color/text_default"

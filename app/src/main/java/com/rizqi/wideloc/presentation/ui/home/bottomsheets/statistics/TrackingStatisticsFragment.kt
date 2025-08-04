@@ -1,11 +1,16 @@
 package com.rizqi.wideloc.presentation.ui.home.bottomsheets.statistics
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.rizqi.wideloc.R
 import com.rizqi.wideloc.databinding.FragmentTrackingStatisticsBinding
+import com.rizqi.wideloc.domain.model.DeviceData
+import com.rizqi.wideloc.domain.model.Distance
+import com.rizqi.wideloc.domain.model.Point
 import com.rizqi.wideloc.domain.model.StatisticData
 import com.rizqi.wideloc.domain.model.StatisticDatum
 import com.rizqi.wideloc.presentation.ui.BaseFragment
@@ -15,178 +20,47 @@ import com.rizqi.wideloc.presentation.ui.home.bottomsheets.statistics.tableview.
 import com.rizqi.wideloc.presentation.ui.home.bottomsheets.statistics.tableview.ColumnHeader
 import com.rizqi.wideloc.presentation.ui.home.bottomsheets.statistics.tableview.RowHeader
 import com.rizqi.wideloc.presentation.ui.home.bottomsheets.statistics.tableview.TableViewAdapter
+import com.rizqi.wideloc.presentation.viewmodel.TrackingViewModel
+import com.rizqi.wideloc.utils.toDisplayString
 
 class TrackingStatisticsFragment :
     BaseFragment<FragmentTrackingStatisticsBinding>(FragmentTrackingStatisticsBinding::inflate) {
 
+    private val trackingViewModel: TrackingViewModel by activityViewModels()
+
+    private lateinit var trackingStatisticsAdapter: TrackingStatisticsAdapter
+    private lateinit var tableViewAdapter: TableViewAdapter
+    private lateinit var devices: List<DeviceData>
+    private lateinit var distances: List<Distance>
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val items = listOf(
-            TrackingStatisticsAdapter.StatisticViewItem(
-                nameResId = R.string.latency,
-                iconResId = R.drawable.ic_bell,
-                unitResId = R.string.milliseconds,
-                data = StatisticData(
-                    id = "",
-                    name = "Latency",
-                    unit = "milliseconds",
-                    data = listOf(
-                        StatisticDatum(
-                            timestamp = System.currentTimeMillis(),
-                            value = 230.0
-                        ),
-                    )
-                )
-            ),
-            TrackingStatisticsAdapter.StatisticViewItem(
-                nameResId = R.string.accuracy,
-                iconResId = R.drawable.ic_plus,
-                unitResId = R.string.cm,
-                data = StatisticData(
-                    id = "",
-                    name = "Accuracy",
-                    unit = "cm",
-                    data = listOf(
-                        StatisticDatum(
-                            timestamp = System.currentTimeMillis(),
-                            value = 10.0
-                        ),
-                    )
-                )
-            ),
-            TrackingStatisticsAdapter.StatisticViewItem(
-                nameResId = R.string.power_consumption,
-                iconResId = R.drawable.ic_chart,
-                unitResId = R.string.mwatt,
-                data = StatisticData(
-                    id = "",
-                    name = "Power Consumption",
-                    unit = "mW",
-                    data = listOf(
-                        StatisticDatum(
-                            timestamp = System.currentTimeMillis(),
-                            value = 50.0
-                        ),
-                    )
-                )
-            ),
-        )
+        trackingStatisticsAdapter = TrackingStatisticsAdapter(listOf()) { item ->
+            (parentFragment as? TrackingStatisticsBottomSheet)?.switchToFragment(
+                StatisticDetailFragment(item)
+            )
+        }
+        initDevicePositionsTable()
+
+        trackingViewModel.session.observe(viewLifecycleOwner){session ->
+            val lastPoints = session.deviceTrackingHistoryData.map {
+                it.points.last()
+            }
+            val lastDistances = session.recordedDistances.last().distances
+            val timestamp = session.deviceTrackingHistoryData.first().timestamp
+            updateDevicePositionsTable(lastPoints, lastDistances, timestamp)
+        }
 
         binding.statisticsRecyclerViewFragmentTrackingStatistics.apply {
             layoutManager = GridLayoutManager(context, 2)
-            adapter = TrackingStatisticsAdapter(items){ item ->
-                (parentFragment as? TrackingStatisticsBottomSheet)?.switchToFragment(
-                    StatisticDetailFragment(item)
-                )
-            }
+            adapter = trackingStatisticsAdapter
             val spacingInPixels = resources.getDimensionPixelSize(R.dimen.spacing_8dp)
             addItemDecoration(GridSpacingItemDecoration(2, spacingInPixels, false))
             setHasFixedSize(true)
         }
-
-        val mRowHeaderList = listOf(
-            RowHeader("A"),
-            RowHeader("B"),
-            RowHeader("C"),
-            RowHeader("D"),
-        )
-        val mColumnHeaderList = listOf(
-            ColumnHeader("1"),
-            ColumnHeader("2"),
-            ColumnHeader("3"),
-            ColumnHeader("4"),
-        )
-        val mCellList = listOf(
-            listOf(
-                Cell("A1"),
-                Cell("A2"),
-                Cell("A3"),
-                Cell("A4"),
-            ),
-            listOf(
-                Cell("B1"),
-                Cell("B2"),
-                Cell("B3"),
-                Cell("B4"),
-            ),
-            listOf(
-                Cell("C1"),
-                Cell("C2"),
-                Cell("C3"),
-                Cell("C4"),
-            ),
-            listOf(
-                Cell("D1"),
-                Cell("D2"),
-                Cell("D3"),
-                Cell("D4"),
-            ),
-            listOf(
-                Cell("D1"),
-                Cell("D2"),
-                Cell("D3"),
-                Cell("D4"),
-            ),
-            listOf(
-                Cell("D1"),
-                Cell("D2"),
-                Cell("D3"),
-                Cell("D4"),
-            ),
-            listOf(
-                Cell("D1"),
-                Cell("D2"),
-                Cell("D3"),
-                Cell("D4"),
-            ),
-            listOf(
-                Cell("D1"),
-                Cell("D2"),
-                Cell("D3"),
-                Cell("D4"),
-            ),
-            listOf(
-                Cell("D1"),
-                Cell("D2"),
-                Cell("D3"),
-                Cell("D4"),
-            ),
-            listOf(
-                Cell("D1"),
-                Cell("D2"),
-                Cell("D3"),
-                Cell("D4"),
-            ),
-            listOf(
-                Cell("D1"),
-                Cell("D2"),
-                Cell("D3"),
-                Cell("D4"),
-            ),listOf(
-                Cell("D1"),
-                Cell("D2"),
-                Cell("D3"),
-                Cell("D4"),
-            ),
-            listOf(
-                Cell("D1"),
-                Cell("D2"),
-                Cell("D3"),
-                Cell("D4"),
-            ),
-            listOf(
-                Cell("D1"),
-                Cell("D2"),
-                Cell("D3"),
-                Cell("D4"),
-            ),
-
-        )
-        val tableAdapter = TableViewAdapter()
-        binding.devicePositionTableViewFragmentTrackingStatistics.setAdapter(tableAdapter)
-        tableAdapter.setAllItems(mColumnHeaderList, mRowHeaderList, mCellList)
-
+        binding.sessionIdtextViewFragmentTrackingStatistics.text =
+            getString(R.string.session_id, trackingViewModel.session.value?.sessionId.toString())
     }
 
     private fun recalculateContentHeight() {
@@ -197,5 +71,50 @@ class TrackingStatisticsFragment :
                 ),
             )
         }
+    }
+
+    private fun initDevicePositionsTable() {
+        devices = trackingViewModel.getSelectedDevicesAndCombination().first
+        distances = trackingViewModel.getSelectedDevicesAndCombination().second
+
+        val columnHeaderItems = devices.map { device ->
+            ColumnHeader(device.name)
+        }.toMutableList()
+
+        distances.forEach { distance ->
+            val device1 = devices.find { it.getCorrespondingPointId() == distance.point1.id }
+            val device2 = devices.find { it.getCorrespondingPointId() == distance.point2.id }
+            columnHeaderItems.add(
+                ColumnHeader(
+                    getString(R.string.distance_point1_point2, device1?.name, device2?.name)
+                )
+            )
+        }
+
+        tableViewAdapter = TableViewAdapter()
+        binding.devicePositionTableViewFragmentTrackingStatistics.setAdapter(tableViewAdapter)
+        tableViewAdapter.setAllItems(columnHeaderItems, listOf(), listOf())
+    }
+
+    private fun updateDevicePositionsTable(points: List<Point>, distances: List<Distance>, timestamp: Long? = null){
+        val rowHeaderItem = RowHeader(timestamp.toString())
+        val cellItems = mutableListOf<Cell>()
+        devices.forEach { device ->
+            val point = points.find { it.id == device.getCorrespondingPointId() }
+            cellItems.add(
+                Cell(
+                    "(${point?.x?.value?.toDisplayString()}, ${point?.y?.value?.toDisplayString()})"
+                )
+            )
+        }
+        distances.forEach { distance ->
+            cellItems.add(
+                Cell(
+                    distance.distance.toDisplayString()
+                )
+            )
+        }
+
+        tableViewAdapter.addRow(0, rowHeaderItem, cellItems)
     }
 }

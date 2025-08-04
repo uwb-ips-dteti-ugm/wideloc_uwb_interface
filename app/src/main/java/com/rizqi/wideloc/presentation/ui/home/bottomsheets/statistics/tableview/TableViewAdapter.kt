@@ -42,8 +42,8 @@ class TableViewAdapter : AbstractTableAdapter<ColumnHeader, RowHeader, Cell>() {
 
         fun bind(columnHeader: ColumnHeader?){
             binding.columnHeaderTextView.text = columnHeader?.value
-//            binding.columnHeaderContainer.layoutParams.width = LinearLayout.LayoutParams.WRAP_CONTENT
-//            binding.columnHeaderContainer.requestLayout()
+            binding.columnHeaderContainer.layoutParams.width = LinearLayout.LayoutParams.WRAP_CONTENT
+            binding.columnHeaderContainer.requestLayout()
         }
     }
 

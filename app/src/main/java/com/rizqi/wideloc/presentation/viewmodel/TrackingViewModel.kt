@@ -15,6 +15,7 @@ import com.rizqi.wideloc.domain.model.CoordinateTarget
 import com.rizqi.wideloc.domain.model.DeviceCoordinate
 import com.rizqi.wideloc.domain.model.DeviceData
 import com.rizqi.wideloc.domain.model.DeviceTrackingHistoryData
+import com.rizqi.wideloc.domain.model.Distance
 import com.rizqi.wideloc.domain.model.DistancesWithTimestamp
 import com.rizqi.wideloc.domain.model.LayoutInitialCoordinate
 import com.rizqi.wideloc.domain.model.MapData
@@ -132,6 +133,22 @@ class TrackingViewModel @Inject constructor(
 
     }
 
+    fun getSelectedDevicesAndCombination(): Pair<List<DeviceData>, List<Distance>> {
+        val server = selectedServer.value
+        val anchor = selectedAnchor
+
+        val devices = mutableListOf<DeviceData>()
+        server?.let { devices.add(it) }
+        anchor?.let { devices.add(it) }
+        devices.addAll(selectedClients)
+
+        val initialCoordinate = layoutInitialCoordinate.value ?: return Pair(listOf(), listOf())
+
+        val distances = generateDistanceCombination.invoke(devices, initialCoordinate)
+
+        return Pair(devices, distances)
+    }
+
     fun setSelectedServer(server: DeviceData) {
         _selectedServer.value = server
         viewModelScope.launch {
@@ -202,7 +219,7 @@ class TrackingViewModel @Inject constructor(
     fun saveMapSelection(
         lengthText: String,
         widthText: String,
-        scaleAxisText: String,
+        stepAxisText: String,
         mapRotation: Float,
         isFlipX: Boolean,
         mapUnit: MapUnit,
@@ -211,7 +228,7 @@ class TrackingViewModel @Inject constructor(
         val error = SaveMapError()
         val length = lengthText.toDoubleOrNull()
         val width = widthText.toDoubleOrNull()
-        val scaleAxis = scaleAxisText.toDoubleOrNull()
+        val stepAxis = stepAxisText.toDoubleOrNull()
 
         if (length == null || length <= 0) {
             error.length = context.getString(R.string.length_can_t_be_empty_or_less_than_zero)
@@ -219,8 +236,8 @@ class TrackingViewModel @Inject constructor(
         if (width == null || width <= 0) {
             error.width = context.getString(R.string.width_can_t_be_empty_or_less_than_zero)
         }
-        if (scaleAxis == null || scaleAxis <= 0) {
-            error.scaleAxis = context.getString(R.string.scale_can_t_be_empty_or_less_than_zero)
+        if (stepAxis == null || stepAxis <= 0) {
+            error.stepAxis = context.getString(R.string.step_can_t_be_empty_or_less_than_zero)
         }
 //        if (selectedMap.value == null) {
 //            error.map = context.getString(R.string.select_a_map_first)
@@ -232,7 +249,7 @@ class TrackingViewModel @Inject constructor(
             rotation = mapRotation,
             isFlipX = isFlipX,
             unit = mapUnit,
-            axisScale = scaleAxis!!,
+            axisStep = stepAxis!!,
         )
         _saveMapError.value = error
         if (!error.isValid()) {
@@ -500,11 +517,11 @@ class TrackingViewModel @Inject constructor(
     data class SaveMapError(
         var length: String? = null,
         var width: String? = null,
-        var scaleAxis: String? = null,
+        var stepAxis: String? = null,
         var map: String? = null,
     ) {
         fun isValid(): Boolean {
-            return length == null && width == null && scaleAxis == null
+            return length == null && width == null && stepAxis == null
         }
     }
 

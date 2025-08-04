@@ -146,7 +146,7 @@
     <string name="select_an_image_of_your_map">Select an image of your map!</string>
     <string name="length_can_t_be_empty_or_less_than_zero">Length can\'t be empty or less than zero</string>
     <string name="width_can_t_be_empty_or_less_than_zero">Width can\'t be empty or less than zero</string>
-    <string name="scale_can_t_be_empty_or_less_than_zero">Scale axis can\'t be empty or less than zero</string>
+    <string name="step_can_t_be_empty_or_less_than_zero">Step axis can\'t be empty or less than zero</string>
     <string name="select_a_map_first">Select a map first</string>
     <string name="there_are_some_invalid_input">There are some invalid input</string>
     <string name="set_devices_layout">Set Initial Device Layout</string>
@@ -185,4 +185,7 @@
     <string name="m">m</string>
     <string name="session_id">Session Id: %1$s</string>
     <string name="device_positions">Device Positions</string>
+    <string name="distance_point1_point2"><![CDATA[Distance %1$s <-> %2$s]]></string>
+    <string name="axis_step">Axis Step</string>
+    <string name="step">Step</string>
 </resources>

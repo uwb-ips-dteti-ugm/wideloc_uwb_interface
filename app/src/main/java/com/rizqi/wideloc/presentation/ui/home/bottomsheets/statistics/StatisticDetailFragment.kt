@@ -43,7 +43,7 @@ class StatisticDetailFragment(
             setHasFixedSize(true)
         }
         binding.backLayoutFragmentStatisticDetail.setOnClickListener {
-            childFragmentManager.popBackStack()
+            parentFragmentManager.popBackStack()
         }
         setupLineChart(statisticViewItem.data)
 
