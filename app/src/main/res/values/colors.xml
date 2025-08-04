@@ -32,4 +32,10 @@
     <color name="border_secondary">#FFD8D8DA</color>
     <color name="border_default">#FFE9E9EB</color>
     <color name="border_error">#FFF73B3B</color>
+
+<!--    Table View -->
+    <color name="bg_line">#E7E7E7</color>
+    <color name="cell_background_color">#ffffff</color>
+    <color name="header_line_color">@android:color/holo_red_light</color>
+    <color name="table_view_default_text_color">#0a0a0a</color>
 </resources>

@@ -12,6 +12,7 @@ import com.rizqi.wideloc.data.Result
 import com.rizqi.wideloc.databinding.DeviceTagBinding
 import com.rizqi.wideloc.databinding.FragmentSetLayoutBinding
 import com.rizqi.wideloc.domain.model.CoordinateTarget
+import com.rizqi.wideloc.domain.model.DeviceCoordinate
 import com.rizqi.wideloc.domain.model.DeviceData
 import com.rizqi.wideloc.presentation.ui.BaseFragment
 import com.rizqi.wideloc.presentation.ui.home.bottomsheets.setup_tracking.adapters.ClientSetLayoutCustomAdapter
@@ -27,7 +28,7 @@ class SetLayoutFragment :
     private lateinit var clientSetLayoutCustomAdapter: ClientSetLayoutCustomAdapter
 
     private val deviceTags =
-        mutableListOf<Pair<TrackingViewModel.DeviceCoordinate, DeviceTagBinding>>()
+        mutableListOf<Pair<DeviceCoordinate, DeviceTagBinding>>()
 
     private val scalingFactor = 100f
 
@@ -401,7 +402,7 @@ class SetLayoutFragment :
 
     private fun getYOffsetHint() = requireContext().getString(R.string.y_offset)
 
-    private fun addDeviceTagToCartesianView(deviceCoordinate: TrackingViewModel.DeviceCoordinate) {
+    private fun addDeviceTagToCartesianView(deviceCoordinate: DeviceCoordinate) {
         val tagBinding = DeviceTagBinding.inflate(layoutInflater, null, false)
 
         val deviceName = deviceCoordinate.deviceData?.name ?: "Unknown"

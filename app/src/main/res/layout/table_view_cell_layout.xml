@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:id="@+id/cell_container"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/default_row_header_width"
+    android:layout_height="@dimen/cell_height"
+    android:background="@drawable/table_cell_background"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/cell_data"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:layout_marginEnd="2dp"
+        android:layout_marginStart="2dp"
+        android:gravity="center"
+        android:maxLines="1"
+        android:textColor="@color/text_default"
+        android:textSize="@dimen/text_size"
+        android:fontFamily="@font/roboto"
+        tools:text="Cell Data"/>
+</LinearLayout>

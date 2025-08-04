@@ -1,18 +1,18 @@
 package com.rizqi.wideloc.usecase
 
+import com.rizqi.wideloc.domain.model.Coordinate
 import com.rizqi.wideloc.domain.model.DeviceData
 import com.rizqi.wideloc.domain.model.Distance
+import com.rizqi.wideloc.domain.model.LayoutInitialCoordinate
 import com.rizqi.wideloc.domain.model.Point
 import com.rizqi.wideloc.domain.model.Variable
-import com.rizqi.wideloc.domain.model.Coordinate
-import com.rizqi.wideloc.presentation.viewmodel.TrackingViewModel
 import kotlin.math.sqrt
 
 class GenerateDistanceCombinationInteractor : GenerateDistanceCombinationUseCase {
 
     override fun invoke(
         devices: List<DeviceData>,
-        layoutInitialCoordinate: TrackingViewModel.LayoutInitialCoordinate
+        layoutInitialCoordinate: LayoutInitialCoordinate
     ): List<Distance> {
         if (devices.size < 2) return emptyList()
         return devices.indices.flatMap { i ->
@@ -32,7 +32,7 @@ class GenerateDistanceCombinationInteractor : GenerateDistanceCombinationUseCase
         }
     }
 
-    private fun toPoint(device: DeviceData, layout: TrackingViewModel.LayoutInitialCoordinate): Point {
+    private fun toPoint(device: DeviceData, layout: LayoutInitialCoordinate): Point {
         val coord = when (device.id) {
             layout.serverCoordinate.deviceData?.id -> layout.serverCoordinate.coordinate
             layout.anchorCoordinate.deviceData?.id -> layout.anchorCoordinate.coordinate

@@ -86,6 +86,7 @@ dependencies {
     debugImplementation(libs.chucker.debug)
     releaseImplementation(libs.chucker.release)
     implementation(libs.mpandroidchart)
+    implementation(libs.evrencoskun.tableview)
 
     testImplementation(libs.room.testing)
 

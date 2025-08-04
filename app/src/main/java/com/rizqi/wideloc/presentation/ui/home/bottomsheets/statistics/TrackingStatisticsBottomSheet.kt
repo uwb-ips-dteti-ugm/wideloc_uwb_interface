@@ -57,23 +57,7 @@ class TrackingStatisticsBottomSheet : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         childFragmentManager.beginTransaction()
-            .replace(binding.frameTrackingStatisticsBottomSheet.id, StatisticDetailFragment(
-                TrackingStatisticsAdapter.StatisticViewItem(
-                    nameResId = R.string.latency,
-                    iconResId = R.drawable.ic_bell,
-                    unitResId = R.string.ms,
-                    data = StatisticData(
-                        id = "",
-                        name = "Latency",
-                        unit = "ms",
-                        data = listOf(
-                            StatisticDatum(
-                                timestamp = System.currentTimeMillis(),
-                                value = 230.0
-                            ),
-                        )
-                    )
-                ),))
+            .replace(binding.frameTrackingStatisticsBottomSheet.id, TrackingStatisticsFragment())
             .commit()
     }
 

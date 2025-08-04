@@ -1,12 +1,9 @@
 package com.rizqi.wideloc.presentation.ui.home.bottomsheets.setup_tracking.adapters
 
-import android.annotation.SuppressLint
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -14,6 +11,7 @@ import com.google.android.material.textfield.TextInputLayout
 import com.rizqi.wideloc.R
 import com.rizqi.wideloc.databinding.ItemDeviceSetLayoutBinding
 import com.rizqi.wideloc.domain.model.CoordinateTarget
+import com.rizqi.wideloc.domain.model.DeviceCoordinate
 import com.rizqi.wideloc.domain.model.DeviceData
 import com.rizqi.wideloc.presentation.viewmodel.TrackingViewModel
 import java.util.Locale
@@ -21,23 +19,23 @@ import java.util.Locale
 class ClientSetLayoutAdapter(
     private val trackingViewModel: TrackingViewModel,
     private val recalculateContentHeight: () -> Unit,
-) : ListAdapter<TrackingViewModel.DeviceCoordinate, ClientSetLayoutAdapter.ClientLayoutViewHolder>(
+) : ListAdapter<DeviceCoordinate, ClientSetLayoutAdapter.ClientLayoutViewHolder>(
     DIFF_CALLBACK
 ) {
 
 
     companion object {
-        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<TrackingViewModel.DeviceCoordinate>() {
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<DeviceCoordinate>() {
             override fun areItemsTheSame(
-                oldItem: TrackingViewModel.DeviceCoordinate,
-                newItem: TrackingViewModel.DeviceCoordinate
+                oldItem: DeviceCoordinate,
+                newItem: DeviceCoordinate
             ): Boolean {
                 return oldItem.deviceData?.id == newItem.deviceData?.id
             }
 
             override fun areContentsTheSame(
-                oldItem: TrackingViewModel.DeviceCoordinate,
-                newItem: TrackingViewModel.DeviceCoordinate
+                oldItem: DeviceCoordinate,
+                newItem: DeviceCoordinate
             ): Boolean {
                 return oldItem.coordinate.areContentsTheSame(newItem.coordinate)
             }
@@ -47,7 +45,7 @@ class ClientSetLayoutAdapter(
     inner class ClientLayoutViewHolder(val binding: ItemDeviceSetLayoutBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(deviceCoordinate: TrackingViewModel.DeviceCoordinate) {
+        fun bind(deviceCoordinate: DeviceCoordinate) {
             binding.titleTextViewItemDeviceSetLayout.text = deviceCoordinate.deviceData?.name
 
             setupEditableCoordinateField(

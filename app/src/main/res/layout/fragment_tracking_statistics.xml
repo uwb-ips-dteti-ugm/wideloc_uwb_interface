@@ -22,20 +22,47 @@
         android:textColor="@color/text_secondary"
         android:textSize="12sp" />
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
         android:layout_marginTop="16dp"
         >
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/statisticsRecyclerViewFragmentTrackingStatistics"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clipToPadding="false"
-        />
+        android:orientation="vertical"
+        >
 
-    </ScrollView>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/statisticsRecyclerViewFragmentTrackingStatistics"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_regular"
+            android:layout_marginTop="16dp"
+            android:text="@string/device_positions"
+            android:textColor="@color/text_default"
+            android:textSize="14sp" />
+
+        <com.evrencoskun.tableview.TableView
+            android:id="@+id/devicePositionTableViewFragmentTrackingStatistics"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            app:show_horizontal_separator="true"
+            app:show_vertical_separator="true"
+            app:separator_color="@color/border_secondary"
+            />
+
+    </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
 
 </LinearLayout>

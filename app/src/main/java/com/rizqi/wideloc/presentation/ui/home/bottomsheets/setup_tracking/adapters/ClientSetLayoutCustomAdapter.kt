@@ -12,6 +12,7 @@ import com.rizqi.wideloc.databinding.ItemDeviceSetLayoutBinding
 import com.rizqi.wideloc.domain.model.DeviceData
 import com.rizqi.wideloc.presentation.viewmodel.TrackingViewModel
 import com.rizqi.wideloc.domain.model.CoordinateTarget
+import com.rizqi.wideloc.domain.model.DeviceCoordinate
 import com.rizqi.wideloc.utils.toDisplayString
 import java.util.Locale
 
@@ -21,10 +22,10 @@ class ClientSetLayoutCustomAdapter(
     private val recalculateContentHeight: () -> Unit
 ) {
 
-    private val devicesCoordinate = mutableListOf<TrackingViewModel.DeviceCoordinate>()
+    private val devicesCoordinate = mutableListOf<DeviceCoordinate>()
     private val viewHolders = mutableListOf<ClientLayoutViewHolder>()
 
-    fun submitList(newList: List<TrackingViewModel.DeviceCoordinate>) {
+    fun submitList(newList: List<DeviceCoordinate>) {
         val diffCallback = object : DiffUtil.Callback() {
             override fun getOldListSize(): Int = devicesCoordinate.size
             override fun getNewListSize(): Int = newList.size
@@ -83,7 +84,7 @@ class ClientSetLayoutCustomAdapter(
 
     inner class ClientLayoutViewHolder(val binding: ItemDeviceSetLayoutBinding){
 
-        fun bind(deviceCoordinate: TrackingViewModel.DeviceCoordinate) {
+        fun bind(deviceCoordinate: DeviceCoordinate) {
             binding.titleTextViewItemDeviceSetLayout.text = deviceCoordinate.deviceData?.name
 
             setupEditableCoordinateField(

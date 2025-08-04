@@ -30,6 +30,7 @@ desugar = "2.0.4"
 threetenabp = "1.4.4"
 chucker = "4.0.0"
 mpandroidchart = "v3.1.0"
+evren-tableview = "0.8.9.4"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -71,6 +72,7 @@ threetenabp = { module = "com.jakewharton.threetenabp:threetenabp", version.ref 
 chucker-debug = { module = "com.github.chuckerteam.chucker:library", version.ref = "chucker" }
 chucker-release = { module = "com.github.chuckerteam.chucker:library-no-op", version.ref = "chucker" }
 mpandroidchart = { module = "com.github.PhilJay:MPAndroidChart", version.ref = "mpandroidchart" }
+evrencoskun-tableview = { group = "com.github.evrencoskun", name = "TableView", version.ref = "evren-tableview" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
