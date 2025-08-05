@@ -19,4 +19,4 @@ fun CharSequence.isValidHostAddress(): Boolean {
     return regex.matches(this)
 }
 
-fun Double.toDisplayString(): String = String.format("%.5f", this).trimEnd('0').trimEnd('.')
+fun Double.toDisplayString(decimalNumber: Int = 5): String = String.format("%.${decimalNumber}f", this).trimEnd('0').trimEnd('.')

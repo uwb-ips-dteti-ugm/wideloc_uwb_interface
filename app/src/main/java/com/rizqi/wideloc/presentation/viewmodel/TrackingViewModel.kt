@@ -2,6 +2,7 @@ package com.rizqi.wideloc.presentation.viewmodel
 
 import android.content.Context
 import android.net.wifi.WifiInfo
+import android.os.SystemClock
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -17,6 +18,7 @@ import com.rizqi.wideloc.domain.model.DeviceData
 import com.rizqi.wideloc.domain.model.DeviceTrackingHistoryData
 import com.rizqi.wideloc.domain.model.Distance
 import com.rizqi.wideloc.domain.model.DistancesWithTimestamp
+import com.rizqi.wideloc.domain.model.LatencyData
 import com.rizqi.wideloc.domain.model.LayoutInitialCoordinate
 import com.rizqi.wideloc.domain.model.MapData
 import com.rizqi.wideloc.domain.model.MapTransform
@@ -31,6 +33,8 @@ import com.rizqi.wideloc.domain.repository.DeviceRepository
 import com.rizqi.wideloc.domain.repository.MapRepository
 import com.rizqi.wideloc.presentation.ui.connect_via_wifi.adapters.WifiInformation
 import com.rizqi.wideloc.presentation.ui.home.bottomsheets.statistics.adapters.TrackingStatisticsAdapter
+import com.rizqi.wideloc.usecase.CalculateLatencyInteractor
+import com.rizqi.wideloc.usecase.CalculateLatencyUseCase
 import com.rizqi.wideloc.usecase.GenerateDistanceCombinationInteractor
 import com.rizqi.wideloc.usecase.GenerateDistanceCombinationUseCase
 import com.rizqi.wideloc.usecase.GenerateIDInteractor
@@ -58,6 +62,7 @@ class TrackingViewModel @Inject constructor(
     private val generateIDUseCase: GenerateIDUseCase = GenerateIDInteractor()
     private val generateDistanceCombination: GenerateDistanceCombinationUseCase =
         GenerateDistanceCombinationInteractor()
+    private val calculateLatencyUseCase: CalculateLatencyUseCase = CalculateLatencyInteractor()
 
     private val _session = MutableLiveData<TrackingSessionData>()
     val session: LiveData<TrackingSessionData> get() = _session
@@ -127,7 +132,18 @@ class TrackingViewModel @Inject constructor(
 
         _statisticsGroup.postValue(
             StatisticsGroup(
-                positions = emptyList()
+                latency = TrackingStatisticsAdapter.StatisticViewItem(
+                    nameResId = R.string.latency,
+                    name = "Latency",
+                    iconResId = R.drawable.ic_clock_regular_full,
+                    unitResId = R.string.ms,
+                    data = StatisticData(
+                        id = generateIDUseCase.invoke(),
+                        name = "Latency",
+                        unit = "ms",
+                        data = mutableListOf()
+                    )
+                )
             )
         )
 
@@ -418,15 +434,16 @@ class TrackingViewModel @Inject constructor(
                 timestamp = 0
             )
         }
+
         _session.value = TrackingSessionData(
             sessionId = 0,
-            recordedDistances = listOf(
+            recordedDistances = mutableListOf(
                 DistancesWithTimestamp(
                     timestamp = 0,
                     distances = distances
                 )
             ),
-            deviceTrackingHistoryData = deviceTrackingHistories,
+            deviceTrackingHistoryData = deviceTrackingHistories.toMutableList(),
             date = LocalDateTime.now()
         )
 
@@ -454,6 +471,9 @@ class TrackingViewModel @Inject constructor(
                     _observeResult.value = Result.Loading()
 
                     try {
+
+                        val startTime = SystemClock.elapsedRealtimeNanos()
+
                         val updatedSession = getUpdatedPositionUseCase.invoke(
                             session = sessionSnapshot,
                             server = server,
@@ -461,6 +481,14 @@ class TrackingViewModel @Inject constructor(
                             layoutInitialCoordinate = layoutInitialCoordinate.value,
                             mapUnit = mapTransform.value?.unit ?: CM
                         )
+
+                        val endTime = SystemClock.elapsedRealtimeNanos()
+
+//                        Latency
+                        val newLatency = calculateLatencyUseCase.invoke(startTime, endTime)
+                        updatedSession.latencies.add(newLatency)
+                        updateStatisticGroup(newLatency)
+
                         _session.value = updatedSession
                         _observeResult.value = Result.Success(updatedSession)
                     } catch (e: Exception) {
@@ -493,6 +521,21 @@ class TrackingViewModel @Inject constructor(
         observeJob = null
         _recordingState.value = RecordingState.END
         clearAllData()
+    }
+
+    private fun updateStatisticGroup(newLatency: LatencyData) {
+        val latencyViewItem = statisticsGroup.value?.latency ?: return
+        val latencyDatum = StatisticDatum(
+            timestamp = newLatency.timestamp,
+            value = newLatency.latency
+        )
+        latencyViewItem.data.data.add(latencyDatum)
+
+        _statisticsGroup.postValue(
+            statisticsGroup.value?.copy(
+                latency = latencyViewItem
+            )
+        )
     }
 
     private fun clearAllData(){
@@ -534,7 +577,11 @@ class TrackingViewModel @Inject constructor(
     }
 
     data class StatisticsGroup (
-        val positions: List<TrackingStatisticsAdapter.StatisticViewItem>,
-    )
+        val latency: TrackingStatisticsAdapter.StatisticViewItem,
+    ) {
+        fun getListOfAll() = listOf(
+            latency
+        )
+    }
 
 }

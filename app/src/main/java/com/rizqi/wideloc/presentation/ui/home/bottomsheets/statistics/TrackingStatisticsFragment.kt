@@ -36,9 +36,9 @@ class TrackingStatisticsFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        trackingStatisticsAdapter = TrackingStatisticsAdapter(listOf()) { item ->
+        trackingStatisticsAdapter = TrackingStatisticsAdapter() { item ->
             (parentFragment as? TrackingStatisticsBottomSheet)?.switchToFragment(
-                StatisticDetailFragment(item)
+                StatisticDetailFragment(item.data.id)
             )
         }
         initDevicePositionsTable()
@@ -50,6 +50,9 @@ class TrackingStatisticsFragment :
             val lastDistances = session.recordedDistances.last().distances
             val timestamp = session.deviceTrackingHistoryData.first().timestamp
             updateDevicePositionsTable(lastPoints, lastDistances, timestamp)
+        }
+        trackingViewModel.statisticsGroup.observe(viewLifecycleOwner){ statisticGroup ->
+            trackingStatisticsAdapter.submitList(statisticGroup.getListOfAll())
         }
 
         binding.statisticsRecyclerViewFragmentTrackingStatistics.apply {

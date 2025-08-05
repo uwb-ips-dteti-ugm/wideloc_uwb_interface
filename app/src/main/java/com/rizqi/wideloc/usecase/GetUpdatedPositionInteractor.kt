@@ -141,10 +141,11 @@ class GetUpdatedPositionInteractor @Inject constructor(
             )
         }
         Timber.tag(TAG).d("[11] updated device history: \n${gson.toJson(updatedDeviceHistory)}")
-        return session.copy(
-            recordedDistances = session.recordedDistances + newDistanceRecord,
-            deviceTrackingHistoryData = updatedDeviceHistory
-        )
+        session.apply {
+            recordedDistances.add(newDistanceRecord)
+            deviceTrackingHistoryData = updatedDeviceHistory.toMutableList()
+        }
+        return session
     }
 
     // helpers

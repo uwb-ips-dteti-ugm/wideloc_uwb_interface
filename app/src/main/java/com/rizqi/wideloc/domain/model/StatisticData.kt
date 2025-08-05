@@ -4,5 +4,5 @@ data class StatisticData(
     val id: String,
     val name: String,
     val unit: String,
-    val data: List<StatisticDatum>
+    val data: MutableList<StatisticDatum>
 )

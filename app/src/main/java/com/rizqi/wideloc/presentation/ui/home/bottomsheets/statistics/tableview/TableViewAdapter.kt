@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import com.evrencoskun.tableview.adapter.AbstractTableAdapter
 import com.evrencoskun.tableview.adapter.recyclerview.holder.AbstractViewHolder
+import com.rizqi.wideloc.R
 import com.rizqi.wideloc.databinding.TableViewCellLayoutBinding
 import com.rizqi.wideloc.databinding.TableViewColumnHeaderLayoutBinding
 import com.rizqi.wideloc.databinding.TableViewCornerLayoutBinding
@@ -38,14 +39,16 @@ class TableViewAdapter : AbstractTableAdapter<ColumnHeader, RowHeader, Cell>() {
 
 
 
-    inner  class ColumnViewHolder(val binding: TableViewColumnHeaderLayoutBinding) : AbstractViewHolder(binding.root){
+    inner class ColumnViewHolder(val binding: TableViewColumnHeaderLayoutBinding) : AbstractViewHolder(binding.root) {
 
-        fun bind(columnHeader: ColumnHeader?){
+        fun bind(columnHeader: ColumnHeader?) {
             binding.columnHeaderTextView.text = columnHeader?.value
             binding.columnHeaderContainer.layoutParams.width = LinearLayout.LayoutParams.WRAP_CONTENT
             binding.columnHeaderContainer.requestLayout()
+            binding.root.setBackgroundResource(R.color.cell_background_color)
         }
     }
+
 
     override fun onCreateColumnHeaderViewHolder(
         parent: ViewGroup,
@@ -71,6 +74,7 @@ class TableViewAdapter : AbstractTableAdapter<ColumnHeader, RowHeader, Cell>() {
             binding.rowHeaderTextView.text = rowHeader?.value
 //            binding.rowHeaderContainer.layoutParams.width = LinearLayout.LayoutParams.WRAP_CONTENT
 //            binding.rowHeaderContainer.requestLayout()
+            binding.root.setBackgroundResource(R.color.cell_background_color)
         }
     }
 
