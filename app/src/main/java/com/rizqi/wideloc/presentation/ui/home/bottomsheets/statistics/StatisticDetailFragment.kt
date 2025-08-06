@@ -26,6 +26,7 @@ import com.rizqi.wideloc.utils.formatTimestamp
 
 class StatisticDetailFragment(
     private val statisticDataId: String,
+    private val statisticName: String,
 ) : BaseFragment<FragmentStatisticDetailBinding>(FragmentStatisticDetailBinding::inflate) {
 
     private val trackingViewModel: TrackingViewModel by activityViewModels()
@@ -54,6 +55,7 @@ class StatisticDetailFragment(
             )
         }
 
+        binding.statisticTitleTextViewFragmentStatisticDetails.text = statisticName
         binding.historyRecyclerViewFragmentStatisticDetail.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = statisticHistoryAdapter

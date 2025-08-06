@@ -7,5 +7,6 @@ data class TrackingSessionData(
     val date: LocalDateTime = LocalDateTime.now(),
     val recordedDistances: MutableList<DistancesWithTimestamp> = mutableListOf(),
     var deviceTrackingHistoryData: MutableList<DeviceTrackingHistoryData> = mutableListOf(),
-    var latencies: MutableList<LatencyData> = mutableListOf()
+    var latencies: MutableList<LatencyData> = mutableListOf(),
+    var powerConsumptions: MutableList<PowerConsumptionData> = mutableListOf(),
 )

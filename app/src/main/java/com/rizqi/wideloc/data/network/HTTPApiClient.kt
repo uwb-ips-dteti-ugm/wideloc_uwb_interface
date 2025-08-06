@@ -34,10 +34,21 @@ class HTTPApiClient(private val baseUrl: String = Constants.ESP_BASE_URL) {
             connection.readTimeout = 5000
 
             val responseCode = connection.responseCode
-            val responseText = connection.inputStream.bufferedReader().use(BufferedReader::readText)
+
+            val startTime = System.currentTimeMillis()
+            val responseBytes = connection.inputStream.readBytes()
+            val durationMs = System.currentTimeMillis() - startTime
+            val responseText = responseBytes.toString(Charsets.UTF_8)
+
+            val dataSize = responseBytes.size
+            val durationSec = durationMs / 1000.0
+            val throughputBps = (dataSize * 8) / durationSec
+            val throughputMbps = throughputBps / (1024 * 1024)
 
             Log.d(TAG, "✅ [GET] Response Code: $responseCode")
             Log.d(TAG, "📥 [GET] Response Body: $responseText")
+            Log.d(TAG, "📊 [GET] Throughput: %.2f Mbps".format(throughputMbps))
+
 
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 responseText

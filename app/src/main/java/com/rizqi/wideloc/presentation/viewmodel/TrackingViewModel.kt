@@ -1,7 +1,10 @@
 package com.rizqi.wideloc.presentation.viewmodel
 
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.net.wifi.WifiInfo
+import android.os.BatteryManager
 import android.os.SystemClock
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
@@ -25,6 +28,7 @@ import com.rizqi.wideloc.domain.model.MapTransform
 import com.rizqi.wideloc.domain.model.MapUnit
 import com.rizqi.wideloc.domain.model.MapUnit.*
 import com.rizqi.wideloc.domain.model.Point
+import com.rizqi.wideloc.domain.model.PowerConsumptionData
 import com.rizqi.wideloc.domain.model.StatisticData
 import com.rizqi.wideloc.domain.model.StatisticDatum
 import com.rizqi.wideloc.domain.model.TrackingSessionData
@@ -35,6 +39,8 @@ import com.rizqi.wideloc.presentation.ui.connect_via_wifi.adapters.WifiInformati
 import com.rizqi.wideloc.presentation.ui.home.bottomsheets.statistics.adapters.TrackingStatisticsAdapter
 import com.rizqi.wideloc.usecase.CalculateLatencyInteractor
 import com.rizqi.wideloc.usecase.CalculateLatencyUseCase
+import com.rizqi.wideloc.usecase.CalculatePowerConsumptionInteractor
+import com.rizqi.wideloc.usecase.CalculatePowerConsumptionUseCase
 import com.rizqi.wideloc.usecase.GenerateDistanceCombinationInteractor
 import com.rizqi.wideloc.usecase.GenerateDistanceCombinationUseCase
 import com.rizqi.wideloc.usecase.GenerateIDInteractor
@@ -63,6 +69,7 @@ class TrackingViewModel @Inject constructor(
     private val generateDistanceCombination: GenerateDistanceCombinationUseCase =
         GenerateDistanceCombinationInteractor()
     private val calculateLatencyUseCase: CalculateLatencyUseCase = CalculateLatencyInteractor()
+    private val calculatePowerConsumptionUseCase: CalculatePowerConsumptionUseCase = CalculatePowerConsumptionInteractor()
 
     private val _session = MutableLiveData<TrackingSessionData>()
     val session: LiveData<TrackingSessionData> get() = _session
@@ -141,6 +148,18 @@ class TrackingViewModel @Inject constructor(
                         id = generateIDUseCase.invoke(),
                         name = "Latency",
                         unit = "ms",
+                        data = mutableListOf()
+                    )
+                ),
+                power = TrackingStatisticsAdapter.StatisticViewItem(
+                    nameResId = R.string.power_consumption,
+                    name = "Power Consumption",
+                    iconResId = R.drawable.ic_battery_50,
+                    unitResId = R.string.mwatt,
+                    data = StatisticData(
+                        id = generateIDUseCase.invoke(),
+                        name = "Power Consumption",
+                        unit = "mWatt",
                         data = mutableListOf()
                     )
                 )
@@ -473,6 +492,7 @@ class TrackingViewModel @Inject constructor(
                     try {
 
                         val startTime = SystemClock.elapsedRealtimeNanos()
+                        val startBatteryLevel = getBatteryLevel(context)
 
                         val updatedSession = getUpdatedPositionUseCase.invoke(
                             session = sessionSnapshot,
@@ -483,11 +503,17 @@ class TrackingViewModel @Inject constructor(
                         )
 
                         val endTime = SystemClock.elapsedRealtimeNanos()
+                        val endBatteryLevel = getBatteryLevel(context)
 
 //                        Latency
                         val newLatency = calculateLatencyUseCase.invoke(startTime, endTime)
                         updatedSession.latencies.add(newLatency)
-                        updateStatisticGroup(newLatency)
+
+//                        Power Consumption
+                        val newPowerConsumption = calculatePowerConsumptionUseCase.invoke(context, startTime, endTime, startBatteryLevel, endBatteryLevel)
+                        updatedSession.powerConsumptions.add(newPowerConsumption)
+
+                        updateStatisticGroup(newLatency, newPowerConsumption)
 
                         _session.value = updatedSession
                         _observeResult.value = Result.Success(updatedSession)
@@ -523,7 +549,12 @@ class TrackingViewModel @Inject constructor(
         clearAllData()
     }
 
-    private fun updateStatisticGroup(newLatency: LatencyData) {
+    private fun getBatteryLevel(context: Context): Int {
+        val intent = context.registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
+        return intent?.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) ?: -1
+    }
+
+    private fun updateStatisticGroup(newLatency: LatencyData, newPowerConsumption: PowerConsumptionData) {
         val latencyViewItem = statisticsGroup.value?.latency ?: return
         val latencyDatum = StatisticDatum(
             timestamp = newLatency.timestamp,
@@ -531,9 +562,17 @@ class TrackingViewModel @Inject constructor(
         )
         latencyViewItem.data.data.add(latencyDatum)
 
+        val powerConsumptionViewItem = statisticsGroup.value?.power ?: return
+        val powerConsumption = StatisticDatum(
+            timestamp = newPowerConsumption.timestamp,
+            value = newPowerConsumption.powerMilliWatts
+        )
+        powerConsumptionViewItem.data.data.add(powerConsumption)
+
         _statisticsGroup.postValue(
             statisticsGroup.value?.copy(
-                latency = latencyViewItem
+                latency = latencyViewItem,
+                power = powerConsumptionViewItem,
             )
         )
     }
@@ -578,9 +617,10 @@ class TrackingViewModel @Inject constructor(
 
     data class StatisticsGroup (
         val latency: TrackingStatisticsAdapter.StatisticViewItem,
+        val power: TrackingStatisticsAdapter.StatisticViewItem,
     ) {
         fun getListOfAll() = listOf(
-            latency
+            latency, power
         )
     }
 

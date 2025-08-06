@@ -38,7 +38,10 @@ class TrackingStatisticsFragment :
 
         trackingStatisticsAdapter = TrackingStatisticsAdapter() { item ->
             (parentFragment as? TrackingStatisticsBottomSheet)?.switchToFragment(
-                StatisticDetailFragment(item.data.id)
+                StatisticDetailFragment(
+                    item.data.id,
+                    item.nameResId?.let { getString(it) } ?: item.name
+                )
             )
         }
         initDevicePositionsTable()
