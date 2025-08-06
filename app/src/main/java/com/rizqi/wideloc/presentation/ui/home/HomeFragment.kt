@@ -20,6 +20,7 @@ import com.rizqi.wideloc.presentation.ui.home.bottomsheets.statistics.TrackingSt
 import com.rizqi.wideloc.presentation.viewmodel.TrackingViewModel
 import com.rizqi.wideloc.presentation.viewmodel.TrackingViewModel.RecordingState.*
 import com.rizqi.wideloc.utils.toDisplayString
+import com.rizqi.wideloc.utils.toTimerString
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -100,6 +101,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                     it
                 )
             }
+        }
+        trackingViewModel.elapsedTime.observe(viewLifecycleOwner){elapsedTime ->
+            binding.elapsedTimeTextViewFragmentHouse.text = elapsedTime.toTimerString()
         }
 
         binding.startRecordButtonHome.setOnClickListener {

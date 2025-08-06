@@ -14,6 +14,43 @@
         android:background="@android:color/white"
         />
 
+        <LinearLayout
+            android:id="@+id/elapsedLayoutFragmentHome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/rounded_white_background"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="8dp"
+            android:textColor="@android:color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/elapsed_time"
+                android:textColor="@color/text_default"
+                android:fontFamily="@font/roboto_regular"
+                android:textSize="12sp"
+                />
+
+            <TextView
+                android:id="@+id/elapsedTimeTextViewFragmentHouse"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/connected"
+                android:textColor="@color/text_default"
+                android:fontFamily="@font/roboto_medium"
+                android:textSize="12sp"
+                android:layout_marginStart="2dp"
+                />
+
+        </LinearLayout>
+
     <!--    <RelativeLayout-->
 <!--        android:layout_width="match_parent"-->
 <!--        android:layout_height="match_parent">-->

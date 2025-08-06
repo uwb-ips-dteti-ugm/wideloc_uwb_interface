@@ -69,7 +69,8 @@ class TrackingViewModel @Inject constructor(
     private val generateDistanceCombination: GenerateDistanceCombinationUseCase =
         GenerateDistanceCombinationInteractor()
     private val calculateLatencyUseCase: CalculateLatencyUseCase = CalculateLatencyInteractor()
-    private val calculatePowerConsumptionUseCase: CalculatePowerConsumptionUseCase = CalculatePowerConsumptionInteractor()
+    private val calculatePowerConsumptionUseCase: CalculatePowerConsumptionUseCase =
+        CalculatePowerConsumptionInteractor()
 
     private val _session = MutableLiveData<TrackingSessionData>()
     val session: LiveData<TrackingSessionData> get() = _session
@@ -122,8 +123,13 @@ class TrackingViewModel @Inject constructor(
 
     private var observeJob: Job? = null
 
+    private var elapsedStartTime: Long = 0L
+    private var totalElapsedTimeMillis: Long = 0L
+    private val _elapsedTime = MutableLiveData<Long>(0L)
+    val elapsedTime: LiveData<Long> get() = _elapsedTime
+
     private val _statisticsGroup = MutableLiveData<StatisticsGroup>()
-    val statisticsGroup : LiveData<StatisticsGroup> get() = _statisticsGroup
+    val statisticsGroup: LiveData<StatisticsGroup> get() = _statisticsGroup
 
     init {
         viewModelScope.launch {
@@ -138,32 +144,7 @@ class TrackingViewModel @Inject constructor(
         }
 
         _statisticsGroup.postValue(
-            StatisticsGroup(
-                latency = TrackingStatisticsAdapter.StatisticViewItem(
-                    nameResId = R.string.latency,
-                    name = "Latency",
-                    iconResId = R.drawable.ic_clock_regular_full,
-                    unitResId = R.string.ms,
-                    data = StatisticData(
-                        id = generateIDUseCase.invoke(),
-                        name = "Latency",
-                        unit = "ms",
-                        data = mutableListOf()
-                    )
-                ),
-                power = TrackingStatisticsAdapter.StatisticViewItem(
-                    nameResId = R.string.power_consumption,
-                    name = "Power Consumption",
-                    iconResId = R.drawable.ic_battery_50,
-                    unitResId = R.string.mwatt,
-                    data = StatisticData(
-                        id = generateIDUseCase.invoke(),
-                        name = "Power Consumption",
-                        unit = "mWatt",
-                        data = mutableListOf()
-                    )
-                )
-            )
+            initStatisticGroup()
         )
 
     }
@@ -208,9 +189,30 @@ class TrackingViewModel @Inject constructor(
 
     fun validateSelectedDevices() {
         when {
-            selectedServer.value == null -> _selectDevicesResult.postValue(Result.Error(context.getString(R.string.select_a_server_first)))
-            selectedAnchor == null -> _selectDevicesResult.postValue(Result.Error(context.getString(R.string.select_a_anchor_first)))
-            selectedClients.isEmpty() -> _selectDevicesResult.postValue(Result.Error(context.getString(R.string.select_clients_first)))
+            selectedServer.value == null -> _selectDevicesResult.postValue(
+                Result.Error(
+                    context.getString(
+                        R.string.select_a_server_first
+                    )
+                )
+            )
+
+            selectedAnchor == null -> _selectDevicesResult.postValue(
+                Result.Error(
+                    context.getString(
+                        R.string.select_a_anchor_first
+                    )
+                )
+            )
+
+            selectedClients.isEmpty() -> _selectDevicesResult.postValue(
+                Result.Error(
+                    context.getString(
+                        R.string.select_clients_first
+                    )
+                )
+            )
+
             else -> _selectDevicesResult.postValue(Result.Success(true))
         }
     }
@@ -232,6 +234,7 @@ class TrackingViewModel @Inject constructor(
                     serverSSID
                 )
             }
+
             else -> null
         }
     }
@@ -482,12 +485,15 @@ class TrackingViewModel @Inject constructor(
             _recordingState.value = RecordingState.RESUMED
 
             var timesExecuted = 0
+            elapsedStartTime = SystemClock.elapsedRealtime()
 
             while (isActive && (repeatCount == null || timesExecuted < repeatCount)) {
                 val sessionSnapshot = session.value ?: return@launch
 
                 if (recordingState.value == RecordingState.RESUMED) {
                     _observeResult.value = Result.Loading()
+                    _elapsedTime.value =
+                        totalElapsedTimeMillis + (SystemClock.elapsedRealtime() - elapsedStartTime)
 
                     try {
 
@@ -510,7 +516,13 @@ class TrackingViewModel @Inject constructor(
                         updatedSession.latencies.add(newLatency)
 
 //                        Power Consumption
-                        val newPowerConsumption = calculatePowerConsumptionUseCase.invoke(context, startTime, endTime, startBatteryLevel, endBatteryLevel)
+                        val newPowerConsumption = calculatePowerConsumptionUseCase.invoke(
+                            context,
+                            startTime,
+                            endTime,
+                            startBatteryLevel,
+                            endBatteryLevel
+                        )
                         updatedSession.powerConsumptions.add(newPowerConsumption)
 
                         updateStatisticGroup(newLatency, newPowerConsumption)
@@ -535,17 +547,30 @@ class TrackingViewModel @Inject constructor(
     }
 
     fun pauseObserveTWRData() {
-        _recordingState.value = RecordingState.PAUSED
+        if (_recordingState.value == RecordingState.RESUMED) {
+            _recordingState.value = RecordingState.PAUSED
+            totalElapsedTimeMillis += SystemClock.elapsedRealtime() - elapsedStartTime
+        }
     }
 
     fun resumeObserveTWRData() {
-        _recordingState.value = RecordingState.RESUMED
+        if (_recordingState.value == RecordingState.PAUSED) {
+            _recordingState.value = RecordingState.RESUMED
+            elapsedStartTime = SystemClock.elapsedRealtime()
+        }
     }
 
     fun stopObserveTWRData() {
         observeJob?.cancel()
         observeJob = null
+
+        if (_recordingState.value == RecordingState.RESUMED) {
+            totalElapsedTimeMillis += SystemClock.elapsedRealtime() - elapsedStartTime
+        }
+
         _recordingState.value = RecordingState.END
+        _elapsedTime.value = totalElapsedTimeMillis
+
         clearAllData()
     }
 
@@ -554,7 +579,10 @@ class TrackingViewModel @Inject constructor(
         return intent?.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) ?: -1
     }
 
-    private fun updateStatisticGroup(newLatency: LatencyData, newPowerConsumption: PowerConsumptionData) {
+    private fun updateStatisticGroup(
+        newLatency: LatencyData,
+        newPowerConsumption: PowerConsumptionData
+    ) {
         val latencyViewItem = statisticsGroup.value?.latency ?: return
         val latencyDatum = StatisticDatum(
             timestamp = newLatency.timestamp,
@@ -577,7 +605,34 @@ class TrackingViewModel @Inject constructor(
         )
     }
 
-    private fun clearAllData(){
+    private fun initStatisticGroup() = StatisticsGroup(
+        latency = TrackingStatisticsAdapter.StatisticViewItem(
+            nameResId = R.string.latency,
+            name = "Latency",
+            iconResId = R.drawable.ic_clock_regular_full,
+            unitResId = R.string.ms,
+            data = StatisticData(
+                id = generateIDUseCase.invoke(),
+                name = "Latency",
+                unit = "ms",
+                data = mutableListOf()
+            )
+        ),
+        power = TrackingStatisticsAdapter.StatisticViewItem(
+            nameResId = R.string.power_consumption,
+            name = "Power Consumption",
+            iconResId = R.drawable.ic_battery_50,
+            unitResId = R.string.mwatt,
+            data = StatisticData(
+                id = generateIDUseCase.invoke(),
+                name = "Power Consumption",
+                unit = "mWatt",
+                data = mutableListOf()
+            )
+        )
+    )
+
+    private fun clearAllData() {
         _session.value = TrackingSessionData()
         _observeResult.value = null
         _selectDevicesResult.value = Result.Loading()
@@ -594,6 +649,10 @@ class TrackingViewModel @Inject constructor(
         _saveDeviceLayout.value = Result.Loading()
         observeJob = null
         _recordingState.value = RecordingState.NOT_STARTED
+        _statisticsGroup.value = initStatisticGroup()
+        elapsedStartTime = 0L
+        totalElapsedTimeMillis = 0L
+        _elapsedTime.value = 0L
     }
 
     data class SaveMapError(
@@ -615,7 +674,7 @@ class TrackingViewModel @Inject constructor(
         END,
     }
 
-    data class StatisticsGroup (
+    data class StatisticsGroup(
         val latency: TrackingStatisticsAdapter.StatisticViewItem,
         val power: TrackingStatisticsAdapter.StatisticViewItem,
     ) {
