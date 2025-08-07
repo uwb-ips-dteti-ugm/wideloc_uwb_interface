@@ -9,4 +9,5 @@ data class TrackingSessionData(
     var deviceTrackingHistoryData: MutableList<DeviceTrackingHistoryData> = mutableListOf(),
     var latencies: MutableList<LatencyData> = mutableListOf(),
     var powerConsumptions: MutableList<PowerConsumptionData> = mutableListOf(),
+    var elapsedTime: Long = 0,
 )

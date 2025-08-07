@@ -6,6 +6,8 @@ import com.rizqi.wideloc.data.local.MapDataSource
 import com.rizqi.wideloc.data.local.MapDataSourceImpl
 import com.rizqi.wideloc.data.local.TWRDataSource
 import com.rizqi.wideloc.data.local.TWRDataSourceImpl
+import com.rizqi.wideloc.data.local.TrackingSessionDataSource
+import com.rizqi.wideloc.data.local.TrackingSessionDataSourceImpl
 import com.rizqi.wideloc.data.websocket.WideLocSocketDataSource
 import com.rizqi.wideloc.data.websocket.WideLocSocketDataSourceImpl
 import dagger.Binds
@@ -28,5 +30,8 @@ abstract class DataSourceModule {
 
     @Binds
     abstract fun bindMapDataSource(mapDataSourceImpl: MapDataSourceImpl): MapDataSource
+
+    @Binds
+    abstract fun bindTrackingSessionDataSource(trackingSessionDataSourceImpl: TrackingSessionDataSourceImpl): TrackingSessionDataSource
 
 }

@@ -3,10 +3,12 @@ package com.rizqi.wideloc.di
 import com.rizqi.wideloc.data.repository.DeviceRepositoryImpl
 import com.rizqi.wideloc.data.repository.MapRepositoryImpl
 import com.rizqi.wideloc.data.repository.TrackingRepositoryImpl
+import com.rizqi.wideloc.data.repository.TrackingSessionRepositoryImpl
 import com.rizqi.wideloc.data.repository.UWBDeviceRepositoryImpl
 import com.rizqi.wideloc.domain.repository.DeviceRepository
 import com.rizqi.wideloc.domain.repository.MapRepository
 import com.rizqi.wideloc.domain.repository.TrackingRepository
+import com.rizqi.wideloc.domain.repository.TrackingSessionRepository
 import com.rizqi.wideloc.domain.repository.UWBDeviceRepository
 import dagger.Binds
 import dagger.Module
@@ -29,4 +31,8 @@ abstract class RepositoryModule {
 
     @Binds
     abstract fun bindMapRepository(repositoryImpl: MapRepositoryImpl): MapRepository
+
+
+    @Binds
+    abstract fun bindTrackingSessionRepository(repositoryImpl: TrackingSessionRepositoryImpl): TrackingSessionRepository
 }

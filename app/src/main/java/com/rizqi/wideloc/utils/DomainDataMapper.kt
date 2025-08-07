@@ -5,9 +5,17 @@ import com.rizqi.wideloc.data.local.entity.BluetoothProtocolEntity
 import com.rizqi.wideloc.data.local.entity.DeviceEntity
 import com.rizqi.wideloc.data.local.entity.DeviceOffsetEntity
 import com.rizqi.wideloc.data.local.entity.DeviceProtocol.*
+import com.rizqi.wideloc.data.local.entity.DeviceTrackingHistoryEntity
+import com.rizqi.wideloc.data.local.entity.DistanceEntity
+import com.rizqi.wideloc.data.local.entity.DistancesWithTimestampEntity
+import com.rizqi.wideloc.data.local.entity.LatencyEntity
 import com.rizqi.wideloc.data.local.entity.MapEntity
+import com.rizqi.wideloc.data.local.entity.PointEntity
+import com.rizqi.wideloc.data.local.entity.PowerConsumptionEntity
 import com.rizqi.wideloc.data.local.entity.TWRDataEntity
+import com.rizqi.wideloc.data.local.entity.TrackingSessionEntity
 import com.rizqi.wideloc.data.local.entity.UWBConfigEntity
+import com.rizqi.wideloc.data.local.entity.VariableEntity
 import com.rizqi.wideloc.data.local.entity.WiFiProtocolEntity
 import com.rizqi.wideloc.data.network.dto.ClientDto
 import com.rizqi.wideloc.data.network.dto.TWRDataDto
@@ -20,10 +28,16 @@ import com.rizqi.wideloc.domain.model.CalibrationData
 import com.rizqi.wideloc.domain.model.ClientData
 import com.rizqi.wideloc.domain.model.DeviceData
 import com.rizqi.wideloc.domain.model.DeviceOffsetData
+import com.rizqi.wideloc.domain.model.DeviceTrackingHistoryData
+import com.rizqi.wideloc.domain.model.DistancesWithTimestamp
+import com.rizqi.wideloc.domain.model.LatencyData
 import com.rizqi.wideloc.domain.model.MapData
+import com.rizqi.wideloc.domain.model.Point
+import com.rizqi.wideloc.domain.model.PowerConsumptionData
 import com.rizqi.wideloc.domain.model.ProtocolData
 import com.rizqi.wideloc.domain.model.TWRData
 import com.rizqi.wideloc.domain.model.TrackingData
+import com.rizqi.wideloc.domain.model.TrackingSessionData
 import com.rizqi.wideloc.domain.model.UWBConfigData
 import com.rizqi.wideloc.domain.model.WifiConfigData
 import com.rizqi.wideloc.domain.model.WifiConnectData
@@ -199,4 +213,53 @@ object DomainDataMapper {
         name = this.name,
         imageUri = this.imageUri
     )
+
+    fun TrackingSessionData.toEntity(): TrackingSessionEntity = TrackingSessionEntity(
+        sessionId = this.sessionId,
+        date = this.date,
+        elapsedTime = this.elapsedTime
+    )
+
+    fun LatencyData.toEntity(sessionId: Int) = LatencyEntity(
+        sessionId = sessionId,
+        timestamp = timestamp,
+        latency = latency
+    )
+
+    fun PowerConsumptionData.toEntity(sessionId: Int) = PowerConsumptionEntity(
+        sessionId = sessionId,
+        powerMilliWatts = powerMilliWatts,
+        currentMicroAmps = currentMicroAmps,
+        startBatteryLevel = startBatteryLevel,
+        endBatteryLevel = endBatteryLevel,
+        batteryDrop = batteryDrop,
+        durationInMilliSeconds = durationInMilliSeconds,
+        timestamp = timestamp
+    )
+
+    fun DeviceTrackingHistoryData.toEntity(sessionId: Int) = DeviceTrackingHistoryEntity(
+        sessionId = sessionId,
+        deviceId = deviceData.id,
+        timestamp = timestamp
+    )
+
+    fun Point.toEntity(): PointEntity = PointEntity(
+        id = this.id,
+        x = VariableEntity(x.id, x.value),
+        y = VariableEntity(y.id, y.value)
+    )
+
+    fun DistancesWithTimestamp.toEntities(sessionId: Int): Pair<DistancesWithTimestampEntity, List<DistanceEntity>> {
+        val group = DistancesWithTimestampEntity(sessionId = sessionId, timestamp = timestamp)
+        return group to distances.map {
+            DistanceEntity(
+                id = it.id,
+                groupId = 0, // to be set after group insert
+                point1Id = it.point1.id,
+                point2Id = it.point2.id,
+                distance = it.distance,
+                timestamp = it.timestamp
+            )
+        }
+    }
 }

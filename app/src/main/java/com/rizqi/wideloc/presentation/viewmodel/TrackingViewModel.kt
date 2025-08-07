@@ -35,6 +35,7 @@ import com.rizqi.wideloc.domain.model.TrackingSessionData
 import com.rizqi.wideloc.domain.model.Variable
 import com.rizqi.wideloc.domain.repository.DeviceRepository
 import com.rizqi.wideloc.domain.repository.MapRepository
+import com.rizqi.wideloc.domain.repository.TrackingSessionRepository
 import com.rizqi.wideloc.presentation.ui.connect_via_wifi.adapters.WifiInformation
 import com.rizqi.wideloc.presentation.ui.home.bottomsheets.statistics.adapters.TrackingStatisticsAdapter
 import com.rizqi.wideloc.usecase.CalculateLatencyInteractor
@@ -63,6 +64,7 @@ class TrackingViewModel @Inject constructor(
     private val getUpdatedPositionUseCase: GetUpdatedPositionUseCase,
     private val deviceRepository: DeviceRepository,
     private val mapRepository: MapRepository,
+    private val trackingSessionRepository: TrackingSessionRepository
 ) : ViewModel() {
 
     private val generateIDUseCase: GenerateIDUseCase = GenerateIDInteractor()
@@ -457,19 +459,21 @@ class TrackingViewModel @Inject constructor(
             )
         }
 
-        _session.value = TrackingSessionData(
-            sessionId = 0,
-            recordedDistances = mutableListOf(
-                DistancesWithTimestamp(
-                    timestamp = 0,
-                    distances = distances
-                )
-            ),
-            deviceTrackingHistoryData = deviceTrackingHistories.toMutableList(),
-            date = LocalDateTime.now()
-        )
+        viewModelScope.launch {
+            _session.value = TrackingSessionData(
+                sessionId = trackingSessionRepository.getNextSessionId(),
+                recordedDistances = mutableListOf(
+                    DistancesWithTimestamp(
+                        timestamp = 0,
+                        distances = distances
+                    )
+                ),
+                deviceTrackingHistoryData = deviceTrackingHistories.toMutableList(),
+                date = LocalDateTime.now()
+            )
 
-        startObserveTWRData()
+            startObserveTWRData()
+        }
     }
 
     private fun startObserveTWRData(repeatCount: Int? = null) {
@@ -570,8 +574,20 @@ class TrackingViewModel @Inject constructor(
 
         _recordingState.value = RecordingState.END
         _elapsedTime.value = totalElapsedTimeMillis
+        _session.value = session.value?.copy(
+            elapsedTime = elapsedTime.value ?: 0
+        )
+        insertSessionToDatabase()
 
         clearAllData()
+    }
+
+    private fun insertSessionToDatabase() {
+        session.value?.let {
+            viewModelScope.launch {
+                trackingSessionRepository.insertTrackingSession(it)
+            }
+        }
     }
 
     private fun getBatteryLevel(context: Context): Int {
