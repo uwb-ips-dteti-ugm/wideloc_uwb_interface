@@ -4,6 +4,7 @@ import android.util.Log
 import com.google.gson.GsonBuilder
 import com.rizqi.wideloc.data.local.TWRDataSource
 import com.rizqi.wideloc.data.repository.FakeUWBDeviceRepository
+import com.rizqi.wideloc.data.repository.UWBDeviceRepositoryImpl
 import com.rizqi.wideloc.domain.model.DeviceCoordinate
 import com.rizqi.wideloc.domain.model.DeviceData
 import com.rizqi.wideloc.domain.model.DeviceOffsetData
@@ -23,10 +24,10 @@ import javax.inject.Inject
 class GetUpdatedPositionInteractor @Inject constructor(
     private val twrDataSource: TWRDataSource,
     private val deviceRepository: DeviceRepository,
+    private val uwbDeviceRepository: UWBDeviceRepository
 ) : GetUpdatedPositionUseCase {
     private val generateIDUseCase: GenerateIDUseCase = GenerateIDInteractor()
     private val newtonRaphsonUseCase: NewtonRaphsonUseCase = NewtonRaphsonInteractor()
-    private val uwbDeviceRepository: UWBDeviceRepository = FakeUWBDeviceRepository()
     private val TAG = "GetUpdatedPosition"
 
     private val gson = GsonBuilder().setPrettyPrinting().create()

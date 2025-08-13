@@ -1,5 +1,6 @@
 package com.rizqi.wideloc.data.repository
 
+import android.content.Context
 import android.util.Log
 import com.google.gson.Gson
 import com.rizqi.wideloc.data.network.HTTPApiClient
@@ -18,48 +19,51 @@ import com.rizqi.wideloc.utils.DomainDataMapper.asUWBConfigEntity
 import com.rizqi.wideloc.utils.DomainDataMapper.toClientData
 import com.rizqi.wideloc.utils.DomainDataMapper.toDto
 import com.rizqi.wideloc.utils.DomainDataMapper.toTWRData
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 class UWBDeviceRepositoryImpl @Inject constructor(
+    @ApplicationContext
+    private val context: Context,
     private val uwbDeviceApi: UWBDeviceApi,
 ) : UWBDeviceRepository {
     override suspend fun getClientInfo(dns: String): List<ClientData> {
-        val response = HTTPApiClient(dns).get(Constants.UWB_CLIENT_INFO_ENDPOINT)
+        val response = HTTPApiClient(context, dns).get(Constants.UWB_CLIENT_INFO_ENDPOINT)
         val clientInfo = Gson().fromJson(response, ClientInfoDto::class.java)
         return clientInfo.clients.map { it.toClientData() }
     }
 
     override suspend fun getTWRData(dns: String): List<TWRData> {
-        val response = HTTPApiClient("http://$dns.local/").get(Constants.UWB_CLIENT_DATA_ENDPOINT)
+        val response = HTTPApiClient(context,"http://$dns.local/").get(Constants.UWB_CLIENT_DATA_ENDPOINT)
         val twrDto = Gson().fromJson(response, TWRDto::class.java)
         return twrDto.twrData.map { it.toTWRData() }
     }
 
     override suspend fun connectWifi(wifiConnectData: WifiConnectData): Boolean {
         val jsonBody = Gson().toJson(wifiConnectData.toDto())
-        HTTPApiClient().post(Constants.WIFI_CONNECT_ENDPOINT, jsonBody)
+        HTTPApiClient(context).post(Constants.WIFI_CONNECT_ENDPOINT, jsonBody)
         return true
     }
 
     override suspend fun disconnectWifi(dns: String): Boolean {
-        HTTPApiClient(dns).post(Constants.WIFI_DISCONNECT_ENDPOINT)
+        HTTPApiClient(context, dns).post(Constants.WIFI_DISCONNECT_ENDPOINT)
         return true
     }
 
     override suspend fun configWifi(wifiConfigData: WifiConfigData): Boolean {
         val jsonBody = Gson().toJson(wifiConfigData.toDto())
-        HTTPApiClient().post(Constants.WIFI_CONFIG_ENDPOINT, jsonBody)
+        HTTPApiClient(context).post(Constants.WIFI_CONFIG_ENDPOINT, jsonBody)
         return true
     }
 
     override suspend fun configUWB(dns: String, uwbConfigData: UWBConfigData): Boolean {
         val jsonBody = Gson().toJson(uwbConfigData.asUWBConfigEntity())
-        HTTPApiClient(dns).post(Constants.UWB_CONFIG_ENDPOINT, jsonBody)
+        HTTPApiClient(context, dns).post(Constants.UWB_CONFIG_ENDPOINT, jsonBody)
         return true
     }
 
     override suspend fun restartDevice(dns: String): Boolean {
-        HTTPApiClient(dns).post(Constants.DEVICE_RESTART_ENDPOINT)
+        HTTPApiClient(context, dns).post(Constants.DEVICE_RESTART_ENDPOINT)
         return true
     }
 }

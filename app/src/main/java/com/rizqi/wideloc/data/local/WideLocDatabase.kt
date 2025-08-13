@@ -57,6 +57,8 @@ abstract class WideLocDatabase : RoomDatabase() {
                     WideLocDatabase::class.java,
                     "wideloc.db"
                 )
+
+
                 val instance = dbBuilder.build()
                 INSTANCE = instance
                 instance
