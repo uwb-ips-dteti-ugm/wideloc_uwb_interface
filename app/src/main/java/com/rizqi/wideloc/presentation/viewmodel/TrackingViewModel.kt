@@ -5,12 +5,14 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.wifi.WifiInfo
 import android.os.BatteryManager
+import android.os.Environment
 import android.os.SystemClock
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.gson.Gson
 import com.rizqi.wideloc.R
 import com.rizqi.wideloc.data.Result
 import com.rizqi.wideloc.data.local.entity.DeviceRole
@@ -54,6 +56,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import java.io.File
 import java.time.LocalDateTime
 import javax.inject.Inject
 
@@ -583,11 +586,27 @@ class TrackingViewModel @Inject constructor(
     }
 
     private fun insertSessionToDatabase() {
-        session.value?.let {
-            viewModelScope.launch {
-                trackingSessionRepository.insertTrackingSession(it)
-            }
+//        session.value?.let {
+//            viewModelScope.launch {
+////                trackingSessionRepository.insertTrackingSession(it)
+//
+//            }
+//        }
+        exportTheSession()
+    }
+
+    private fun exportTheSession(){
+        val gson = Gson()
+        val jsonString = gson.toJson(session)
+
+        // App-specific Downloads dir (no permission required)
+        val downloadsDir = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+        if (downloadsDir != null && !downloadsDir.exists()) {
+            downloadsDir.mkdirs()
         }
+
+        val file = File(downloadsDir, "tracking_session_${session.value?.sessionId}.json")
+        file.writeText(jsonString)
     }
 
     private fun getBatteryLevel(context: Context): Int {

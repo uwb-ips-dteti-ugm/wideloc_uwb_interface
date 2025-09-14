@@ -86,7 +86,7 @@ class GetUpdatedPositionInteractor @Inject constructor(
 
             matchingTWR?.let {
                 distance.copy(
-                    distance = fromMeters(it.distance, mapUnit),
+                    distance = it.distance,
                     timestamp = it.timestamp.toLong()
                 )
             } ?: distance
