@@ -34,7 +34,7 @@ class UWBDeviceRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getTWRData(dns: String): List<TWRData> {
-        val response = HTTPApiClient(context,"http://172.20.10.3:8080/").get(Constants.UWB_CLIENT_DATA_ENDPOINT)
+        val response = HTTPApiClient(context,"http://$dns.local/").get(Constants.UWB_CLIENT_DATA_ENDPOINT)
         val twrDto = Gson().fromJson(response, TWRDto::class.java)
         return twrDto.twrData.map { it.toTWRData() }
     }

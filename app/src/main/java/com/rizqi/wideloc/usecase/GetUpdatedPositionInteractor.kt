@@ -1,17 +1,12 @@
 package com.rizqi.wideloc.usecase
 
-import android.util.Log
 import com.google.gson.GsonBuilder
 import com.rizqi.wideloc.data.local.TWRDataSource
-import com.rizqi.wideloc.data.repository.FakeUWBDeviceRepository
-import com.rizqi.wideloc.data.repository.UWBDeviceRepositoryImpl
 import com.rizqi.wideloc.domain.model.DeviceCoordinate
 import com.rizqi.wideloc.domain.model.DeviceData
-import com.rizqi.wideloc.domain.model.DeviceOffsetData
 import com.rizqi.wideloc.domain.model.DistancesWithTimestamp
 import com.rizqi.wideloc.domain.model.LayoutInitialCoordinate
 import com.rizqi.wideloc.domain.model.MapUnit
-import com.rizqi.wideloc.domain.model.Point
 import com.rizqi.wideloc.domain.model.TWRData
 import com.rizqi.wideloc.domain.model.TrackingSessionData
 import com.rizqi.wideloc.domain.repository.DeviceRepository
@@ -28,6 +23,7 @@ class GetUpdatedPositionInteractor @Inject constructor(
 ) : GetUpdatedPositionUseCase {
     private val generateIDUseCase: GenerateIDUseCase = GenerateIDInteractor()
     private val newtonRaphsonUseCase: NewtonRaphsonUseCase = NewtonRaphsonInteractor()
+    private val kalmanFilterUseCase: KalmanFilterUseCase = KalmanFilterInteractor()
     private val TAG = "GetUpdatedPosition"
 
     private val gson = GsonBuilder().setPrettyPrinting().create()
@@ -108,12 +104,22 @@ class GetUpdatedPositionInteractor @Inject constructor(
         )
         Timber.tag(TAG).d("[8] predictedPoints: \n${gson.toJson(predictedPoints)}")
 
+//        Kalman Filter Correction
+        val correctedPoints = predictedPoints.map {
+            if(it.id in fixedPointIds){
+                it
+            } else {
+                kalmanFilterUseCase.update(it)
+            }
+        }
+        Timber.tag(TAG).d("[9] correctedPoints: \n${gson.toJson(correctedPoints)}")
+
 //        Apply map offset after positions are acquired
         val deviceOffsets: List<DeviceCoordinate?> = listOf(
             layoutInitialCoordinate?.serverCoordinate,
             layoutInitialCoordinate?.anchorCoordinate
         ) + (layoutInitialCoordinate?.clientsCoordinate ?: emptyList())
-        val offsetAppliedPoints = predictedPoints.map { point ->
+        val offsetAppliedPoints = correctedPoints.map { point ->
             val pointOffset = deviceOffsets.find { deviceOffset ->
                 deviceOffset?.deviceData?.getCorrespondingPointId() == point.id
             }
@@ -128,20 +134,20 @@ class GetUpdatedPositionInteractor @Inject constructor(
                 )
             )
         }
-        Timber.tag(TAG).d("[9] offsetAppliedPoints: \n${gson.toJson(offsetAppliedPoints)}")
+        Timber.tag(TAG).d("[10] offsetAppliedPoints: \n${gson.toJson(offsetAppliedPoints)}")
 
 //        Return the Results
         val updatedDeviceHistory = session.deviceTrackingHistoryData.mapIndexed { index, history ->
             val pointId = history.deviceData.getCorrespondingPointId()
             val newPoint = offsetAppliedPoints.find { it.id == pointId }
             val updatedPoints = history.points + listOfNotNull(newPoint)
-            Timber.tag(TAG).d("[10.${index}] new point for ${history.deviceData.id}: \n${gson.toJson(newPoint)}")
+            Timber.tag(TAG).d("[11.${index}] new point for ${history.deviceData.id}: \n${gson.toJson(newPoint)}")
 
             history.copy(
                 points = updatedPoints, timestamp = history.timestamp + 1
             )
         }
-        Timber.tag(TAG).d("[11] updated device history: \n${gson.toJson(updatedDeviceHistory)}")
+        Timber.tag(TAG).d("[12] updated device history: \n${gson.toJson(updatedDeviceHistory)}")
         session.apply {
             recordedDistances.add(newDistanceRecord)
             deviceTrackingHistoryData = updatedDeviceHistory.toMutableList()

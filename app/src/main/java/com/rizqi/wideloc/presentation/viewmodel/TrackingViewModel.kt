@@ -49,6 +49,8 @@ import com.rizqi.wideloc.usecase.GenerateDistanceCombinationUseCase
 import com.rizqi.wideloc.usecase.GenerateIDInteractor
 import com.rizqi.wideloc.usecase.GenerateIDUseCase
 import com.rizqi.wideloc.usecase.GetUpdatedPositionUseCase
+import com.rizqi.wideloc.usecase.KalmanFilterInteractor
+import com.rizqi.wideloc.usecase.KalmanFilterUseCase
 import com.rizqi.wideloc.utils.DomainDataMapper.asWifiProtocolEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
