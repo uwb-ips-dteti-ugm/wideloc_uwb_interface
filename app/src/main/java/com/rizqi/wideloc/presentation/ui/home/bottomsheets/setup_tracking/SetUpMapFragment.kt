@@ -37,7 +37,7 @@ class SetUpMapFragment : BaseFragment<FragmentSetUpMapBinding>(FragmentSetUpMapB
     private var selectedMap: MapData? = null
 
     private lateinit var mapUnitAdapter: ArrayAdapter<String>
-    private var selectedMapUnit: MapUnit = MapUnit.CM
+    private var selectedMapUnit: MapUnit = MapUnit.M
 
     private var mapImageBitmap: Bitmap? = null
     private var mapImageRotation = 0f
@@ -185,7 +185,8 @@ class SetUpMapFragment : BaseFragment<FragmentSetUpMapBinding>(FragmentSetUpMapB
     private fun saveMap(){
         val length = binding.lengthInputEditTextSetUpMapFragment.text.toString()
         val width = binding.widthInputEditTextSetUpMapFragment.text.toString()
-        val axisStepUnit = binding.axisStepInputEditTextSetUpMapFragment.text.toString()
+        val axisStepUnit = "0.5"
+//        val axisStepUnit = binding.axisStepInputEditTextSetUpMapFragment.text.toString()
 
         trackingViewModel.saveMapSelection(
             lengthText = length,

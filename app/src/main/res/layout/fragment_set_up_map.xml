@@ -135,6 +135,7 @@
                 app:boxCornerRadiusBottomStart="8dp"
                 app:boxCornerRadiusBottomEnd="8dp"
                 app:cursorColor="@color/text_primary"
+                android:enabled="false"
                 >
 
                 <com.google.android.material.textfield.MaterialAutoCompleteTextView
@@ -181,6 +182,7 @@
                 app:boxCornerRadiusBottomStart="8dp"
                 app:boxCornerRadiusBottomEnd="8dp"
                 app:cursorColor="@color/text_primary"
+                android:enabled="false"
                 >
 
                 <com.google.android.material.textfield.TextInputEditText

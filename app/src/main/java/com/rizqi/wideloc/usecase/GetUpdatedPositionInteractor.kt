@@ -2,6 +2,7 @@ package com.rizqi.wideloc.usecase
 
 import com.google.gson.GsonBuilder
 import com.rizqi.wideloc.data.local.TWRDataSource
+import com.rizqi.wideloc.data.repository.FakeUWBDeviceRepository
 import com.rizqi.wideloc.domain.model.DeviceCoordinate
 import com.rizqi.wideloc.domain.model.DeviceData
 import com.rizqi.wideloc.domain.model.DistancesWithTimestamp
@@ -153,18 +154,5 @@ class GetUpdatedPositionInteractor @Inject constructor(
             deviceTrackingHistoryData = updatedDeviceHistory.toMutableList()
         }
         return session
-    }
-
-    // helpers
-    private fun toMeters(value: Double, unit: MapUnit): Double = when (unit) {
-        MapUnit.MM -> value / 1000.0
-        MapUnit.CM -> value / 100.0
-        MapUnit.M  -> value
-    }
-
-    private fun fromMeters(valueMeters: Double, unit: MapUnit): Double = when (unit) {
-        MapUnit.MM -> valueMeters * 1000.0
-        MapUnit.CM -> valueMeters * 100.0
-        MapUnit.M  -> valueMeters
     }
 }

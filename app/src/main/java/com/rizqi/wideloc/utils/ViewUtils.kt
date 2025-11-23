@@ -7,6 +7,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.rizqi.wideloc.domain.model.MapUnit
 
 object ViewUtils {
 
@@ -72,5 +73,18 @@ class WrapContentLinearLayoutManager(
         val width = View.MeasureSpec.getSize(widthSpec)
         setMeasuredDimension(width, maxHeight)
     }
+}
+
+// helpers
+fun toMeters(value: Double, unit: MapUnit): Double = when (unit) {
+    MapUnit.MM -> value / 1000.0
+    MapUnit.CM -> value / 100.0
+    MapUnit.M  -> value
+}
+
+fun fromMeters(valueMeters: Double, unit: MapUnit): Double = when (unit) {
+    MapUnit.MM -> valueMeters * 1000.0
+    MapUnit.CM -> valueMeters * 100.0
+    MapUnit.M  -> valueMeters
 }
 

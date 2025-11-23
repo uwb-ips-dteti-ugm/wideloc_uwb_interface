@@ -1,5 +1,7 @@
 package com.rizqi.wideloc.domain.model
 
+import com.rizqi.wideloc.domain.model.MapUnit.*
+import com.rizqi.wideloc.utils.fromMeters
 import java.time.LocalDateTime
 
 data class TrackingSessionData(
@@ -10,4 +12,19 @@ data class TrackingSessionData(
     var latencies: MutableList<LatencyData> = mutableListOf(),
     var powerConsumptions: MutableList<PowerConsumptionData> = mutableListOf(),
     var elapsedTime: Long = 0,
-)
+) {
+    fun getUnitTransformedDeviceTrackingHistoryData(mapUnit: MapUnit): MutableList<DeviceTrackingHistoryData> {
+        return deviceTrackingHistoryData.map { historyData ->
+
+            val transformedPoints = historyData.points.map { point ->
+                val newX = fromMeters(point.x.value, mapUnit)
+                val newY = fromMeters(point.y.value, mapUnit)
+
+                point.copyWithNewCoordinate(newX, newY)
+            }
+
+            historyData.copy(points = transformedPoints)
+        }.toMutableList()
+    }
+
+}
