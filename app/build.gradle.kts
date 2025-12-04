@@ -94,5 +94,5 @@ dependencies {
 }
 
 tasks.dokkaHtml {
-    outputDirectory.set(layout.buildDirectory.dir("documentation/html"))
+    outputDirectory.set(buildDir.resolve("documentation/html"))
 }

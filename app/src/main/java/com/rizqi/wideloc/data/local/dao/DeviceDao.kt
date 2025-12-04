@@ -6,120 +6,156 @@ import com.rizqi.wideloc.data.local.entity.DeviceRole
 import kotlinx.coroutines.flow.Flow
 
 /**
- * Data Access Object (DAO) untuk mengelola entitas [DeviceEntity] dalam tabel "devices".
+ * Data Access Object (DAO) for managing [DeviceEntity] records in the `devices` table.
  *
- * DAO ini menyediakan operasi CRUD (Create, Read, Update, Delete) serta
- * query tambahan terkait konfigurasi UWB seperti pencarian alamat device dan network address terakhir.
+ * This DAO provides full CRUD operations along with additional queries
+ * used for UWB device configuration, such as retrieving the most recent
+ * device address or network address.
  *
- * Tabel `devices` menyimpan perangkat-perangkat UWB dalam aplikasi WideLoc,
- * termasuk Anchor, Tag, dan role lainnya.
+ * The `devices` table stores all UWB devices registered in the WideLoc application,
+ * including Anchors, Tags, and other device roles defined by [DeviceRole].
  */
 @Dao
 interface DeviceDao {
 
     /**
-     * Menyimpan satu device ke database.
-     * Jika ID sudah ada, akan ditimpa (REPLACE).
+     * Inserts a single device into the database.
+     *
+     * If a device with the same ID already exists, it will be replaced.
+     *
+     * @param device the device entity to insert.
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(device: DeviceEntity)
 
     /**
-     * Menyimpan banyak device sekaligus.
-     * Jika ID sudah ada, akan ditimpa.
+     * Inserts multiple devices into the database.
+     *
+     * Existing devices with matching IDs will be replaced.
+     *
+     * @param devices the list of device entities to insert.
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(devices: List<DeviceEntity>)
 
     /**
-     * Memperbarui data suatu device.
+     * Updates a device record in the database.
+     *
+     * @param device the updated device entity.
      */
     @Update
     suspend fun update(device: DeviceEntity)
 
     /**
-     * Menghapus data satu device.
+     * Deletes a specific device from the database.
+     *
+     * @param device the device entity to delete.
      */
     @Delete
     suspend fun delete(device: DeviceEntity)
 
     /**
-     * Menghapus device berdasarkan ID.
+     * Deletes a device based on its unique ID.
      *
-     * @param id ID unik perangkat.
+     * @param id the unique identifier of the device.
      */
     @Query("DELETE FROM devices WHERE id = :id")
     suspend fun deleteById(id: String)
 
     /**
-     * Mengambil satu device berdasarkan ID.
+     * Retrieves a device by its ID.
      *
-     * @return [DeviceEntity] atau null jika tidak ditemukan.
+     * @param id the unique identifier of the device.
+     * @return the matching [DeviceEntity], or `null` if no device is found.
      */
     @Query("SELECT * FROM devices WHERE id = :id LIMIT 1")
     suspend fun getById(id: String): DeviceEntity?
 
     /**
-     * Mengambil semua device sebagai Flow.
-     * Flow membuat UI otomatis update ketika ada perubahan data.
+     * Retrieves all stored devices as a reactive [Flow].
+     *
+     * A Flow allows the UI to automatically receive updates when device data changes.
+     *
+     * @return a flow emitting the list of all devices.
      */
     @Query("SELECT * FROM devices")
     fun getAll(): Flow<List<DeviceEntity>>
 
     /**
-     * Menghapus seluruh data device.
-     * Hati-hati saat menggunakannya.
+     * Deletes all device records from the database.
+     *
+     * Use with caution as this action is irreversible.
      */
     @Query("DELETE FROM devices")
     suspend fun deleteAll()
 
     /**
-     * Mengambil semua device dengan role tertentu (Anchor/Tag).
+     * Retrieves all devices with a specific role (e.g., Anchor, Tag).
      *
-     * @param role Role perangkat (enum: DeviceRole).
+     * @param role the device role filter.
+     * @return a list of devices matching the role.
      */
     @Query("SELECT * FROM devices WHERE role = :role")
     suspend fun getByRole(role: DeviceRole): List<DeviceEntity>
 
     /**
-     * Mengambil device pertama berdasarkan role tertentu.
+     * Retrieves the first device matching a specific role.
      *
-     * @return Device pertama yang cocok atau null jika tidak ada.
+     * @param role the target device role.
+     * @return the first matching device, or `null` if none exist.
      */
     @Query("SELECT * FROM devices WHERE role = :role LIMIT 1")
     suspend fun getFirstByRole(role: DeviceRole): DeviceEntity?
 
     /**
-     * Mengambil UWB device address terakhir yang pernah disimpan.
+     * Retrieves the most recently created non-null UWB device address.
      *
-     * Digunakan untuk setup perangkat baru agar increment address.
+     * Useful for generating the next incremental UWB address during device setup.
      *
-     * @return Alamat device terakhir atau null jika belum ada.
+     * @return the last UWB device address, or `null` if not available.
      */
-    @Query("SELECT uwb_config_device_address FROM devices WHERE uwb_config_device_address IS NOT NULL ORDER BY created_at DESC LIMIT 1")
+    @Query(
+        """
+        SELECT uwb_config_device_address 
+        FROM devices 
+        WHERE uwb_config_device_address IS NOT NULL 
+        ORDER BY created_at DESC 
+        LIMIT 1
+        """
+    )
     suspend fun getLastUwbDeviceAddress(): Int?
 
     /**
-     * Mengambil network address terakhir yang pernah disimpan.
+     * Retrieves the most recently created non-null UWB network address.
      *
-     * @return Network address terakhir atau null jika belum ada.
+     * @return the last UWB network address, or `null` if not available.
      */
-    @Query("SELECT uwb_config_network_address FROM devices WHERE uwb_config_network_address IS NOT NULL ORDER BY created_at DESC LIMIT 1")
+    @Query(
+        """
+        SELECT uwb_config_network_address 
+        FROM devices 
+        WHERE uwb_config_network_address IS NOT NULL 
+        ORDER BY created_at DESC 
+        LIMIT 1
+        """
+    )
     suspend fun getLastUwbNetworkAddress(): Int?
 
     /**
-     * Mencari device berdasarkan UWB device address spesifik.
+     * Retrieves a device based on its UWB device address.
      *
-     * @param deviceAddress Alamat perangkat UWB (DW3000).
+     * @param deviceAddress the UWB device address to look for.
+     * @return the matching device, or `null` if not found.
      */
     @Query("SELECT * FROM devices WHERE uwb_config_device_address = :deviceAddress LIMIT 1")
     suspend fun getDeviceByDeviceAddress(deviceAddress: Int): DeviceEntity?
 
     /**
-     * Mengambil semua device berdasarkan role dan network address tertentu.
+     * Retrieves all devices that match both the role and network address.
      *
-     * @param role Role perangkat (Anchor/Tag).
-     * @param networkAddress Network address UWB.
+     * @param role the role of the device (e.g., Anchor, Tag).
+     * @param networkAddress the UWB network address.
+     * @return a list of devices matching both conditions.
      */
     @Query("SELECT * FROM devices WHERE role = :role AND uwb_config_network_address = :networkAddress")
     suspend fun getDevicesByRoleAndNetworkAddress(role: DeviceRole, networkAddress: Int): List<DeviceEntity>
