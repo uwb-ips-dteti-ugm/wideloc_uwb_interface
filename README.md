@@ -1,35 +1,41 @@
-# WideLoc — Android-Based Self-Localization Using UWB (DW3000)
+# WideLoc — Android Interface for UWB-Based Self-Localization
+*A Modern Android Application for Real-Time Ultra-Wideband Position Tracking*
 
-WideLoc is an Android application developed for a thesis project titled  
-**"Pengembangan Interface Berbasis Android untuk Self-Localization Berbasis Ultra-Wideband (UWB)."**
+WideLoc is an Android application developed to support research on **UWB-based self-localization** using **Decawave DW3000** modules. The app provides an interface for managing UWB tracking sessions, receiving ranging data, visualizing distance measurements, logging timestamps, and interacting with anchor–tag configurations.
 
-The app communicates with UWB modules (Decawave/Quorvo DW3000 series) to perform **TWR (Two-Way Ranging)**, retrieve **CSI (Channel State Information)**, conduct tracking sessions, log device movement, and visualize self-localization results.
-
-WideLoc functions as both a **research tool** and a **data collection platform** for studies related to UWB indoor positioning systems.
+This project serves as the mobile component of an academic thesis:  
+**“Pengembangan Interface Berbasis Android untuk Self-Localization Berbasis Ultra-Wideband (UWB)”**
 
 ---
 
-## 🚀 Features
+## ✨ Features
 
-### 🔹 UWB Functionalities
-- Device discovery and status checking  
-- Initiate and control **TWR ranging**  
-- Retrieve **CSI** data  
-- Parse custom DW3000 frames  
-- Real-time distance visualization  
-- Track UWB device movement  
-- Measure:
-  - Distance over time  
-  - Latency  
-  - Power consumption  
+### 🛰 Real-Time UWB Tracking
+- Displays distances from tag to multiple anchors
+- Supports continuous live updates
+- Designed around DW3000 Two-Way Ranging (TWR) protocol
 
-### 🔹 UI & App Features
-- Clean Android UI (Kotlin + XML)
-- Tracking session dashboard  
-- History list & detail views  
-- On-device storage for session data  
-- Real-time logs & event display  
-- Modular project structure  
+### 📊 Data Visualization
+- Live distance measurement display
+- Supports charts, tables, or numerical data depending on screen
+
+### 💾 Local Data Logging
+- Stores:
+  - Tracking sessions
+  - Anchor distances
+  - Timestamps
+- Uses **Room Database** for local persistence
+
+### 🔌 Communication Layer
+Handles UWB-related data over:
+- WebSocket
+- HTTP API
+- Custom DW3000 server protocol
+
+### 🎨 Modern UI
+- Material Design components
+- MVVM architecture
+- ViewBinding
 
 ---
 
@@ -184,5 +190,13 @@ Because UWB communication relies on real hardware:
 
 This project was developed as academic research for an undergraduate thesis.
 You may use or modify the code for research or educational purposes.
+
+---
+
+## 👨‍💻 Author
+
+**Muhammad Rizqi**  
+UWB Research & Android Development  
+Universitas Gadjah Mada  
 
 ---
