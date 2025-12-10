@@ -18,8 +18,8 @@ class TableViewAdapter : AbstractTableAdapter<ColumnHeader, RowHeader, Cell>() {
 
         fun bind(cell: Cell?){
             binding.cellData.text = cell?.value
-//            binding.cellContainer.layoutParams.width = LinearLayout.LayoutParams.WRAP_CONTENT
-//            binding.cellContainer.requestLayout()
+            binding.cellContainer.layoutParams.width = LinearLayout.LayoutParams.WRAP_CONTENT
+            binding.cellContainer.requestLayout()
         }
     }
 
