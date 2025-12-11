@@ -40,6 +40,7 @@ class UWBDeviceRepositoryImpl @Inject constructor(
     }
 
     override suspend fun connectWifi(wifiConnectData: WifiConnectData): Boolean {
+        return true
         val jsonBody = Gson().toJson(wifiConnectData.toDto())
         HTTPApiClient(context).post(Constants.WIFI_CONNECT_ENDPOINT, jsonBody)
         return true
@@ -51,12 +52,14 @@ class UWBDeviceRepositoryImpl @Inject constructor(
     }
 
     override suspend fun configWifi(wifiConfigData: WifiConfigData): Boolean {
+        return true
         val jsonBody = Gson().toJson(wifiConfigData.toDto())
         HTTPApiClient(context).post(Constants.WIFI_CONFIG_ENDPOINT, jsonBody)
         return true
     }
 
     override suspend fun configUWB(dns: String, uwbConfigData: UWBConfigData): Boolean {
+        return true
         val jsonBody = Gson().toJson(uwbConfigData.asUWBConfigEntity())
         HTTPApiClient(context, dns).post(Constants.UWB_CONFIG_ENDPOINT, jsonBody)
         return true

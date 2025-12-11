@@ -1,6 +1,5 @@
 package com.rizqi.wideloc.usecase
 
-import android.util.Log
 import com.rizqi.wideloc.data.Result
 import com.rizqi.wideloc.data.local.entity.DeviceRole
 import com.rizqi.wideloc.domain.model.DeviceData
@@ -20,14 +19,14 @@ class DeviceInteractor @Inject constructor(
     override fun getAvailableDevices(): Flow<List<DeviceData>> =
         repository.getAllDevices()
             .map { devices ->
-            devices.filter { it.isAvailable && it.uwbConfigData != null }
+            devices.filter { it.isAvailable }
         }
 
     override fun getReconfigureDevices(): Flow<List<DeviceData>> =
         repository.getAllDevices()
             .map { devices ->
             devices.filter { device ->
-                (!device.isAvailable || device.uwbConfigData == null)
+                (!device.isAvailable)
             }
         }
 

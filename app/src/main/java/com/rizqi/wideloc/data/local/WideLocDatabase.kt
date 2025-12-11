@@ -11,19 +11,34 @@ import com.rizqi.wideloc.data.local.dao.DeviceDao
 import com.rizqi.wideloc.data.local.dao.MapDao
 import com.rizqi.wideloc.data.local.dao.TWRDataDao
 import com.rizqi.wideloc.data.local.dao.TrackingSessionDao
-import com.rizqi.wideloc.data.local.entity.DeviceEntity
-import com.rizqi.wideloc.data.local.entity.DeviceTrackingHistoryEntity
-import com.rizqi.wideloc.data.local.entity.DistanceEntity
-import com.rizqi.wideloc.data.local.entity.DistancesWithTimestampEntity
-import com.rizqi.wideloc.data.local.entity.LatencyEntity
-import com.rizqi.wideloc.data.local.entity.MapEntity
-import com.rizqi.wideloc.data.local.entity.PointEntity
-import com.rizqi.wideloc.data.local.entity.PowerConsumptionEntity
-import com.rizqi.wideloc.data.local.entity.TWRDataEntity
-import com.rizqi.wideloc.data.local.entity.TrackingSessionEntity
+import com.rizqi.wideloc.data.local.entity.*
 import com.rizqi.wideloc.utils.Converters
 import dagger.hilt.android.qualifiers.ApplicationContext
 
+/**
+ * The primary Room database for the WideLoc application.
+ *
+ * This database stores all local data related to Ultra-Wideband (UWB)–based
+ * self-localization, including:
+ *
+ * - Registered UWB devices
+ * - TWR (Two-Way Ranging) raw measurement data
+ * - Indoor maps and their point references
+ * - Tracking sessions and all associated measurement groups
+ * - Latency and power consumption records for performance evaluation
+ *
+ * The database uses multiple entities that represent different components of
+ * the localization system. It also uses [Converters] for complex types such as
+ * timestamps and lists.
+ *
+ * The database is implemented as a singleton and accessed through dependency
+ * injection or direct calls to [getInstance].
+ *
+ * @see DeviceDao
+ * @see TWRDataDao
+ * @see MapDao
+ * @see TrackingSessionDao
+ */
 @Database(
     entities = [
         DeviceEntity::class,
@@ -41,15 +56,31 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 )
 @TypeConverters(Converters::class)
 abstract class WideLocDatabase : RoomDatabase() {
+
+    /** DAO for managing registered UWB devices. */
     abstract fun deviceDao(): DeviceDao
+
+    /** DAO for accessing and storing TWR (Two-Way Ranging) measurement data. */
     abstract fun twrDataDao(): TWRDataDao
+
+    /** DAO for storing map data and point definitions used in indoor localization. */
     abstract fun mapDao(): MapDao
+
+    /** DAO for managing tracking sessions and all associated measurement sets. */
     abstract fun trackingSessionDao(): TrackingSessionDao
 
     companion object {
         @Volatile
         private var INSTANCE: WideLocDatabase? = null
 
+        /**
+         * Returns the singleton instance of [WideLocDatabase].
+         *
+         * If the database has not been created yet, this method initializes it
+         * using Room's `databaseBuilder` and stores the resulting instance.
+         *
+         * @param context The application context used for database initialization.
+         */
         fun getInstance(@ApplicationContext context: Context): WideLocDatabase {
             return INSTANCE ?: synchronized(this) {
                 val dbBuilder = Room.databaseBuilder(
@@ -58,13 +89,29 @@ abstract class WideLocDatabase : RoomDatabase() {
                     "wideloc.db"
                 )
 
-
                 val instance = dbBuilder.build()
                 INSTANCE = instance
                 instance
             }
         }
 
+        /**
+         * Room migration from database version 1 to version 2.
+         *
+         * This migration introduces WideLoc’s full tracking-session schema,
+         * including:
+         *
+         * - `tracking_sessions`: metadata for each session
+         * - `distances_with_timestamp`: groups of TWR distances taken at a moment in time
+         * - `distances`: individual measured distances within each group
+         * - `device_tracking_history`: device positions or events per timestamp
+         * - `latencies`: measured latency samples per session
+         * - `power_consumptions`: energy performance metrics during tracking
+         * - `points`: indoor map points used for anchor/reference coordinates
+         *
+         * Foreign keys and indexes are created to ensure referential integrity
+         * and efficient querying.
+         */
         val MIGRATION_1_2 = object : Migration(1, 2) {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL(
@@ -74,8 +121,7 @@ abstract class WideLocDatabase : RoomDatabase() {
                         date TEXT NOT NULL,
                         elapsedTime INTEGER NOT NULL
                     )
-                    """
-                        .trimIndent()
+                    """.trimIndent()
                 )
 
                 db.execSQL(
@@ -86,15 +132,14 @@ abstract class WideLocDatabase : RoomDatabase() {
                         timestamp INTEGER NOT NULL,
                         FOREIGN KEY(sessionId) REFERENCES tracking_sessions(sessionId) ON DELETE CASCADE
                     )
-                    """
-                        .trimIndent()
+                    """.trimIndent()
                 )
 
                 db.execSQL(
                     """
-                    CREATE INDEX IF NOT EXISTS index_distances_with_timestamp_sessionId ON distances_with_timestamp(sessionId)
-                    """
-                        .trimIndent()
+                    CREATE INDEX IF NOT EXISTS index_distances_with_timestamp_sessionId
+                    ON distances_with_timestamp(sessionId)
+                    """.trimIndent()
                 )
 
                 db.execSQL(
@@ -109,15 +154,14 @@ abstract class WideLocDatabase : RoomDatabase() {
                         PRIMARY KEY (groupId, id),
                         FOREIGN KEY(groupId) REFERENCES distances_with_timestamp(id) ON DELETE CASCADE
                     )
-                    """
-                        .trimIndent()
+                    """.trimIndent()
                 )
 
                 db.execSQL(
                     """
-                    CREATE INDEX IF NOT EXISTS index_distances_groupId ON distances(groupId)
-                    """
-                        .trimIndent()
+                    CREATE INDEX IF NOT EXISTS index_distances_groupId
+                    ON distances(groupId)
+                    """.trimIndent()
                 )
 
                 db.execSQL(
@@ -129,22 +173,21 @@ abstract class WideLocDatabase : RoomDatabase() {
                         timestamp INTEGER NOT NULL,
                         FOREIGN KEY(sessionId) REFERENCES tracking_sessions(sessionId) ON DELETE CASCADE
                     )
-                    """
-                        .trimIndent()
+                    """.trimIndent()
                 )
 
                 db.execSQL(
                     """
-                    CREATE INDEX IF NOT EXISTS index_device_tracking_history_sessionId ON device_tracking_history(sessionId)
-                    """
-                        .trimIndent()
+                    CREATE INDEX IF NOT EXISTS index_device_tracking_history_sessionId
+                    ON device_tracking_history(sessionId)
+                    """.trimIndent()
                 )
 
                 db.execSQL(
                     """
-                    CREATE INDEX IF NOT EXISTS index_device_tracking_history_deviceId ON device_tracking_history(deviceId)
-                    """
-                        .trimIndent()
+                    CREATE INDEX IF NOT EXISTS index_device_tracking_history_deviceId
+                    ON device_tracking_history(deviceId)
+                    """.trimIndent()
                 )
 
                 db.execSQL(
@@ -156,15 +199,14 @@ abstract class WideLocDatabase : RoomDatabase() {
                         latency REAL NOT NULL,
                         FOREIGN KEY(sessionId) REFERENCES tracking_sessions(sessionId) ON DELETE CASCADE
                     )
-                    """
-                        .trimIndent()
+                    """.trimIndent()
                 )
 
                 db.execSQL(
                     """
-                    CREATE INDEX IF NOT EXISTS index_latencies_sessionId ON latencies(sessionId)
-                    """
-                        .trimIndent()
+                    CREATE INDEX IF NOT EXISTS index_latencies_sessionId
+                    ON latencies(sessionId)
+                    """.trimIndent()
                 )
 
                 db.execSQL(
@@ -181,15 +223,14 @@ abstract class WideLocDatabase : RoomDatabase() {
                         timestamp INTEGER NOT NULL,
                         FOREIGN KEY(sessionId) REFERENCES tracking_sessions(sessionId) ON DELETE CASCADE
                     )
-                    """
-                        .trimIndent()
+                    """.trimIndent()
                 )
 
                 db.execSQL(
                     """
-                    CREATE INDEX IF NOT EXISTS index_power_consumptions_sessionId ON power_consumptions(sessionId)
-                    """
-                        .trimIndent()
+                    CREATE INDEX IF NOT EXISTS index_power_consumptions_sessionId
+                    ON power_consumptions(sessionId)
+                    """.trimIndent()
                 )
 
                 db.execSQL(
@@ -201,11 +242,9 @@ abstract class WideLocDatabase : RoomDatabase() {
                         y_id TEXT NOT NULL,
                         y_value REAL NOT NULL
                     )
-                    """
-                        .trimIndent()
+                    """.trimIndent()
                 )
             }
         }
     }
-
 }

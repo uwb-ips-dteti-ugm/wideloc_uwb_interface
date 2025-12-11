@@ -50,8 +50,8 @@ class NetworkConfigFragment : BaseFragment<FragmentNetworkConfigBinding>(Fragmen
             binding.staPasswordInputLayoutConnectDeviceWifiFragment.error = error?.staPassword
         }
         addDeviceViewModel.deviceSetupModel.observe(viewLifecycleOwner){
-            binding.dnsInputLayoutNetworkConfigFragment.prefixText = addDeviceViewModel.getNamePrefix()
-            binding.apSSIDInputLayoutNetworkConfigFragment.prefixText = addDeviceViewModel.getNamePrefix()
+//            binding.dnsInputLayoutNetworkConfigFragment.prefixText = addDeviceViewModel.getNamePrefix()
+//            binding.apSSIDInputLayoutNetworkConfigFragment.prefixText = addDeviceViewModel.getNamePrefix()
         }
 
         binding.root.setOnClickListener {
@@ -90,8 +90,8 @@ class NetworkConfigFragment : BaseFragment<FragmentNetworkConfigBinding>(Fragmen
         binding.configureButtonNetworkConfigFragment.setOnClickListener {
             addDeviceViewModel.configureNetwork()
         }
-        binding.dnsInputLayoutNetworkConfigFragment.prefixText = addDeviceViewModel.getNamePrefix()
-        binding.apSSIDInputLayoutNetworkConfigFragment.prefixText = addDeviceViewModel.getNamePrefix()
+//        binding.dnsInputLayoutNetworkConfigFragment.prefixText = addDeviceViewModel.getNamePrefix()
+//        binding.apSSIDInputLayoutNetworkConfigFragment.prefixText = addDeviceViewModel.getNamePrefix()
 
         recalculateContentHeight()
     }

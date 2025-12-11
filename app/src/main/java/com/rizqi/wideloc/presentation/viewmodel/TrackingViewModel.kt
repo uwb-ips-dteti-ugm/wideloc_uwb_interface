@@ -142,7 +142,7 @@ class TrackingViewModel @Inject constructor(
         viewModelScope.launch {
             _serverList.value = deviceRepository.getByRole(DeviceRole.Server)
                 .filter {
-                    it.isAvailable && it.uwbConfigData != null
+                    it.isAvailable
                 }
 
             mapRepository.getAllMaps().collect {

@@ -2,6 +2,7 @@ package com.rizqi.wideloc.presentation.ui.devices.bottomsheets.add_device
 
 import android.content.Context
 import android.net.wifi.WifiInfo
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -29,6 +30,7 @@ import com.rizqi.wideloc.utils.Constants
 import com.rizqi.wideloc.utils.DomainDataMapper.asWifiProtocolEntity
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.time.LocalDateTime
 
 @HiltViewModel
@@ -153,7 +155,7 @@ class AddDeviceViewModel @Inject constructor(
             role = model.role,
             offset = DeviceOffsetData(x = model.offsetX, y = model.offsetY, z = model.offsetZ),
             protocol = protocol,
-            isAvailable = false,
+            isAvailable = true,
             lastConnectedAt = null,
             createdAt = LocalDateTime.now(),
             uwbConfigData = null
@@ -184,7 +186,7 @@ class AddDeviceViewModel @Inject constructor(
                 deviceUseCase.insertDevice(savedDeviceData!!)
                 _saveDeviceResult.value = Result.Success(true)
             } catch (e: Exception){
-                _saveDeviceResult.value = Result.Error(e.message ?: "Failed to save")
+                _saveDeviceResult.value = Result.Error(e.message.toString())
             }
         }
     }
@@ -296,7 +298,8 @@ class AddDeviceViewModel @Inject constructor(
         if (!isConfigValid) return
 
         val validConfig = (networkConfig.value ?: NetworkConfig()).copy(
-            dns = "${getNamePrefix()}${networkConfig.value?.dns}",
+//            dns = "${getNamePrefix()}${networkConfig.value?.dns}",
+            dns = networkConfig.value?.dns ?: "",
             apSSID = "${getNamePrefix()}${networkConfig.value?.apSSID}",
         )
 
@@ -357,13 +360,18 @@ class AddDeviceViewModel @Inject constructor(
         val newNetworkConfigError = NetworkConfigError(
             dns = dnsError,
             port = portError,
-            apSSID = apSSIDError,
-            apPassword = apPasswordError,
-            staSSID = staSSIDError,
-            staPassword = staPasswordError,
+//            apSSID = apSSIDError,
+//            apPassword = apPasswordError,
+//            staSSID = staSSIDError,
+//            staPassword = staPasswordError,
+            apSSID = null,
+            apPassword = null,
+            staSSID = null,
+            staPassword = null,
         )
         _networkConfigError.value = newNetworkConfigError
-        return dnsError == null && portError == null && apSSIDError == null && apPasswordError == null && staSSIDError == null && staPasswordError == null
+        return dnsError == null && portError == null
+//                && apSSIDError == null && apPasswordError == null && staSSIDError == null && staPasswordError == null
     }
 
     fun configureDevice(
@@ -392,9 +400,11 @@ class AddDeviceViewModel @Inject constructor(
         val validConfig = uwbConfig.value?.copy() ?: UWBConfig()
 
         val uwbConfigData = UWBConfigData(
-            autoStart = validConfig.autoStart,
+//            autoStart = validConfig.autoStart,
+            autoStart = true,
             isServer = deviceSetupModel.value?.role == DeviceRole.Server,
-            maxClient = validConfig.client,
+//            maxClient = validConfig.client,
+            maxClient = 16,
             mode = UWBMode.TWR,
             networkAddress = if (deviceSetupModel.value?.role == DeviceRole.Server){
                 validConfig.networkAddress
